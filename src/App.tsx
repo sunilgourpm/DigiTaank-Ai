@@ -454,61 +454,61 @@ export default function App() {
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans selection:bg-white/10">
       {/* Sidebar / Nav */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-zinc-900/80 backdrop-blur-xl border-t border-zinc-800 px-6 py-3 flex justify-around items-center z-50 md:top-0 md:bottom-auto md:flex-col md:w-20 md:h-screen md:border-t-0 md:border-r border-zinc-800 print:hidden">
+      <nav className="fixed bottom-0 left-0 right-0 bg-zinc-900/90 backdrop-blur-2xl border-t border-zinc-800 px-2 sm:px-6 py-2 sm:py-3 flex justify-around items-center z-50 md:top-0 md:bottom-auto md:flex-col md:w-20 md:h-screen md:border-t-0 md:border-r border-zinc-800 print:hidden">
         <button 
           onClick={() => setActiveTab('create')}
-          className={cn("p-3 rounded-2xl transition-all flex flex-col items-center gap-1 md:gap-0")}
+          className={cn("p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all flex flex-col items-center gap-1 md:gap-0")}
           style={{ 
             backgroundColor: activeTab === 'create' ? agencySettings.brandColor : 'transparent',
             color: activeTab === 'create' ? '#ffffff' : '#a1a1aa',
             boxShadow: activeTab === 'create' ? `0 10px 15px -3px rgba(${hexToRgb(agencySettings.brandColor)}, 0.2)` : 'none'
           }}
         >
-          <Plus size={24} />
-          <span className="text-[10px] font-bold md:hidden">Create</span>
+          <Plus size={20} className="sm:w-6 sm:h-6" />
+          <span className="text-[8px] sm:text-[10px] font-bold md:hidden">Create</span>
         </button>
         <button 
           onClick={() => setActiveTab('history')}
-          className={cn("p-3 rounded-2xl transition-all flex flex-col items-center gap-1 md:gap-0")}
+          className={cn("p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all flex flex-col items-center gap-1 md:gap-0")}
           style={{ 
             backgroundColor: activeTab === 'history' ? agencySettings.brandColor : 'transparent',
             color: activeTab === 'history' ? '#ffffff' : '#a1a1aa',
             boxShadow: activeTab === 'history' ? `0 10px 15px -3px rgba(${hexToRgb(agencySettings.brandColor)}, 0.2)` : 'none'
           }}
         >
-          <History size={24} />
-          <span className="text-[10px] font-bold md:hidden">History</span>
+          <History size={20} className="sm:w-6 sm:h-6" />
+          <span className="text-[8px] sm:text-[10px] font-bold md:hidden">History</span>
         </button>
         <button 
           onClick={() => setActiveTab('settings')}
-          className={cn("p-3 rounded-2xl transition-all flex flex-col items-center gap-1 md:gap-0")}
+          className={cn("p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all flex flex-col items-center gap-1 md:gap-0")}
           style={{ 
             backgroundColor: activeTab === 'settings' ? agencySettings.brandColor : 'transparent',
             color: activeTab === 'settings' ? '#ffffff' : '#a1a1aa',
             boxShadow: activeTab === 'settings' ? `0 10px 15px -3px rgba(${hexToRgb(agencySettings.brandColor)}, 0.2)` : 'none'
           }}
         >
-          <Settings size={24} />
-          <span className="text-[10px] font-bold md:hidden">Settings</span>
+          <Settings size={20} className="sm:w-6 sm:h-6" />
+          <span className="text-[8px] sm:text-[10px] font-bold md:hidden">Settings</span>
         </button>
         {currentQuotation && (
           <button 
             onClick={() => setActiveTab('preview')}
-            className={cn("p-3 rounded-2xl transition-all flex flex-col items-center gap-1 md:gap-0")}
+            className={cn("p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all flex flex-col items-center gap-1 md:gap-0")}
             style={{ 
               backgroundColor: activeTab === 'preview' ? agencySettings.brandColor : 'transparent',
               color: activeTab === 'preview' ? '#ffffff' : '#a1a1aa',
               boxShadow: activeTab === 'preview' ? `0 10px 15px -3px rgba(${hexToRgb(agencySettings.brandColor)}, 0.2)` : 'none'
             }}
           >
-            <FileText size={24} />
-            <span className="text-[10px] font-bold md:hidden">Preview</span>
+            <FileText size={20} className="sm:w-6 sm:h-6" />
+            <span className="text-[8px] sm:text-[10px] font-bold md:hidden">Preview</span>
           </button>
         )}
       </nav>
 
       {/* Main Content */}
-      <main className="pb-32 pt-6 px-4 md:pl-28 md:pr-8 max-w-7xl mx-auto print:p-0 print:m-0">
+      <main className="pb-24 sm:pb-32 pt-4 sm:pt-6 px-3 sm:px-4 md:pl-28 md:pr-8 max-w-7xl mx-auto print:p-0 print:m-0">
         <header className="mb-8 flex justify-between items-center print:hidden">
           <div className="flex items-center gap-4">
             {agencySettings.logo ? (
@@ -857,10 +857,10 @@ export default function App() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+              className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8"
             >
               {/* Document Preview */}
-              <div className="lg:col-span-2 space-y-6">
+              <div className="lg:col-span-2 space-y-4 sm:space-y-6">
                 <div className="flex items-center gap-4 mb-4 print:hidden">
                   <button 
                     onClick={() => setActiveTab('create')}
@@ -917,11 +917,11 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="relative min-h-[1000px]">
+                <div className="relative min-h-[600px] sm:min-h-[1000px]">
                   {/* HTML Preview (Hidden but rendered for PDF generation) */}
                   <div 
                     className={cn(
-                      "bg-white p-10 sm:p-12 md:p-16 rounded-5xl shadow-2xl border border-zinc-100 min-h-[1000px] relative overflow-hidden print:shadow-none print:border-none print:p-0 transition-all duration-300 pdf-source-container",
+                      "bg-white p-4 sm:p-12 md:p-16 rounded-2xl sm:rounded-5xl shadow-2xl border border-zinc-100 min-h-[600px] sm:min-h-[1000px] relative overflow-hidden print:shadow-none print:border-none print:p-0 transition-all duration-300 pdf-source-container",
                       previewMode === 'pdf' ? "opacity-0 pointer-events-none absolute inset-0 -z-10" : "opacity-100"
                     )} 
                     ref={quotationRef}
@@ -944,7 +944,7 @@ export default function App() {
                           )}
                           <span className="text-xl font-black tracking-tighter" style={{ color: agencySettings.brandColor }}>{agencySettings.agencyName}</span>
                         </div>
-                        <h2 className="text-4xl sm:text-5xl font-black uppercase tracking-tighter mb-2 text-zinc-900">{docType}</h2>
+                        <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tighter mb-2 text-zinc-900">{docType}</h2>
                         <p className="text-zinc-400 font-mono text-xs sm:text-sm tracking-widest">#{docType === 'quotation' ? currentQuotation.id : currentQuotation.id.replace('QT', 'INV')}</p>
                       </div>
                       <div className="text-right">
@@ -955,7 +955,7 @@ export default function App() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-12 mb-16 p-8 bg-zinc-50 rounded-4xl border border-zinc-100">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 mb-16 p-5 sm:p-8 bg-zinc-50 rounded-2xl sm:rounded-4xl border border-zinc-100">
                       <div>
                         <p className="text-[10px] font-bold text-zinc-400 uppercase mb-3 tracking-[0.2em]">{docType === 'quotation' ? 'Prepared For' : 'Bill To'}</p>
                         <p className="font-black text-lg sm:text-xl text-zinc-900 mb-1">{currentQuotation.client.name}</p>
@@ -969,8 +969,8 @@ export default function App() {
                       </div>
                     </div>
 
-                    <div className="overflow-x-auto mb-16">
-                      <table className="w-full min-w-[600px]">
+                    <div className="overflow-x-auto mb-16 -mx-4 sm:mx-0 px-4 sm:px-0">
+                      <table className="w-full min-w-full sm:min-w-[600px]">
                         <thead>
                           <tr className="border-b-4" style={{ borderColor: agencySettings.brandColor }}>
                             <th className="text-left py-6 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-zinc-400">Service Details</th>
@@ -991,8 +991,8 @@ export default function App() {
                       </table>
                     </div>
 
-                    <div className="flex justify-end mb-20 pr-4">
-                      <div className="w-full sm:w-80 space-y-4 p-8 rounded-4xl text-white shadow-2xl" style={{ backgroundColor: agencySettings.brandColor, boxShadow: `0 25px 50px -12px ${agencySettings.brandColor}33` }}>
+                    <div className="flex justify-end mb-20 pr-0 sm:pr-4">
+                      <div className="w-full sm:w-80 space-y-4 p-5 sm:p-8 rounded-2xl sm:rounded-4xl text-white shadow-2xl" style={{ backgroundColor: agencySettings.brandColor, boxShadow: `0 25px 50px -12px ${agencySettings.brandColor}33` }}>
                         <div className="flex justify-between text-white/60 text-xs font-bold uppercase tracking-widest">
                           <span>Subtotal</span>
                           <span>₹{currentQuotation.totalPrice.toLocaleString()}</span>
@@ -1038,7 +1038,7 @@ export default function App() {
 
                 {/* PDF Preview Iframe */}
                 {previewMode === 'pdf' && (
-                  <div className="absolute inset-0 bg-zinc-900 rounded-5xl overflow-hidden border border-zinc-800 shadow-2xl">
+                  <div className="absolute inset-0 bg-zinc-900 rounded-2xl sm:rounded-5xl overflow-hidden border border-zinc-800 shadow-2xl">
                     {isGeneratingPDF ? (
                       <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 text-white">
                         <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
@@ -1064,7 +1064,7 @@ export default function App() {
                   <motion.div 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-zinc-900/50 backdrop-blur-sm p-8 md:p-12 rounded-5xl shadow-2xl border border-zinc-800"
+                    className="bg-zinc-900/50 backdrop-blur-sm p-6 sm:p-8 md:p-12 rounded-3xl sm:rounded-5xl shadow-2xl border border-zinc-800"
                   >
                     <h2 className="text-2xl font-black mb-8 flex items-center gap-3 tracking-tighter text-white">
                       <BrainCircuit style={{ color: agencySettings.brandColor }} size={28} /> AI Generated Proposal
@@ -1078,7 +1078,7 @@ export default function App() {
 
               {/* Actions Sidebar */}
               <div className="space-y-6 print:hidden">
-                <section className="bg-zinc-900/50 backdrop-blur-sm p-8 rounded-4xl shadow-2xl border border-zinc-800">
+                <section className="bg-zinc-900/50 backdrop-blur-sm p-5 sm:p-8 rounded-2xl sm:rounded-4xl shadow-2xl border border-zinc-800">
                   <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-6">PDF Page Setup</h3>
                   <div className="space-y-6">
                     <div className="flex items-center justify-between">
@@ -1127,7 +1127,7 @@ export default function App() {
                   </div>
                 </section>
 
-                <section className="bg-zinc-900/50 backdrop-blur-sm p-8 rounded-4xl shadow-2xl border border-zinc-800">
+                <section className="bg-zinc-900/50 backdrop-blur-sm p-5 sm:p-8 rounded-2xl sm:rounded-4xl shadow-2xl border border-zinc-800">
                   <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-6">Quick Actions</h3>
                   <div className="space-y-4">
                     <button 
