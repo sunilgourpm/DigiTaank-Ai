@@ -23,7 +23,11 @@ import {
   X,
   Maximize2,
   Minimize2,
-  Monitor
+  Monitor,
+  Users,
+  TrendingUp,
+  DollarSign,
+  Briefcase
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { clsx, type ClassValue } from 'clsx';
@@ -40,7 +44,7 @@ function cn(...inputs: ClassValue[]) {
 }
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'create' | 'history' | 'preview' | 'settings'>('create');
+  const [activeTab, setActiveTab] = useState<'create' | 'history' | 'preview' | 'settings' | 'dashboard'>('dashboard');
   const [client, setClient] = useState<ClientDetails>({
     name: '',
     businessName: '',
@@ -102,6 +106,11 @@ export default function App() {
     }
   }, []);
 
+  // Save history to localStorage
+  useEffect(() => {
+    localStorage.setItem('digitank_history', JSON.stringify(history));
+  }, [history]);
+
   // Save master services to localStorage
   useEffect(() => {
     localStorage.setItem('digitank_master_services', JSON.stringify(masterServices));
@@ -124,9 +133,7 @@ export default function App() {
 
   // Save history to localStorage
   const saveToHistory = (quotation: Quotation) => {
-    const newHistory = [quotation, ...history];
-    setHistory(newHistory);
-    localStorage.setItem('digitank_history', JSON.stringify(newHistory));
+    setHistory(prev => [quotation, ...prev]);
   };
 
   const categories = useMemo(() => {
@@ -137,6 +144,47 @@ export default function App() {
   const totalPrice = useMemo(() => {
     return selectedServices.reduce((sum, s) => sum + (s.price * (s.quantity || 1)), 0);
   }, [selectedServices]);
+
+  const dashboardStats = useMemo(() => {
+    const totalRevenue = history.reduce((sum, q) => sum + q.finalPrice, 0);
+    const totalClients = new Set(history.map(q => q.client.businessName)).size;
+    const totalQuotes = history.length;
+    
+    const serviceCounts: Record<string, number> = {};
+    history.forEach(q => {
+      q.services.forEach(s => {
+        serviceCounts[s.name] = (serviceCounts[s.name] || 0) + 1;
+      });
+    });
+    
+    const topServices = Object.entries(serviceCounts)
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 5);
+
+    const clientData: Record<string, { name: string, business: string, totalSpent: number, count: number, lastDate: string }> = {};
+    history.forEach(q => {
+      const key = q.client.businessName || q.client.name;
+      if (!clientData[key]) {
+        clientData[key] = { 
+          name: q.client.name, 
+          business: q.client.businessName, 
+          totalSpent: 0, 
+          count: 0, 
+          lastDate: q.date 
+        };
+      }
+      clientData[key].totalSpent += q.finalPrice;
+      clientData[key].count += 1;
+      if (new Date(q.date) > new Date(clientData[key].lastDate)) {
+        clientData[key].lastDate = q.date;
+      }
+    });
+
+    const clients = Object.values(clientData).sort((a, b) => b.totalSpent - a.totalSpent);
+
+    return { totalRevenue, totalClients, totalQuotes, topServices, clients };
+  }, [history]);
 
   const finalDiscount = useMemo(() => {
     if (discountType === 'percent') {
@@ -462,6 +510,18 @@ export default function App() {
       {/* Sidebar / Nav */}
       <nav className="fixed bottom-0 left-0 right-0 bg-zinc-900/90 backdrop-blur-2xl border-t border-zinc-800 px-2 sm:px-6 py-2 sm:py-3 flex justify-around items-center z-50 md:top-0 md:bottom-auto md:flex-col md:w-20 md:h-screen md:border-t-0 md:border-r border-zinc-800 print:hidden">
         <button 
+          onClick={() => setActiveTab('dashboard')}
+          className={cn("p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all flex flex-col items-center gap-1 md:gap-0")}
+          style={{ 
+            backgroundColor: activeTab === 'dashboard' ? agencySettings.brandColor : 'transparent',
+            color: activeTab === 'dashboard' ? '#ffffff' : '#a1a1aa',
+            boxShadow: activeTab === 'dashboard' ? `0 10px 15px -3px rgba(${hexToRgb(agencySettings.brandColor)}, 0.2)` : 'none'
+          }}
+        >
+          <LayoutDashboard size={20} className="sm:w-6 sm:h-6" />
+          <span className="text-[8px] sm:text-[10px] font-bold md:hidden">Stats</span>
+        </button>
+        <button 
           onClick={() => setActiveTab('create')}
           className={cn("p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all flex flex-col items-center gap-1 md:gap-0")}
           style={{ 
@@ -526,7 +586,12 @@ export default function App() {
             )}
             <div>
               <h1 className="text-3xl font-black tracking-tighter" style={{ color: agencySettings.brandColor }}>{agencySettings.agencyName}</h1>
-              <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Personal Sales Assistant</p>
+              <div className="flex items-center gap-2">
+                <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Personal Sales Assistant</p>
+                <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-[8px] font-black text-emerald-500 uppercase tracking-tighter">
+                  <Save size={8} /> Auto-Saved
+                </div>
+              </div>
             </div>
           </div>
           <div className="hidden sm:flex items-center gap-4 bg-zinc-900 p-2 rounded-2xl shadow-xl border border-zinc-800">
@@ -543,6 +608,149 @@ export default function App() {
         </header>
 
         <AnimatePresence mode="wait">
+          {activeTab === 'dashboard' && (
+            <motion.div
+              key="dashboard"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="space-y-8"
+            >
+              {/* Stats Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-500">
+                      <DollarSign size={24} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Total Revenue</p>
+                      <p className="text-2xl font-black text-white">₹{dashboardStats.totalRevenue.toLocaleString()}</p>
+                    </div>
+                  </div>
+                  <div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-emerald-500 w-full opacity-50"></div>
+                  </div>
+                </div>
+
+                <div className="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="p-3 rounded-2xl bg-blue-500/10 text-blue-500">
+                      <Users size={24} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Total Clients</p>
+                      <p className="text-2xl font-black text-white">{dashboardStats.totalClients}</p>
+                    </div>
+                  </div>
+                  <div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-blue-500 w-full opacity-50"></div>
+                  </div>
+                </div>
+
+                <div className="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="p-3 rounded-2xl bg-purple-500/10 text-purple-500">
+                      <FileText size={24} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Quotations</p>
+                      <p className="text-2xl font-black text-white">{dashboardStats.totalQuotes}</p>
+                    </div>
+                  </div>
+                  <div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-purple-500 w-full opacity-50"></div>
+                  </div>
+                </div>
+
+                <div className="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="p-3 rounded-2xl bg-orange-500/10 text-orange-500">
+                      <TrendingUp size={24} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Avg. Ticket</p>
+                      <p className="text-2xl font-black text-white">
+                        ₹{dashboardStats.totalQuotes > 0 ? Math.round(dashboardStats.totalRevenue / dashboardStats.totalQuotes).toLocaleString() : 0}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-orange-500 w-full opacity-50"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Top Services */}
+                <div className="lg:col-span-1 bg-zinc-900/50 p-8 rounded-4xl border border-zinc-800">
+                  <h3 className="text-sm font-black text-zinc-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+                    <Briefcase size={18} className="text-white" /> Popular Services
+                  </h3>
+                  <div className="space-y-4">
+                    {dashboardStats.topServices.map((s, i) => (
+                      <div key={i} className="flex items-center justify-between p-4 bg-zinc-800/30 rounded-2xl">
+                        <div>
+                          <p className="font-bold text-white text-sm">{s.name}</p>
+                          <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">{s.count} Sales</p>
+                        </div>
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center bg-zinc-800 text-xs font-black text-zinc-400">
+                          #{i + 1}
+                        </div>
+                      </div>
+                    ))}
+                    {dashboardStats.topServices.length === 0 && (
+                      <p className="text-center py-8 text-zinc-600 text-sm italic">No sales data yet</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Client Management */}
+                <div className="lg:col-span-2 bg-zinc-900/50 p-8 rounded-4xl border border-zinc-800">
+                  <h3 className="text-sm font-black text-zinc-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+                    <Users size={18} className="text-white" /> Client Management
+                  </h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="text-left border-b border-zinc-800">
+                          <th className="pb-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Client / Business</th>
+                          <th className="pb-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-center">Quotes</th>
+                          <th className="pb-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">Total Revenue</th>
+                          <th className="pb-4 text-[10px] font-bold text-zinc-500 uppercase tracking-widest text-right">Last Interaction</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-800/50">
+                        {dashboardStats.clients.map((c, i) => (
+                          <tr key={i} className="group hover:bg-white/5 transition-colors">
+                            <td className="py-4">
+                              <p className="font-bold text-white text-sm">{c.business || c.name}</p>
+                              <p className="text-xs text-zinc-500">{c.name}</p>
+                            </td>
+                            <td className="py-4 text-center">
+                              <span className="px-2 py-1 rounded-lg bg-zinc-800 text-[10px] font-black text-zinc-400">{c.count}</span>
+                            </td>
+                            <td className="py-4 text-right font-black text-sm text-emerald-500">
+                              ₹{c.totalSpent.toLocaleString()}
+                            </td>
+                            <td className="py-4 text-right text-xs text-zinc-500">
+                              {format(new Date(c.lastDate), 'MMM dd, yyyy')}
+                            </td>
+                          </tr>
+                        ))}
+                        {dashboardStats.clients.length === 0 && (
+                          <tr>
+                            <td colSpan={4} className="text-center py-12 text-zinc-600 text-sm italic">No clients found</td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
           {activeTab === 'create' && (
             <motion.div 
               key="create"
@@ -1364,6 +1572,32 @@ export default function App() {
                             </button>
                           )}
                         </div>
+                      </div>
+
+                      <div className="pt-8 border-t border-zinc-800 space-y-4">
+                        <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-4">Data Management</h4>
+                        <button 
+                          onClick={() => {
+                            if (confirm("Are you sure you want to clear all quotation history? This cannot be undone.")) {
+                              setHistory([]);
+                              localStorage.removeItem('digitank_history');
+                            }
+                          }}
+                          className="w-full py-3 rounded-2xl border border-zinc-800 text-zinc-400 text-[10px] font-bold uppercase tracking-widest hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20 transition-all flex items-center justify-center gap-2"
+                        >
+                          <Trash2 size={14} /> Clear History
+                        </button>
+                        <button 
+                          onClick={() => {
+                            if (confirm("Are you sure you want to reset EVERYTHING? This will clear your logo, brand color, services, and history.")) {
+                              localStorage.clear();
+                              window.location.reload();
+                            }
+                          }}
+                          className="w-full py-3 rounded-2xl border border-zinc-800 text-zinc-500 text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-800 transition-all flex items-center justify-center gap-2"
+                        >
+                          <AlertCircle size={14} /> Factory Reset
+                        </button>
                       </div>
                     </div>
                   </div>
