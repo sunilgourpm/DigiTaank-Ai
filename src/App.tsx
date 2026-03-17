@@ -271,12 +271,13 @@ export default function App() {
   }, [selectedServices]);
 
   const dashboardStats = useMemo(() => {
-    const totalRevenue = history.reduce((sum, q) => sum + q.finalPrice, 0);
-    const totalClients = new Set(history.map(q => q.client.businessName)).size;
-    const totalQuotes = history.length;
+    const confirmedHistory = history.filter(q => q.status === 'confirmed');
+    const totalRevenue = confirmedHistory.reduce((sum, q) => sum + q.finalPrice, 0);
+    const totalClients = new Set(confirmedHistory.map(q => q.client.businessName)).size;
+    const totalQuotes = confirmedHistory.length;
     
     const serviceCounts: Record<string, number> = {};
-    history.forEach(q => {
+    confirmedHistory.forEach(q => {
       q.services.forEach(s => {
         serviceCounts[s.name] = (serviceCounts[s.name] || 0) + 1;
       });
@@ -288,7 +289,7 @@ export default function App() {
       .slice(0, 5);
 
     const clientData: Record<string, { name: string, business: string, totalSpent: number, count: number, lastDate: string }> = {};
-    history.forEach(q => {
+    confirmedHistory.forEach(q => {
       const key = q.client.businessName || q.client.name;
       if (!clientData[key]) {
         clientData[key] = { 
@@ -347,6 +348,54 @@ export default function App() {
 
   const handleUpdateService = (id: string, updates: Partial<Service>) => {
     setSelectedServices(selectedServices.map(s => s.id === id ? { ...s, ...updates } : s));
+  };
+
+  const handleConfirmQuotation = async (id: string) => {
+    if (!session?.user?.id) return;
+    setIsSyncing(true);
+    try {
+      const { error } = await supabase
+        .from('quotations')
+        .update({ status: 'confirmed' })
+        .eq('user_id', session.user.id)
+        .eq('quotation_id', id);
+      
+      if (error) throw error;
+      
+      setHistory(prev => prev.map(q => q.id === id ? { ...q, status: 'confirmed' } : q));
+      if (currentQuotation?.id === id) {
+        setCurrentQuotation({ ...currentQuotation, status: 'confirmed' });
+      }
+    } catch (error) {
+      console.error('Error confirming quotation:', error);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  const handleDeleteQuotation = async (id: string) => {
+    if (!session?.user?.id) return;
+    if (!confirm('Are you sure you want to delete this quotation?')) return;
+    
+    setIsSyncing(true);
+    try {
+      const { error } = await supabase
+        .from('quotations')
+        .delete()
+        .eq('user_id', session.user.id)
+        .eq('quotation_id', id);
+      
+      if (error) throw error;
+      
+      setHistory(prev => prev.filter(q => q.id !== id));
+      if (currentQuotation?.id === id) {
+        setCurrentQuotation(null);
+      }
+    } catch (error) {
+      console.error('Error deleting quotation:', error);
+    } finally {
+      setIsSyncing(false);
+    }
   };
 
   const handleRemoveService = (id: string) => {
@@ -1215,8 +1264,11 @@ export default function App() {
                       }}
                     >
                       <div className="flex justify-between items-start mb-8">
-                        <div className="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest" style={{ backgroundColor: `${agencySettings.brandColor}1A`, color: agencySettings.brandColor }}>
-                          Quotation
+                        <div className="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest" style={{ 
+                          backgroundColor: item.status === 'confirmed' ? 'rgba(16, 185, 129, 0.1)' : `${agencySettings.brandColor}1A`, 
+                          color: item.status === 'confirmed' ? '#10b981' : agencySettings.brandColor 
+                        }}>
+                          {item.status === 'confirmed' ? 'Confirmed' : item.status}
                         </div>
                         <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">
                           {format(new Date(item.date), 'MMM dd, yyyy')}
@@ -1234,12 +1286,22 @@ export default function App() {
                           <p className="text-2xl font-black text-white tracking-tighter">₹{item.finalPrice.toLocaleString()}</p>
                         </div>
                         <div className="flex gap-2">
+                          {item.status !== 'confirmed' && (
+                            <button 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleConfirmQuotation(item.id);
+                              }}
+                              className="p-3 bg-zinc-800 text-emerald-400 rounded-2xl hover:bg-emerald-500 hover:text-white transition-all"
+                              title="Confirm Quotation"
+                            >
+                              <CheckCircle2 size={18} />
+                            </button>
+                          )}
                           <button 
                             onClick={(e) => {
                               e.stopPropagation();
-                              const newHistory = history.filter(h => h.id !== item.id);
-                              setHistory(newHistory);
-                              localStorage.setItem('digitank_history', JSON.stringify(newHistory));
+                              handleDeleteQuotation(item.id);
                             }}
                             className="p-3 bg-zinc-800 text-red-400 rounded-2xl hover:bg-red-500 hover:text-white transition-all"
                           >
@@ -1537,6 +1599,14 @@ export default function App() {
                 <section className="bg-zinc-900/50 backdrop-blur-sm p-5 sm:p-8 rounded-2xl sm:rounded-4xl shadow-2xl border border-zinc-800">
                   <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-6">Quick Actions</h3>
                   <div className="space-y-4">
+                    {currentQuotation.status !== 'confirmed' && (
+                      <button 
+                        onClick={() => handleConfirmQuotation(currentQuotation.id)}
+                        className="w-full bg-emerald-500 text-white py-5 rounded-2xl font-bold hover:bg-emerald-400 transition-all flex items-center justify-center gap-2 shadow-2xl shadow-emerald-500/20"
+                      >
+                        <CheckCircle2 size={18} /> Confirm Quotation
+                      </button>
+                    )}
                     <button 
                       onClick={handleSharePDF}
                       disabled={isGeneratingPDF}
