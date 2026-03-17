@@ -129,8 +129,13 @@ export default function App() {
     localStorage.setItem('digitank_history', JSON.stringify(newHistory));
   };
 
+  const categories = useMemo(() => {
+    const cats = new Set(masterServices.map(s => s.category));
+    return Array.from(cats).sort();
+  }, [masterServices]);
+
   const totalPrice = useMemo(() => {
-    return selectedServices.reduce((sum, s) => sum + s.price, 0);
+    return selectedServices.reduce((sum, s) => sum + (s.price * (s.quantity || 1)), 0);
   }, [selectedServices]);
 
   const finalDiscount = useMemo(() => {
@@ -150,7 +155,7 @@ export default function App() {
       setSelectedServices(selectedServices.filter(s => !s.id.startsWith(service.id)));
     } else {
       // Add a copy so it can be edited without affecting the predefined list
-      setSelectedServices([...selectedServices, { ...service, id: `${service.id}-${Date.now()}` }]);
+      setSelectedServices([...selectedServices, { ...service, id: `${service.id}-${Date.now()}`, quantity: 1 }]);
     }
   };
 
@@ -161,7 +166,8 @@ export default function App() {
       description: 'Description of the service',
       price: 0,
       category: 'Custom',
-      duration: 'TBD'
+      duration: 'TBD',
+      quantity: 1
     };
     setSelectedServices([...selectedServices, newService]);
   };
@@ -253,7 +259,7 @@ export default function App() {
     const message = `*DigiTaank AI - ${type.toUpperCase()}*%0A%0A` +
       `Hello ${currentQuotation.client.name},%0A` +
       `Here is your ${type} for ${currentQuotation.client.businessName}.%0A%0A` +
-      `*Services:* ${currentQuotation.services.map(s => s.name).join(", ")}%0A` +
+      `*Services:* ${currentQuotation.services.map(s => `${s.name} (${s.quantity || 1} x ₹${s.price} for ${s.duration})`).join(", ")}%0A` +
       `*Total Amount:* ₹${currentQuotation.finalPrice}%0A%0A` +
       `Please check the details and let us know if you have any questions.`;
 
@@ -707,14 +713,39 @@ export default function App() {
                               rows={1}
                               placeholder="Description"
                             />
-                            <div className="flex items-center gap-1">
-                              <span className="text-[10px] font-bold text-zinc-600">₹</span>
-                              <input 
-                                type="number"
-                                value={service.price}
-                                onChange={e => handleUpdateService(service.id, { price: parseInt(e.target.value) || 0 })}
-                                className="w-24 bg-transparent font-black text-xs focus:outline-none text-white"
-                              />
+                            <div className="grid grid-cols-3 gap-4">
+                              <div className="space-y-1">
+                                <label className="text-[8px] font-bold text-zinc-600 uppercase">Price</label>
+                                <div className="flex items-center gap-1">
+                                  <span className="text-[10px] font-bold text-zinc-600">₹</span>
+                                  <input 
+                                    type="number"
+                                    value={service.price}
+                                    onChange={e => handleUpdateService(service.id, { price: parseInt(e.target.value) || 0 })}
+                                    className="w-full bg-transparent font-black text-xs focus:outline-none text-white"
+                                  />
+                                </div>
+                              </div>
+                              <div className="space-y-1">
+                                <label className="text-[8px] font-bold text-zinc-600 uppercase">Quantity</label>
+                                <input 
+                                  type="number"
+                                  min="1"
+                                  value={service.quantity || 1}
+                                  onChange={e => handleUpdateService(service.id, { quantity: parseInt(e.target.value) || 1 })}
+                                  className="w-full bg-transparent font-black text-xs focus:outline-none text-white"
+                                />
+                              </div>
+                              <div className="space-y-1">
+                                <label className="text-[8px] font-bold text-zinc-600 uppercase">Duration</label>
+                                <input 
+                                  type="text"
+                                  value={service.duration}
+                                  onChange={e => handleUpdateService(service.id, { duration: e.target.value })}
+                                  className="w-full bg-transparent font-black text-xs focus:outline-none text-white"
+                                  placeholder="e.g. 3 Months"
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -974,6 +1005,8 @@ export default function App() {
                         <thead>
                           <tr className="border-b-4" style={{ borderColor: agencySettings.brandColor }}>
                             <th className="text-left py-6 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-zinc-400">Service Details</th>
+                            <th className="text-center py-6 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-zinc-400">Duration</th>
+                            <th className="text-center py-6 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-zinc-400">Qty</th>
                             <th className="text-right py-6 pr-4 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-zinc-400">Amount</th>
                           </tr>
                         </thead>
@@ -984,7 +1017,9 @@ export default function App() {
                                 <p className="font-black text-sm sm:text-base text-zinc-900 mb-2">{s.name}</p>
                                 <p className="text-[10px] sm:text-xs text-zinc-500 leading-relaxed max-w-xl">{s.description}</p>
                               </td>
-                              <td className="py-8 pr-4 text-right font-black text-sm sm:text-base text-zinc-900 whitespace-nowrap">₹{s.price.toLocaleString()}</td>
+                              <td className="py-8 text-center font-bold text-xs sm:text-sm text-zinc-600 whitespace-nowrap">{s.duration || 'N/A'}</td>
+                              <td className="py-8 text-center font-bold text-xs sm:text-sm text-zinc-600 whitespace-nowrap">{s.quantity || 1}</td>
+                              <td className="py-8 pr-4 text-right font-black text-sm sm:text-base text-zinc-900 whitespace-nowrap">₹{(s.price * (s.quantity || 1)).toLocaleString()}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -1340,14 +1375,36 @@ export default function App() {
                   <div className="space-y-6">
                     <div className="space-y-2">
                       <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Category</label>
-                      <input 
-                        type="text" 
-                        placeholder="e.g. Meta Ads"
-                        className="w-full bg-zinc-800/50 border border-zinc-700 rounded-2xl px-5 py-4 text-sm text-white focus:ring-2 transition-all placeholder:text-zinc-600"
-                        style={{ '--tw-ring-color': agencySettings.brandColor } as any}
-                        value={newMasterService.category}
-                        onChange={e => setNewMasterService({...newMasterService, category: e.target.value})}
-                      />
+                      <div className="space-y-3">
+                        <select 
+                          className="w-full bg-zinc-800/50 border border-zinc-700 rounded-2xl px-5 py-4 text-sm text-white focus:ring-2 transition-all appearance-none cursor-pointer"
+                          style={{ '--tw-ring-color': agencySettings.brandColor } as any}
+                          value={categories.includes(newMasterService.category || '') ? newMasterService.category : 'custom'}
+                          onChange={e => {
+                            if (e.target.value === 'custom') {
+                              setNewMasterService({...newMasterService, category: ''});
+                            } else {
+                              setNewMasterService({...newMasterService, category: e.target.value});
+                            }
+                          }}
+                        >
+                          <option value="custom" className="bg-zinc-900">Add New Category...</option>
+                          {categories.map(cat => (
+                            <option key={cat} value={cat} className="bg-zinc-900">{cat}</option>
+                          ))}
+                        </select>
+                        
+                        {(!categories.includes(newMasterService.category || '') || newMasterService.category === '') && (
+                          <input 
+                            type="text" 
+                            placeholder="Type new category name..."
+                            className="w-full bg-zinc-800/50 border border-zinc-700 rounded-2xl px-5 py-4 text-sm text-white focus:ring-2 transition-all placeholder:text-zinc-600 animate-in fade-in slide-in-from-top-2 duration-200"
+                            style={{ '--tw-ring-color': agencySettings.brandColor } as any}
+                            value={newMasterService.category}
+                            onChange={e => setNewMasterService({...newMasterService, category: e.target.value})}
+                          />
+                        )}
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Service Name</label>

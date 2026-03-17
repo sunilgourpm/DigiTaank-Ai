@@ -9,7 +9,7 @@ export async function generateProposal(quotation: Quotation): Promise<string> {
     Generate a professional business proposal based on this quotation:
     Client: ${quotation.client.name} (${quotation.client.businessName})
     Business Type: ${quotation.client.businessType}
-    Services: ${quotation.services.map(s => s.name).join(", ")}
+    Services: ${quotation.services.map(s => `${s.name} (₹${s.price} for ${s.duration})`).join(", ")}
     Total Cost: ₹${quotation.finalPrice}
     Timeline: ${quotation.timeline}
 
@@ -42,7 +42,7 @@ export async function negotiatePrice(quotation: Quotation, clientBudget: number)
     As an AI Sales Assistant for DigiTaank, suggest a negotiation strategy.
     Current Quotation Total: ₹${quotation.totalPrice}
     Client Budget: ₹${clientBudget}
-    Services Selected: ${quotation.services.map(s => s.name).join(", ")}
+    Services Selected: ${quotation.services.map(s => `${s.name} (₹${s.price} for ${s.duration})`).join(", ")}
 
     Suggest:
     1. A revised price that is closer to the budget but maintains profitability.
