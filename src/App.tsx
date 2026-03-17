@@ -27,7 +27,9 @@ import {
   Users,
   TrendingUp,
   DollarSign,
-  Briefcase
+  Briefcase,
+  LogOut,
+  Cloud
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { clsx, type ClassValue } from 'clsx';
@@ -38,12 +40,16 @@ import ReactMarkdown from 'react-markdown';
 import { Service, ClientDetails, Quotation, NegotiationSuggestion, AgencySettings } from './types';
 import { PREDEFINED_SERVICES, MAINTENANCE_POLICY, PAYMENT_TERMS } from './constants';
 import { generateProposal, negotiatePrice } from './services/gemini';
+import { supabase } from './lib/supabase';
+import { Auth } from './components/Auth';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
 export default function App() {
+  const [session, setSession] = useState<any>(null);
+  const [isAuthReady, setIsAuthReady] = useState(false);
   const [activeTab, setActiveTab] = useState<'create' | 'history' | 'preview' | 'settings' | 'dashboard'>('dashboard');
   const [client, setClient] = useState<ClientDetails>({
     name: '',
@@ -86,54 +92,173 @@ export default function App() {
   });
   const [agencySettings, setAgencySettings] = useState<AgencySettings>({
     logo: null,
-    brandColor: '#2563eb', // Default primary-600
-    agencyName: 'DigiTaank'
+    brandColor: '#10b981', // Default emerald-500
+    agencyName: 'DigitAI'
   });
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [envMissing, setEnvMissing] = useState(false);
+  const [docType, setDocType] = useState<'quotation' | 'invoice'>('quotation');
 
-  // Load history and services from localStorage
+  // Auth listener
   useEffect(() => {
-    const savedHistory = localStorage.getItem('digitank_history');
-    if (savedHistory) {
-      setHistory(JSON.parse(savedHistory));
+    if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY || import.meta.env.VITE_SUPABASE_URL === 'https://placeholder.supabase.co') {
+      setEnvMissing(true);
+      setIsAuthReady(true);
+      return;
     }
-    const savedServices = localStorage.getItem('digitank_master_services');
-    if (savedServices) {
-      setMasterServices(JSON.parse(savedServices));
-    }
-    const savedAgencySettings = localStorage.getItem('digitank_agency_settings');
-    if (savedAgencySettings) {
-      setAgencySettings(JSON.parse(savedAgencySettings));
-    }
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setIsAuthReady(true);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  // Save history to localStorage
+  // Load data from Supabase
   useEffect(() => {
-    localStorage.setItem('digitank_history', JSON.stringify(history));
-  }, [history]);
+    if (session) {
+      fetchData();
+    }
+  }, [session]);
 
-  // Save master services to localStorage
-  useEffect(() => {
-    localStorage.setItem('digitank_master_services', JSON.stringify(masterServices));
-  }, [masterServices]);
+  const fetchData = async () => {
+    if (!session?.user?.id) return;
+    setIsSyncing(true);
+    try {
+      // Fetch Profile
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+      
+      if (profile) {
+        setAgencySettings({
+          logo: profile.logo_url,
+          brandColor: profile.brand_color,
+          agencyName: profile.agency_name
+        });
+      }
 
-  // Save agency settings to localStorage
+      // Fetch Master Services
+      const { data: services } = await supabase
+        .from('master_services')
+        .select('*')
+        .eq('user_id', session.user.id);
+      
+      if (services && services.length > 0) {
+        setMasterServices(services);
+      }
+
+      // Fetch Quotations
+      const { data: quotations } = await supabase
+        .from('quotations')
+        .select('*')
+        .eq('user_id', session.user.id)
+        .order('date', { ascending: false });
+      
+      if (quotations) {
+        setHistory(quotations.map(q => ({
+          id: q.quotation_id,
+          date: q.date,
+          client: q.client_data,
+          services: q.services,
+          totalPrice: q.total_price,
+          discount: q.discount,
+          finalPrice: q.final_price,
+          timeline: q.timeline,
+          maintenancePolicy: q.maintenance_policy,
+          paymentTerms: q.payment_terms,
+          status: q.status
+        })));
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
+
+  // Save agency settings to Supabase
   useEffect(() => {
-    localStorage.setItem('digitank_agency_settings', JSON.stringify(agencySettings));
+    if (session?.user?.id) {
+      const saveSettings = async () => {
+        await supabase.from('profiles').upsert({
+          id: session.user.id,
+          agency_name: agencySettings.agencyName,
+          brand_color: agencySettings.brandColor,
+          logo_url: agencySettings.logo,
+          updated_at: new Date().toISOString()
+        });
+      };
+      saveSettings();
+    }
     document.documentElement.style.setProperty('--brand-color', agencySettings.brandColor);
     document.documentElement.style.setProperty('--brand-color-rgb', hexToRgb(agencySettings.brandColor));
-  }, [agencySettings]);
+  }, [agencySettings, session]);
+
+  // Save master services to Supabase
+  const saveMasterServices = async (services: Service[]) => {
+    if (!session?.user?.id) return;
+    setIsSyncing(true);
+    try {
+      // Delete existing and insert new (simple sync)
+      await supabase.from('master_services').delete().eq('user_id', session.user.id);
+      await supabase.from('master_services').insert(
+        services.map(s => ({
+          user_id: session.user.id,
+          name: s.name,
+          category: s.category,
+          price: s.price,
+          duration: s.duration,
+          description: s.description
+        }))
+      );
+    } catch (error) {
+      console.error('Error saving services:', error);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
 
   // Helper to convert hex to rgb for opacity support
   function hexToRgb(hex: string) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? 
       `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : 
-      '37, 99, 235';
+      '16, 185, 129';
   }
 
-  // Save history to localStorage
-  const saveToHistory = (quotation: Quotation) => {
-    setHistory(prev => [quotation, ...prev]);
+  const saveToHistory = async (quotation: Quotation) => {
+    if (!session?.user?.id) return;
+    setIsSyncing(true);
+    try {
+      const { error } = await supabase.from('quotations').insert({
+        user_id: session.user.id,
+        quotation_id: quotation.id,
+        date: quotation.date,
+        client_data: quotation.client,
+        services: quotation.services,
+        total_price: quotation.totalPrice,
+        discount: quotation.discount,
+        final_price: quotation.finalPrice,
+        timeline: quotation.timeline,
+        maintenance_policy: quotation.maintenancePolicy,
+        payment_terms: quotation.paymentTerms,
+        status: quotation.status
+      });
+      if (error) throw error;
+      setHistory(prev => [quotation, ...prev]);
+    } catch (error) {
+      console.error('Error saving quotation:', error);
+    } finally {
+      setIsSyncing(false);
+    }
   };
 
   const categories = useMemo(() => {
@@ -244,22 +369,91 @@ export default function App() {
   };
 
   const handleAddMasterService = () => {
-    if (!newMasterService.name || !newMasterService.category) return;
-    const service: Service = {
-      id: `master-${Date.now()}`,
-      name: newMasterService.name || '',
-      category: newMasterService.category || '',
-      price: newMasterService.price || 0,
-      duration: newMasterService.duration || '',
-      description: newMasterService.description || ''
-    };
-    setMasterServices([...masterServices, service]);
-    setNewMasterService({ category: '', name: '', price: 0, duration: '', description: '' });
+    if (newMasterService.name && newMasterService.category) {
+      const service: Service = {
+        id: `master-${Date.now()}`,
+        name: newMasterService.name || '',
+        category: newMasterService.category || '',
+        price: newMasterService.price || 0,
+        duration: newMasterService.duration || '',
+        description: newMasterService.description || ''
+      };
+      const updated = [...masterServices, service];
+      setMasterServices(updated);
+      saveMasterServices(updated);
+      setNewMasterService({ category: '', name: '', price: 0, duration: '', description: '' });
+    }
   };
 
   const handleRemoveMasterService = (id: string) => {
-    setMasterServices(masterServices.filter(s => s.id !== id));
+    const updated = masterServices.filter(s => s.id !== id);
+    setMasterServices(updated);
+    saveMasterServices(updated);
   };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
+
+  useEffect(() => {
+    let url: string | null = null;
+    const updatePreview = async () => {
+      if (previewMode === 'pdf' && activeTab === 'preview' && currentQuotation) {
+        setIsGeneratingPDF(true);
+        setPdfPreviewUrl(null);
+        // Small delay to ensure DOM is ready
+        await new Promise(resolve => setTimeout(resolve, 300));
+        const result = await generatePDFBlob();
+        if (result) {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            const dataUrl = reader.result as string;
+            setPdfPreviewUrl(dataUrl);
+            setIsGeneratingPDF(false);
+          };
+          reader.readAsDataURL(result.blob);
+        } else {
+          setIsGeneratingPDF(false);
+        }
+      } else {
+        setPdfPreviewUrl(null);
+      }
+    };
+
+    updatePreview();
+
+    return () => {
+      // Data URLs don't need to be revoked
+    };
+  }, [previewMode, activeTab, currentQuotation, docType, pdfSettings, agencySettings]);
+
+  if (!isAuthReady) return null;
+
+  if (envMissing) {
+    return (
+      <div className="min-h-screen bg-zinc-950 flex items-center justify-center p-6">
+        <div className="max-w-md w-full bg-zinc-900 border border-red-500/20 rounded-3xl p-8 text-center space-y-6">
+          <div className="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto">
+            <AlertCircle className="text-red-500" size={32} />
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-xl font-bold text-white tracking-tight">Configuration Required</h2>
+            <p className="text-zinc-400 text-sm leading-relaxed">
+              Supabase environment variables are missing or invalid. Please ensure <code className="text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded">VITE_SUPABASE_URL</code> and <code className="text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded">VITE_SUPABASE_ANON_KEY</code> are set in your <code className="text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded">.env</code> file.
+            </p>
+          </div>
+          <button 
+            onClick={() => window.location.reload()}
+            className="w-full bg-zinc-800 hover:bg-zinc-700 text-white py-4 rounded-2xl font-bold transition-all"
+          >
+            Retry Connection
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!session) return <Auth onAuthSuccess={() => {}} />;
 
   const handleResetServices = () => {
     if (confirm("Are you sure you want to reset all services to defaults? This will delete your custom services.")) {
@@ -298,8 +492,6 @@ export default function App() {
     saveToHistory(newQuotation);
     setActiveTab('preview');
   };
-
-  const [docType, setDocType] = useState<'quotation' | 'invoice'>('quotation');
 
   const handleSendToWhatsApp = (type: 'quotation' | 'proposal' | 'invoice') => {
     if (!currentQuotation) return;
@@ -416,38 +608,6 @@ export default function App() {
       return null;
     }
   };
-
-  useEffect(() => {
-    let url: string | null = null;
-    const updatePreview = async () => {
-      if (previewMode === 'pdf' && activeTab === 'preview' && currentQuotation) {
-        setIsGeneratingPDF(true);
-        setPdfPreviewUrl(null);
-        // Small delay to ensure DOM is ready
-        await new Promise(resolve => setTimeout(resolve, 300));
-        const result = await generatePDFBlob();
-        if (result) {
-          const reader = new FileReader();
-          reader.onloadend = () => {
-            const dataUrl = reader.result as string;
-            setPdfPreviewUrl(dataUrl);
-            setIsGeneratingPDF(false);
-          };
-          reader.readAsDataURL(result.blob);
-        } else {
-          setIsGeneratingPDF(false);
-        }
-      } else {
-        setPdfPreviewUrl(null);
-      }
-    };
-
-    updatePreview();
-
-    return () => {
-      // Data URLs don't need to be revoked
-    };
-  }, [previewMode, activeTab, currentQuotation, docType, pdfSettings, agencySettings]);
 
   const handleDownloadPDF = async () => {
     setIsGeneratingPDF(true);
@@ -594,17 +754,21 @@ export default function App() {
               </div>
             </div>
           </div>
-          <div className="hidden sm:flex items-center gap-4 bg-zinc-900 p-2 rounded-2xl shadow-xl border border-zinc-800">
-            <div className="px-4 py-1 text-center">
-              <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">Total Quotes</p>
-              <p className="text-lg font-black text-white">{history.length}</p>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 px-4 py-2 bg-zinc-900 rounded-2xl border border-zinc-800">
+                <div className={`w-2 h-2 rounded-full ${isSyncing ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
+                <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
+                  {isSyncing ? 'Syncing...' : 'Supabase Connected'}
+                </span>
+              </div>
+              <button 
+                onClick={handleLogout}
+                className="p-2 text-zinc-500 hover:text-white hover:bg-zinc-900 rounded-xl transition-all"
+                title="Sign Out"
+              >
+                <LogOut size={20} />
+              </button>
             </div>
-            <div className="w-px h-6 bg-zinc-800"></div>
-            <div className="px-4 py-1 text-center">
-              <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">Companies</p>
-              <p className="text-lg font-black text-white">{new Set(history.map(h => h.client.businessName)).size}</p>
-            </div>
-          </div>
         </header>
 
         <AnimatePresence mode="wait">
@@ -1575,12 +1739,14 @@ export default function App() {
                       </div>
 
                       <div className="pt-8 border-t border-zinc-800 space-y-4">
-                        <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-4">Data Management</h4>
+                        <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                          <Cloud size={14} className="text-white" /> Data Management
+                        </h4>
                         <button 
-                          onClick={() => {
-                            if (confirm("Are you sure you want to clear all quotation history? This cannot be undone.")) {
+                          onClick={async () => {
+                            if (confirm("Are you sure you want to clear all quotation history? This will also remove data from Supabase.")) {
+                              await supabase.from('quotations').delete().eq('user_id', session.user.id);
                               setHistory([]);
-                              localStorage.removeItem('digitank_history');
                             }
                           }}
                           className="w-full py-3 rounded-2xl border border-zinc-800 text-zinc-400 text-[10px] font-bold uppercase tracking-widest hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20 transition-all flex items-center justify-center gap-2"
@@ -1588,8 +1754,11 @@ export default function App() {
                           <Trash2 size={14} /> Clear History
                         </button>
                         <button 
-                          onClick={() => {
-                            if (confirm("Are you sure you want to reset EVERYTHING? This will clear your logo, brand color, services, and history.")) {
+                          onClick={async () => {
+                            if (confirm("Factory reset will clear all settings, services, and history. Continue?")) {
+                              await supabase.from('quotations').delete().eq('user_id', session.user.id);
+                              await supabase.from('master_services').delete().eq('user_id', session.user.id);
+                              await supabase.from('profiles').delete().eq('id', session.user.id);
                               localStorage.clear();
                               window.location.reload();
                             }
