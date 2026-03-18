@@ -98,6 +98,7 @@ export default function App() {
     agencyName: 'DigitAI'
   });
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [envMissing, setEnvMissing] = useState(false);
   const [docType, setDocType] = useState<'quotation' | 'invoice'>('quotation');
 
@@ -180,6 +181,7 @@ export default function App() {
           totalProfit: q.total_profit
         })));
       }
+      setIsDataLoaded(true);
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
@@ -189,21 +191,28 @@ export default function App() {
 
   // Save agency settings to Supabase
   useEffect(() => {
-    if (session?.user?.id) {
-      const saveSettings = async () => {
-        await supabase.from('profiles').upsert({
-          id: session.user.id,
-          agency_name: agencySettings.agencyName,
-          brand_color: agencySettings.brandColor,
-          logo_url: agencySettings.logo,
-          updated_at: new Date().toISOString()
-        });
-      };
-      saveSettings();
+    if (session?.user?.id && isDataLoaded) {
+      const timeoutId = setTimeout(async () => {
+        setIsSyncing(true);
+        try {
+          await supabase.from('profiles').upsert({
+            id: session.user.id,
+            agency_name: agencySettings.agencyName,
+            brand_color: agencySettings.brandColor,
+            logo_url: agencySettings.logo,
+            updated_at: new Date().toISOString()
+          });
+        } catch (error) {
+          console.error('Error saving settings:', error);
+        } finally {
+          setIsSyncing(false);
+        }
+      }, 1000); // 1s debounce
+      return () => clearTimeout(timeoutId);
     }
     document.documentElement.style.setProperty('--brand-color', agencySettings.brandColor);
     document.documentElement.style.setProperty('--brand-color-rgb', hexToRgb(agencySettings.brandColor));
-  }, [agencySettings, session]);
+  }, [agencySettings, session, isDataLoaded]);
 
   // Save master services to Supabase
   const saveMasterServices = async (services: Service[]) => {
