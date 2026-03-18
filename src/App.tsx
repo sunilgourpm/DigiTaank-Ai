@@ -445,7 +445,16 @@ export default function App() {
   };
 
   const handleUpdateMasterService = (id: string, updates: Partial<Service>) => {
-    setMasterServices(masterServices.map(s => s.id === id ? { ...s, ...updates } : s));
+    setMasterServices(masterServices.map(s => {
+      if (s.id === id) {
+        const updated = { ...s, ...updates };
+        if ('cost' in updates || 'profit' in updates) {
+          updated.price = (updated.cost || 0) + (updated.profit || 0);
+        }
+        return updated;
+      }
+      return s;
+    }));
   };
 
   const handleAddMasterService = () => {
@@ -2133,13 +2142,32 @@ export default function App() {
                                 />
                                 <div className="grid grid-cols-2 gap-4">
                                   <div className="space-y-1">
-                                    <label className="text-[8px] font-bold text-zinc-500 uppercase tracking-widest block ml-1">Price (₹)</label>
+                                    <label className="text-[8px] font-bold text-zinc-500 uppercase tracking-widest block ml-1">Cost (₹)</label>
+                                    <input 
+                                      type="number"
+                                      value={service.cost || 0}
+                                      onChange={e => handleUpdateMasterService(service.id, { cost: parseInt(e.target.value) || 0 })}
+                                      className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-2 font-black text-xs text-white focus:ring-2 outline-none"
+                                      style={{ '--tw-ring-color': agencySettings.brandColor } as any}
+                                    />
+                                  </div>
+                                  <div className="space-y-1">
+                                    <label className="text-[8px] font-bold text-zinc-500 uppercase tracking-widest block ml-1">Profit (₹)</label>
+                                    <input 
+                                      type="number"
+                                      value={service.profit || 0}
+                                      onChange={e => handleUpdateMasterService(service.id, { profit: parseInt(e.target.value) || 0 })}
+                                      className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-2 font-black text-xs text-white focus:ring-2 outline-none"
+                                      style={{ '--tw-ring-color': agencySettings.brandColor } as any}
+                                    />
+                                  </div>
+                                  <div className="space-y-1">
+                                    <label className="text-[8px] font-bold text-zinc-500 uppercase tracking-widest block ml-1">Final Price (₹)</label>
                                     <input 
                                       type="number"
                                       value={service.price}
-                                      onChange={e => handleUpdateMasterService(service.id, { price: parseInt(e.target.value) || 0 })}
-                                      className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-2 font-black text-xs text-white focus:ring-2 outline-none"
-                                      style={{ '--tw-ring-color': agencySettings.brandColor } as any}
+                                      readOnly
+                                      className="w-full bg-zinc-900/50 border border-zinc-800 rounded-xl px-4 py-2 font-black text-xs text-zinc-500 outline-none cursor-not-allowed"
                                     />
                                   </div>
                                   <div className="space-y-1">
@@ -2165,7 +2193,13 @@ export default function App() {
                               <>
                                 <p className="text-xs text-zinc-500 mb-4 line-clamp-2 leading-relaxed">{service.description}</p>
                                 <div className="flex justify-between items-center pt-4 border-t border-zinc-800">
-                                  <span className="font-black text-lg text-white">₹{service.price.toLocaleString()}</span>
+                                  <div className="flex flex-col">
+                                    <span className="font-black text-lg text-white">₹{service.price.toLocaleString()}</span>
+                                    <div className="flex gap-3 mt-1">
+                                      <span className="text-[8px] font-bold text-zinc-600 uppercase tracking-widest">Cost: ₹{service.cost?.toLocaleString() || 0}</span>
+                                      <span className="text-[8px] font-bold text-emerald-500/70 uppercase tracking-widest">Profit: ₹{service.profit?.toLocaleString() || 0}</span>
+                                    </div>
+                                  </div>
                                   <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">{service.duration}</span>
                                 </div>
                               </>
