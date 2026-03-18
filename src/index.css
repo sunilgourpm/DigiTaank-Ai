@@ -69,6 +69,31 @@
   }
 }
 
+@media print {
+  .break-inside-avoid {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    display: block; /* Helps break-inside: avoid work better on some engines */
+  }
+  
+  tr.break-inside-avoid {
+    display: table-row !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .pdf-source-container {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: auto !important;
+  }
+
+  .pdf-source-container section, 
+  .pdf-source-container div.break-inside-avoid {
+    position: relative;
+  }
+}
+
 .prose h1 { @apply text-3xl font-extrabold tracking-tight mb-6 mt-8 text-zinc-900; }
 .prose h2 { @apply text-2xl font-bold tracking-tight mb-4 mt-6 text-zinc-800; }
 .prose h3 { @apply text-xl font-bold tracking-tight mb-3 mt-5 text-zinc-800; }

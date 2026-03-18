@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+// @ts-ignore
+import html2pdf from 'html2pdf.js';
 import { 
   LayoutDashboard, 
   FileText, 
@@ -628,97 +630,112 @@ export default function App() {
       alert('Error: Document reference not found.');
       return null;
     }
+
+    // Store original styles to restore later
+    const originalOpacity = quotationRef.current.style.opacity;
+    const originalVisibility = quotationRef.current.style.visibility;
+    const originalPosition = quotationRef.current.style.position;
+    const originalZIndex = quotationRef.current.style.zIndex;
+
     try {
-      console.log('Starting PDF generation...');
-      const canvas = await html2canvas(quotationRef.current, {
-        scale: pdfSettings.scale,
-        useCORS: true,
-        logging: true,
-        backgroundColor: '#ffffff',
-        windowWidth: 1200,
-        onclone: (clonedDoc) => {
-          // Aggressively strip modern color functions from all style tags in the clone
-          const styleTags = clonedDoc.getElementsByTagName('style');
-          for (let i = 0; i < styleTags.length; i++) {
-            try {
-              styleTags[i].innerHTML = styleTags[i].innerHTML
-                .replace(/oklch\([^)]+\)/g, '#1a1a1a')
-                .replace(/oklab\([^)]+\)/g, '#1a1a1a');
-            } catch (e) {
-              console.warn('Failed to patch style tag:', e);
-            }
-          }
-
-          const clonedElement = clonedDoc.querySelector('.pdf-source-container') as HTMLElement;
-          if (clonedElement) {
-            clonedElement.style.opacity = '1';
-            clonedElement.style.visibility = 'visible';
-            clonedElement.style.position = 'relative';
-            clonedElement.style.display = 'block';
-            clonedElement.style.zIndex = '9999';
-            clonedElement.style.transform = 'none';
-            clonedElement.style.width = '1000px'; // Fixed width for consistent capture
-            clonedElement.style.margin = '0';
-            clonedElement.style.padding = '60px'; // Consistent padding
-          }
-          const elements = clonedDoc.getElementsByTagName('*');
-          for (let i = 0; i < elements.length; i++) {
-            const el = elements[i] as HTMLElement;
-            try {
-              const style = window.getComputedStyle(el);
-              
-              // Helper to check if a value contains modern color functions
-              const hasModernColor = (val: string) => val && (val.includes('oklch') || val.includes('oklab'));
-              
-              // Replace modern color functions with safe fallbacks for common properties
-              if (hasModernColor(style.color)) el.style.color = '#1a1a1a';
-              if (hasModernColor(style.backgroundColor)) el.style.backgroundColor = '#ffffff';
-              if (hasModernColor(style.borderColor)) el.style.borderColor = '#e5e7eb';
-              if (hasModernColor(style.fill)) el.style.fill = 'currentColor';
-              if (hasModernColor(style.stroke)) el.style.stroke = 'currentColor';
-              
-              // Handle gradients or complex backgrounds
-              if (hasModernColor(style.backgroundImage)) {
-                el.style.backgroundImage = 'none';
-                el.style.backgroundColor = '#f9fafb'; // Light gray fallback
-              }
-              
-              // Handle box shadows
-              if (hasModernColor(style.boxShadow)) el.style.boxShadow = 'none';
-            } catch (e) {
-              // Ignore style errors for individual elements
-            }
-          }
-        }
-      });
+      console.log('Starting PDF generation with html2pdf...');
       
-      if (!canvas || canvas.width === 0 || canvas.height === 0) {
-        throw new Error('Canvas generation resulted in empty image');
-      }
+      // Scroll to top to ensure correct capture
+      window.scrollTo(0, 0);
+      
+      // Temporarily make it visible for capture to avoid blank PDF
+      quotationRef.current.style.opacity = '1';
+      quotationRef.current.style.visibility = 'visible';
+      quotationRef.current.style.position = 'relative';
+      quotationRef.current.style.zIndex = '9999';
 
-      console.log('Canvas generated successfully');
-      const imgData = canvas.toDataURL('image/jpeg', 0.8);
-      const pdf = new jsPDF(pdfSettings.orientation, 'mm', pdfSettings.format);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      const pageHeight = pdf.internal.pageSize.getHeight();
-      let heightLeft = pdfHeight;
-      let position = 0;
+      const element = quotationRef.current;
+      const opt = {
+        margin: 10,
+        filename: `${docType}_${currentQuotation.id}.pdf`,
+        image: { type: 'jpeg' as const, quality: 0.98 },
+        html2canvas: { 
+          scale: pdfSettings.scale, 
+          useCORS: true,
+          letterRendering: true,
+          backgroundColor: '#ffffff',
+          scrollY: 0,
+          scrollX: 0,
+          onclone: (clonedDoc: Document) => {
+            // Apply the same cleanup logic as before
+            const styleTags = clonedDoc.getElementsByTagName('style');
+            for (let i = 0; i < styleTags.length; i++) {
+              try {
+                styleTags[i].innerHTML = styleTags[i].innerHTML
+                  .replace(/oklch\([^)]+\)/g, '#1a1a1a')
+                  .replace(/oklab\([^)]+\)/g, '#1a1a1a');
+              } catch (e) {
+                console.warn('Failed to patch style tag:', e);
+              }
+            }
 
-      pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, pdfHeight, undefined, 'FAST');
-      heightLeft -= pageHeight;
+            const clonedElement = clonedDoc.querySelector('.pdf-source-container') as HTMLElement;
+            if (clonedElement) {
+              clonedElement.style.opacity = '1';
+              clonedElement.style.visibility = 'visible';
+              clonedElement.style.position = 'relative';
+              clonedElement.style.display = 'block';
+              clonedElement.style.zIndex = '9999';
+              clonedElement.style.transform = 'none';
+              clonedElement.style.width = '1000px';
+              clonedElement.style.margin = '0';
+              clonedElement.style.padding = '60px';
+              clonedElement.style.overflow = 'visible';
+              clonedElement.style.height = 'auto';
+              clonedElement.style.minHeight = 'auto';
+            }
 
-      while (heightLeft >= 0) {
-        position = heightLeft - pdfHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, pdfHeight, undefined, 'FAST');
-        heightLeft -= pageHeight;
-      }
-      return { blob: pdf.output('blob'), pdf };
+            const allElements = clonedDoc.getElementsByTagName('*');
+            for (let i = 0; i < allElements.length; i++) {
+              const el = allElements[i] as HTMLElement;
+              try {
+                const style = window.getComputedStyle(el);
+                const hasModernColor = (val: string) => val && (val.includes('oklch') || val.includes('oklab'));
+                if (hasModernColor(style.color)) el.style.color = '#1a1a1a';
+                if (hasModernColor(style.backgroundColor)) el.style.backgroundColor = '#ffffff';
+                if (hasModernColor(style.borderColor)) el.style.borderColor = '#e5e7eb';
+                if (hasModernColor(style.fill)) el.style.fill = 'currentColor';
+                if (hasModernColor(style.stroke)) el.style.stroke = 'currentColor';
+                if (hasModernColor(style.backgroundImage)) {
+                  el.style.backgroundImage = 'none';
+                  el.style.backgroundColor = '#f9fafb';
+                }
+                if (hasModernColor(style.boxShadow)) el.style.boxShadow = 'none';
+              } catch (e) {}
+            }
+          }
+        },
+        jsPDF: { 
+          unit: 'mm', 
+          format: pdfSettings.format, 
+          orientation: (pdfSettings.orientation === 'p' ? 'portrait' : 'landscape') as 'portrait' | 'landscape',
+          compress: true
+        },
+        pagebreak: { mode: ['css', 'legacy'], avoid: '.break-inside-avoid' }
+      };
+
+      // Generate PDF instance first, then get blob from it
+      const pdfInstance = await html2pdf().from(element).set(opt).toPdf().get('pdf');
+      const pdfBlob = pdfInstance.output('blob');
+
+      return { blob: pdfBlob, pdf: pdfInstance };
     } catch (error) {
       console.error('PDF generation failed:', error);
       alert(`PDF generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
       return null;
+    } finally {
+      // Restore original styles
+      if (quotationRef.current) {
+        quotationRef.current.style.opacity = originalOpacity;
+        quotationRef.current.style.visibility = originalVisibility;
+        quotationRef.current.style.position = originalPosition;
+        quotationRef.current.style.zIndex = originalZIndex;
+      }
     }
   };
 
@@ -1496,7 +1513,7 @@ export default function App() {
                   </div>
 
                   <div className="relative z-10">
-                    <div className="flex justify-between items-start mb-16">
+                    <div className="flex justify-between items-start mb-16 break-inside-avoid">
                       <div>
                         <div className="flex items-center gap-3 mb-4">
                           {agencySettings.logo ? (
@@ -1519,7 +1536,7 @@ export default function App() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 mb-16 p-5 sm:p-8 bg-zinc-50 rounded-2xl sm:rounded-4xl border border-zinc-100">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 mb-16 p-5 sm:p-8 bg-zinc-50 rounded-2xl sm:rounded-4xl border border-zinc-100 break-inside-avoid">
                       <div>
                         <p className="text-[10px] font-bold text-zinc-400 uppercase mb-3 tracking-[0.2em]">{docType === 'quotation' ? 'Prepared For' : 'Bill To'}</p>
                         <p className="font-black text-lg sm:text-xl text-zinc-900 mb-1">{currentQuotation.client.name}</p>
@@ -1545,7 +1562,7 @@ export default function App() {
                         </thead>
                         <tbody className="divide-y divide-zinc-100">
                           {currentQuotation.services.map((s, i) => (
-                            <tr key={i}>
+                            <tr key={i} className="break-inside-avoid">
                               <td className="py-8 pr-8">
                                 <p className="font-black text-sm sm:text-base text-zinc-900 mb-2">{s.name}</p>
                                 <p className="text-[10px] sm:text-xs text-zinc-500 leading-relaxed max-w-xl">{s.description}</p>
@@ -1559,7 +1576,7 @@ export default function App() {
                       </table>
                     </div>
 
-                    <div className="flex justify-end mb-20 pr-0 sm:pr-4">
+                    <div className="flex justify-end mb-20 pr-0 sm:pr-4 break-inside-avoid">
                       <div className="w-full sm:w-80 space-y-4 p-5 sm:p-8 rounded-2xl sm:rounded-4xl text-white shadow-2xl" style={{ backgroundColor: agencySettings.brandColor, boxShadow: `0 25px 50px -12px ${agencySettings.brandColor}33` }}>
                         <div className="flex justify-between text-white/60 text-xs font-bold uppercase tracking-widest">
                           <span>Subtotal</span>
@@ -1579,7 +1596,7 @@ export default function App() {
                     </div>
 
                     {docType === 'quotation' ? (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-12 border-t border-zinc-100">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-12 border-t border-zinc-100 break-inside-avoid">
                         <div>
                           <h4 className="text-xs font-bold uppercase tracking-widest mb-3 text-zinc-900">Maintenance Policy</h4>
                           <p className="text-xs text-zinc-600 leading-relaxed">{currentQuotation.maintenancePolicy}</p>
@@ -1590,7 +1607,7 @@ export default function App() {
                         </div>
                       </div>
                     ) : (
-                      <div className="pt-12 border-t border-zinc-100">
+                      <div className="pt-12 border-t border-zinc-100 break-inside-avoid">
                         <h4 className="text-xs font-bold uppercase tracking-widest mb-3 text-zinc-900">Payment Instructions</h4>
                         <p className="text-sm text-zinc-600 mb-2">Please transfer the amount to the following bank account:</p>
                         <div className="bg-zinc-50 p-4 rounded-2xl text-sm space-y-1 border border-zinc-100">
