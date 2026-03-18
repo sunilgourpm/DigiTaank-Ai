@@ -125,6 +125,7 @@ export default function App() {
   // Load data from Supabase
   useEffect(() => {
     if (session) {
+      setIsDataLoaded(false);
       fetchData();
     }
   }, [session]);
@@ -155,7 +156,10 @@ export default function App() {
         .eq('user_id', session.user.id);
       
       if (services && services.length > 0) {
-        setMasterServices(services);
+        setMasterServices(services.map(s => ({
+          ...s,
+          id: String(s.id)
+        })));
       }
 
       // Fetch Quotations
@@ -214,6 +218,16 @@ export default function App() {
     document.documentElement.style.setProperty('--brand-color-rgb', hexToRgb(agencySettings.brandColor));
   }, [agencySettings, session, isDataLoaded]);
 
+  // Auto-sync master services to Supabase
+  useEffect(() => {
+    if (session?.user?.id && isDataLoaded) {
+      const timeoutId = setTimeout(() => {
+        saveMasterServices(masterServices);
+      }, 1500); // 1.5s debounce to avoid collision with settings sync
+      return () => clearTimeout(timeoutId);
+    }
+  }, [masterServices, session, isDataLoaded]);
+
   // Save master services to Supabase
   const saveMasterServices = async (services: Service[]) => {
     if (!session?.user?.id) return;
@@ -221,18 +235,22 @@ export default function App() {
     try {
       // Delete existing and insert new (simple sync)
       await supabase.from('master_services').delete().eq('user_id', session.user.id);
-      await supabase.from('master_services').insert(
-        services.map(s => ({
-          user_id: session.user.id,
-          name: s.name,
-          category: s.category,
-          price: s.price,
-          cost: s.cost,
-          profit: s.profit,
-          duration: s.duration,
-          description: s.description
-        }))
-      );
+      
+      if (services.length > 0) {
+        const { error } = await supabase.from('master_services').insert(
+          services.map(s => ({
+            user_id: session.user.id,
+            name: s.name,
+            category: s.category,
+            price: s.price,
+            cost: s.cost,
+            profit: s.profit,
+            duration: s.duration,
+            description: s.description
+          }))
+        );
+        if (error) throw error;
+      }
     } catch (error) {
       console.error('Error saving services:', error);
     } finally {
@@ -850,8 +868,11 @@ export default function App() {
             </div>
           </div>
             <div className="flex items-center gap-4">
-              <div className="flex items-center justify-center w-6 h-6 bg-zinc-900 rounded-full border border-zinc-800" title={isSyncing ? 'Syncing...' : 'Supabase Connected'}>
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900 rounded-2xl border border-zinc-800" title={isSyncing ? 'Syncing...' : 'Supabase Connected'}>
                 <div className={`w-1.5 h-1.5 rounded-full ${isSyncing ? 'bg-red-500 animate-pulse' : 'bg-emerald-500'}`} />
+                <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500">
+                  {isSyncing ? 'Syncing' : 'Synced'}
+                </span>
               </div>
               <button 
                 onClick={handleLogout}
