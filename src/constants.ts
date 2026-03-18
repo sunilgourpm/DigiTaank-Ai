@@ -6,6 +6,8 @@ export const PREDEFINED_SERVICES: Service[] = [
     category: 'Meta Ads',
     name: 'Meta Ads Setup & Management (Basic)',
     price: 15000,
+    cost: 7500,
+    profit: 7500,
     duration: '1 Month',
     description: 'Setup and management of Facebook & Instagram ads for lead generation or brand awareness.'
   },
@@ -14,6 +16,8 @@ export const PREDEFINED_SERVICES: Service[] = [
     category: 'Meta Ads',
     name: 'Meta Ads Setup & Management (Pro)',
     price: 25000,
+    cost: 12500,
+    profit: 12500,
     duration: '1 Month',
     description: 'Advanced targeting, A/B testing, and weekly optimization for high-performance campaigns.'
   },
@@ -22,6 +26,8 @@ export const PREDEFINED_SERVICES: Service[] = [
     category: 'Google My Business',
     name: 'GMB Optimization & Ranking',
     price: 8000,
+    cost: 4000,
+    profit: 4000,
     duration: '1 Month',
     description: 'Optimize Google Business Profile to rank higher in local search results.'
   },
@@ -30,6 +36,8 @@ export const PREDEFINED_SERVICES: Service[] = [
     category: 'Website Development',
     name: 'Landing Page Development',
     price: 12000,
+    cost: 6000,
+    profit: 6000,
     duration: '7 Days',
     description: 'High-converting single-page website with mobile responsiveness.'
   },
@@ -38,6 +46,8 @@ export const PREDEFINED_SERVICES: Service[] = [
     category: 'Website Development',
     name: 'Business Website (5-7 Pages)',
     price: 35000,
+    cost: 17500,
+    profit: 17500,
     duration: '15 Days',
     description: 'Professional business website with SEO optimization and contact forms.'
   },
@@ -46,6 +56,8 @@ export const PREDEFINED_SERVICES: Service[] = [
     category: 'Social Media Marketing',
     name: 'SMM Starter Pack',
     price: 10000,
+    cost: 5000,
+    profit: 5000,
     duration: '1 Month',
     description: '12 social media posts per month with basic engagement management.'
   },
@@ -54,6 +66,8 @@ export const PREDEFINED_SERVICES: Service[] = [
     category: 'Social Media Marketing',
     name: 'SMM Growth Pack',
     price: 20000,
+    cost: 10000,
+    profit: 10000,
     duration: '1 Month',
     description: '20 social media posts, reels, and active community engagement.'
   },
@@ -62,6 +76,8 @@ export const PREDEFINED_SERVICES: Service[] = [
     category: 'Maintenance',
     name: 'Monthly Website Maintenance',
     price: 299,
+    cost: 150,
+    profit: 149,
     duration: '1 Month',
     description: 'Regular backups, security updates, and minor content changes.'
   }

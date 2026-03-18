@@ -3,6 +3,8 @@ export interface Service {
   category: string;
   name: string;
   price: number;
+  cost?: number;
+  profit?: number;
   quantity?: number;
   duration: string;
   description: string;
@@ -27,6 +29,7 @@ export interface Quotation {
   maintenancePolicy: string;
   paymentTerms: string;
   status: 'quotation' | 'proposal' | 'invoice' | 'confirmed';
+  totalProfit?: number;
 }
 
 export interface NegotiationSuggestion {

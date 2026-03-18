@@ -87,6 +87,8 @@ export default function App() {
     category: '',
     name: '',
     price: 0,
+    cost: 0,
+    profit: 0,
     duration: '',
     description: ''
   });
@@ -174,7 +176,8 @@ export default function App() {
           timeline: q.timeline,
           maintenancePolicy: q.maintenance_policy,
           paymentTerms: q.payment_terms,
-          status: q.status
+          status: q.status,
+          totalProfit: q.total_profit
         })));
       }
     } catch (error) {
@@ -215,6 +218,8 @@ export default function App() {
           name: s.name,
           category: s.category,
           price: s.price,
+          cost: s.cost,
+          profit: s.profit,
           duration: s.duration,
           description: s.description
         }))
@@ -247,6 +252,7 @@ export default function App() {
         total_price: quotation.totalPrice,
         discount: quotation.discount,
         final_price: quotation.finalPrice,
+        total_profit: quotation.totalProfit,
         timeline: quotation.timeline,
         maintenance_policy: quotation.maintenancePolicy,
         payment_terms: quotation.paymentTerms,
@@ -273,6 +279,7 @@ export default function App() {
   const dashboardStats = useMemo(() => {
     const confirmedHistory = history.filter(q => q.status === 'confirmed');
     const totalRevenue = confirmedHistory.reduce((sum, q) => sum + q.finalPrice, 0);
+    const totalProfit = confirmedHistory.reduce((sum, q) => sum + (q.totalProfit || 0), 0);
     const totalClients = new Set(confirmedHistory.map(q => q.client.businessName)).size;
     const totalQuotes = confirmedHistory.length;
     
@@ -309,7 +316,7 @@ export default function App() {
 
     const clients = Object.values(clientData).sort((a, b) => b.totalSpent - a.totalSpent);
 
-    return { totalRevenue, totalClients, totalQuotes, topServices, clients };
+    return { totalRevenue, totalProfit, totalClients, totalQuotes, topServices, clients };
   }, [history]);
 
   const finalDiscount = useMemo(() => {
@@ -329,7 +336,11 @@ export default function App() {
       setSelectedServices(selectedServices.filter(s => !s.id.startsWith(service.id)));
     } else {
       // Add a copy so it can be edited without affecting the predefined list
-      setSelectedServices([...selectedServices, { ...service, id: `${service.id}-${Date.now()}`, quantity: 1 }]);
+      const copy = { ...service, id: `${service.id}-${Date.now()}`, quantity: 1 };
+      // Ensure cost and profit are set
+      if (copy.cost === undefined) copy.cost = Math.floor(copy.price * 0.5);
+      if (copy.profit === undefined) copy.profit = copy.price - copy.cost;
+      setSelectedServices([...selectedServices, copy]);
     }
   };
 
@@ -339,6 +350,8 @@ export default function App() {
       name: 'Custom Service',
       description: 'Description of the service',
       price: 0,
+      cost: 0,
+      profit: 0,
       category: 'Custom',
       duration: 'TBD',
       quantity: 1
@@ -347,7 +360,16 @@ export default function App() {
   };
 
   const handleUpdateService = (id: string, updates: Partial<Service>) => {
-    setSelectedServices(selectedServices.map(s => s.id === id ? { ...s, ...updates } : s));
+    setSelectedServices(selectedServices.map(s => {
+      if (s.id === id) {
+        const updated = { ...s, ...updates };
+        if ('cost' in updates || 'profit' in updates) {
+          updated.price = (updated.cost || 0) + (updated.profit || 0);
+        }
+        return updated;
+      }
+      return s;
+    }));
   };
 
   const handleConfirmQuotation = async (id: string) => {
@@ -424,13 +446,15 @@ export default function App() {
         name: newMasterService.name || '',
         category: newMasterService.category || '',
         price: newMasterService.price || 0,
+        cost: newMasterService.cost || 0,
+        profit: newMasterService.profit || 0,
         duration: newMasterService.duration || '',
         description: newMasterService.description || ''
       };
       const updated = [...masterServices, service];
       setMasterServices(updated);
       saveMasterServices(updated);
-      setNewMasterService({ category: '', name: '', price: 0, duration: '', description: '' });
+      setNewMasterService({ category: '', name: '', price: 0, cost: 0, profit: 0, duration: '', description: '' });
     }
   };
 
@@ -523,6 +547,9 @@ export default function App() {
       businessType: client.businessType === 'Other' ? customBusinessType : client.businessType
     };
 
+    const totalCost = selectedServices.reduce((sum, s) => sum + ((s.cost || 0) * (s.quantity || 1)), 0);
+    const totalProfit = finalPrice - totalCost;
+
     const newQuotation: Quotation = {
       id: `QT-${Date.now().toString().slice(-6)}`,
       date: new Date().toISOString(),
@@ -531,6 +558,7 @@ export default function App() {
       totalPrice,
       discount: finalDiscount,
       finalPrice,
+      totalProfit,
       timeline: "7-15 Working Days",
       maintenancePolicy: hasWebDev ? MAINTENANCE_POLICY : "Standard support included for 30 days.",
       paymentTerms: PAYMENT_TERMS,
@@ -830,7 +858,7 @@ export default function App() {
               className="space-y-8"
             >
               {/* Stats Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
                 <div className="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-500">
@@ -839,6 +867,21 @@ export default function App() {
                     <div>
                       <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Total Revenue</p>
                       <p className="text-2xl font-black text-white">₹{dashboardStats.totalRevenue.toLocaleString()}</p>
+                    </div>
+                  </div>
+                  <div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
+                    <div className="h-full bg-emerald-500 w-full opacity-50"></div>
+                  </div>
+                </div>
+
+                <div className="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-500">
+                      <TrendingUp size={24} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Total Profit</p>
+                      <p className="text-2xl font-black text-emerald-500">₹{dashboardStats.totalProfit.toLocaleString()}</p>
                     </div>
                   </div>
                   <div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
@@ -1134,21 +1177,42 @@ export default function App() {
                               rows={1}
                               placeholder="Description"
                             />
-                            <div className="grid grid-cols-3 gap-4">
+                            <div className="grid grid-cols-5 gap-4">
                               <div className="space-y-1">
-                                <label className="text-[8px] font-bold text-zinc-600 uppercase">Price</label>
+                                <label className="text-[8px] font-bold text-zinc-600 uppercase">Cost (₹)</label>
                                 <div className="flex items-center gap-1">
                                   <span className="text-[10px] font-bold text-zinc-600">₹</span>
                                   <input 
                                     type="number"
-                                    value={service.price}
-                                    onChange={e => handleUpdateService(service.id, { price: parseInt(e.target.value) || 0 })}
+                                    value={service.cost || 0}
+                                    onChange={e => handleUpdateService(service.id, { cost: parseInt(e.target.value) || 0 })}
                                     className="w-full bg-transparent font-black text-xs focus:outline-none text-white"
                                   />
                                 </div>
                               </div>
                               <div className="space-y-1">
-                                <label className="text-[8px] font-bold text-zinc-600 uppercase">Quantity</label>
+                                <label className="text-[8px] font-bold text-zinc-600 uppercase">Profit (₹)</label>
+                                <div className="flex items-center gap-1">
+                                  <span className="text-[10px] font-bold text-zinc-600">₹</span>
+                                  <input 
+                                    type="number"
+                                    value={service.profit || 0}
+                                    onChange={e => handleUpdateService(service.id, { profit: parseInt(e.target.value) || 0 })}
+                                    className="w-full bg-transparent font-black text-xs focus:outline-none text-emerald-500"
+                                  />
+                                </div>
+                              </div>
+                              <div className="space-y-1">
+                                <label className="text-[8px] font-bold text-zinc-600 uppercase">Price</label>
+                                <div className="flex items-center gap-1">
+                                  <span className="text-[10px] font-bold text-zinc-600">₹</span>
+                                  <div className="w-full bg-transparent font-black text-xs text-white">
+                                    {service.price}
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="space-y-1">
+                                <label className="text-[8px] font-bold text-zinc-600 uppercase">Qty</label>
                                 <input 
                                   type="number"
                                   min="1"
@@ -1164,7 +1228,6 @@ export default function App() {
                                   value={service.duration}
                                   onChange={e => handleUpdateService(service.id, { duration: e.target.value })}
                                   className="w-full bg-transparent font-black text-xs focus:outline-none text-white"
-                                  placeholder="e.g. 3 Months"
                                 />
                               </div>
                             </div>
@@ -1643,6 +1706,53 @@ export default function App() {
                   </div>
                 </section>
 
+                {/* Profit Calculator (Internal Only) */}
+                <section className="bg-zinc-900/50 backdrop-blur-sm p-5 sm:p-8 rounded-2xl sm:rounded-4xl shadow-2xl border border-zinc-800">
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Profit Calculator</h3>
+                    <div className="px-2 py-0.5 bg-emerald-500/10 rounded-full">
+                      <span className="text-[8px] font-black text-emerald-500 uppercase tracking-tighter">Internal Only</span>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      {currentQuotation.services.map((s, idx) => (
+                        <div key={idx} className="flex justify-between items-center text-[10px]">
+                          <span className="text-zinc-500 truncate max-w-[120px]">{s.name}</span>
+                          <div className="flex gap-4">
+                            <span className="text-zinc-400">Cost: ₹{((s.cost || 0) * (s.quantity || 1)).toLocaleString()}</span>
+                            <span className="text-emerald-500 font-bold">Profit: ₹{((s.price - (s.cost || 0)) * (s.quantity || 1)).toLocaleString()}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="pt-4 border-t border-zinc-800 space-y-2">
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Total Revenue</span>
+                        <span className="text-xs font-bold text-white">₹{currentQuotation.finalPrice.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Total Cost</span>
+                        <span className="text-xs font-bold text-red-400">₹{(currentQuotation.finalPrice - (currentQuotation.totalProfit || 0)).toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between items-center pt-2">
+                        <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Net Profit</span>
+                        <span className="text-lg font-black text-emerald-500">₹{(currentQuotation.totalProfit || 0).toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Profit Margin</span>
+                        <span className="text-xs font-bold text-emerald-500">
+                          {currentQuotation.finalPrice > 0 
+                            ? ((currentQuotation.totalProfit || 0) / currentQuotation.finalPrice * 100).toFixed(1) 
+                            : 0}%
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
                 {/* Negotiation AI */}
                 <section className="bg-zinc-900 text-white p-8 rounded-4xl shadow-2xl shadow-zinc-900/20">
                   <h3 className="text-sm font-black uppercase tracking-widest mb-4 flex items-center gap-2">
@@ -1890,18 +2000,45 @@ export default function App() {
                         onChange={e => setNewMasterService({...newMasterService, name: e.target.value})}
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-6">
+                    <div className="grid grid-cols-3 gap-6">
                       <div className="space-y-2">
-                        <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Price (₹)</label>
+                        <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Cost (₹)</label>
                         <input 
                           type="number" 
                           placeholder="0"
                           className="w-full bg-zinc-800/50 border border-zinc-700 rounded-2xl px-5 py-4 text-sm font-bold text-white focus:ring-2 transition-all placeholder:text-zinc-600"
                           style={{ '--tw-ring-color': agencySettings.brandColor } as any}
-                          value={newMasterService.price}
-                          onChange={e => setNewMasterService({...newMasterService, price: parseInt(e.target.value) || 0})}
+                          value={newMasterService.cost}
+                          onChange={e => {
+                            const cost = parseInt(e.target.value) || 0;
+                            const profit = newMasterService.profit || 0;
+                            setNewMasterService({...newMasterService, cost, price: cost + profit});
+                          }}
                         />
                       </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Profit (₹)</label>
+                        <input 
+                          type="number" 
+                          placeholder="0"
+                          className="w-full bg-zinc-800/50 border border-zinc-700 rounded-2xl px-5 py-4 text-sm font-bold text-emerald-500 focus:ring-2 transition-all placeholder:text-zinc-600"
+                          style={{ '--tw-ring-color': agencySettings.brandColor } as any}
+                          value={newMasterService.profit}
+                          onChange={e => {
+                            const profit = parseInt(e.target.value) || 0;
+                            const cost = newMasterService.cost || 0;
+                            setNewMasterService({...newMasterService, profit, price: cost + profit});
+                          }}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Final Price (₹)</label>
+                        <div className="w-full bg-zinc-800/20 border border-zinc-800 rounded-2xl px-5 py-4 text-sm font-black text-white flex items-center">
+                          ₹{(newMasterService.price || 0).toLocaleString()}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 gap-6">
                       <div className="space-y-2">
                         <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Duration</label>
                         <input 
