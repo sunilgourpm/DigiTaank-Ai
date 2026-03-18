@@ -832,11 +832,8 @@ export default function App() {
             </div>
           </div>
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 px-4 py-2 bg-zinc-900 rounded-2xl border border-zinc-800">
-                <div className={`w-2 h-2 rounded-full ${isSyncing ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
-                <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
-                  {isSyncing ? 'Syncing...' : 'Supabase Connected'}
-                </span>
+              <div className="flex items-center justify-center w-6 h-6 bg-zinc-900 rounded-full border border-zinc-800" title={isSyncing ? 'Syncing...' : 'Supabase Connected'}>
+                <div className={`w-1.5 h-1.5 rounded-full ${isSyncing ? 'bg-red-500 animate-pulse' : 'bg-emerald-500'}`} />
               </div>
               <button 
                 onClick={handleLogout}
