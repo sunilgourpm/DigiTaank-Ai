@@ -10,5 +10,13 @@ if (!supabaseUrl || !supabaseAnonKey) {
 // Ensure the client is only created if the URL is valid to avoid crashing the entire app
 export const supabase = createClient(
   supabaseUrl || 'https://placeholder.supabase.co', 
-  supabaseAnonKey || 'placeholder-key'
+  supabaseAnonKey || 'placeholder-key',
+  {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+      detectSessionInUrl: true,
+      storageKey: 'digitaank-auth-token'
+    }
+  }
 );
