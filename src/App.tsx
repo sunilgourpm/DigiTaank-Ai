@@ -944,6 +944,17 @@ export default function App() {
     <div className="min-h-screen bg-zinc-950 text-zinc-100 font-sans selection:bg-white/10">
       {/* Sidebar / Nav */}
       <nav className="fixed bottom-0 left-0 right-0 bg-zinc-900/90 backdrop-blur-2xl border-t border-zinc-800 px-2 sm:px-6 py-2 sm:py-3 flex justify-around items-center z-50 md:top-0 md:bottom-auto md:flex-col md:w-20 md:h-screen md:border-t-0 md:border-r border-zinc-800 print:hidden">
+        {/* Logo Section (Desktop) */}
+        <div className="hidden md:flex items-center justify-center py-6 mb-4 border-b border-zinc-800/50 w-full">
+          {agencySettings.logo ? (
+            <img src={agencySettings.logo} alt="Logo" className="w-10 h-10 object-contain rounded-xl" />
+          ) : (
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-xl" style={{ backgroundColor: agencySettings.brandColor }}>
+              {agencySettings.agencyName.charAt(0)}
+            </div>
+          )}
+        </div>
+
         <button 
           onClick={() => setActiveTab('dashboard')}
           className={cn("p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all flex flex-col items-center gap-1 md:gap-0")}
@@ -1027,8 +1038,8 @@ export default function App() {
             {agencySettings.logo ? (
               <img src={agencySettings.logo} alt="Logo" className="h-10 w-auto object-contain" />
             ) : (
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white" style={{ backgroundColor: agencySettings.brandColor }}>
-                <BrainCircuit size={24} />
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-xl" style={{ backgroundColor: agencySettings.brandColor }}>
+                {agencySettings.agencyName.charAt(0)}
               </div>
             )}
             <div>
