@@ -115,9 +115,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       <nav className="fixed top-0 w-full z-50 bg-zinc-950/80 backdrop-blur-xl border-b border-zinc-900">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-emerald-500 rounded-xl rotate-12 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-              <span className="text-white font-black text-xl -rotate-12">D</span>
-            </div>
             {settings.logo ? (
               <img src={settings.logo} alt={settings.agencyName} className="h-8 w-auto object-contain" />
             ) : (

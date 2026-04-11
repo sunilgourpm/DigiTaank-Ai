@@ -45,12 +45,7 @@ export const FullPortfolioPage: React.FC<FullPortfolioPageProps> = ({ onBack, co
             {settings.logo ? (
               <img src={settings.logo} alt={settings.agencyName} className="h-8 w-auto object-contain" />
             ) : (
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 bg-emerald-500 rounded-lg rotate-12 flex items-center justify-center">
-                  <span className="text-white font-black text-sm -rotate-12">{settings.agencyName.charAt(0)}</span>
-                </div>
-                <span className="text-xl font-black tracking-tighter text-white">{settings.agencyName}</span>
-              </div>
+              <span className="text-xl font-black tracking-tighter text-white">{settings.agencyName}</span>
             )}
           </div>
           <div className="w-24"></div> {/* Spacer */}
