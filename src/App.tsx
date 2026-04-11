@@ -31,7 +31,8 @@ import {
   DollarSign,
   Briefcase,
   LogOut,
-  Cloud
+  Cloud,
+  Layout
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { clsx, type ClassValue } from 'clsx';
@@ -39,11 +40,16 @@ import { twMerge } from 'tailwind-merge';
 import { format } from 'date-fns';
 import ReactMarkdown from 'react-markdown';
 
-import { Service, ClientDetails, Quotation, NegotiationSuggestion, AgencySettings } from './types';
-import { PREDEFINED_SERVICES, MAINTENANCE_POLICY, PAYMENT_TERMS } from './constants';
+import { Service, ClientDetails, Quotation, NegotiationSuggestion, AgencySettings, LandingContent } from './types';
+import { PREDEFINED_SERVICES, MAINTENANCE_POLICY, PAYMENT_TERMS, LANDING_SERVICES, PORTFOLIO_PROJECTS, TESTIMONIALS, TEAM_MEMBERS, PARTNER_LOGOS, AGENCY_PRODUCTS } from './constants';
+import { LandingPageCMS } from './components/LandingPageCMS';
 import { generateProposal, negotiatePrice } from './services/gemini';
 import { supabase } from './lib/supabase';
 import { Auth } from './components/Auth';
+import { LandingPage } from './components/LandingPage';
+import { FullPortfolioPage } from './components/FullPortfolioPage';
+import { FullServicesPage } from './components/FullServicesPage';
+import { FullAboutPage } from './components/FullAboutPage';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -52,7 +58,12 @@ function cn(...inputs: ClassValue[]) {
 export default function App() {
   const [session, setSession] = useState<any>(null);
   const [isAuthReady, setIsAuthReady] = useState(false);
-  const [activeTab, setActiveTab] = useState<'create' | 'history' | 'preview' | 'settings' | 'dashboard'>('dashboard');
+  const [showAuth, setShowAuth] = useState(false);
+  const [showFullPortfolio, setShowFullPortfolio] = useState(false);
+  const [showFullServices, setShowFullServices] = useState(false);
+  const [showFullAbout, setShowFullAbout] = useState(false);
+  const [selectedPlanFromFullPage, setSelectedPlanFromFullPage] = useState<string | undefined>(undefined);
+  const [activeTab, setActiveTab] = useState<'create' | 'history' | 'preview' | 'settings' | 'dashboard' | 'cms'>('dashboard');
   const [client, setClient] = useState<ClientDetails>({
     name: '',
     businessName: '',
@@ -97,11 +108,33 @@ export default function App() {
   const [agencySettings, setAgencySettings] = useState<AgencySettings>({
     logo: null,
     brandColor: '#10b981', // Default emerald-500
-    agencyName: 'DigitAI'
+    agencyName: 'DigitAI',
+    contactEmail: 'hello@digitaank.com',
+    contactPhone: '+91 98765 43210',
+    location: 'Indore, Madhya Pradesh, India',
+    whatsappNumber: '+919876543210'
+  });
+  const [landingContent, setLandingContent] = useState<LandingContent>({
+    services: LANDING_SERVICES,
+    portfolio: PORTFOLIO_PROJECTS,
+    testimonials: TESTIMONIALS,
+    team: TEAM_MEMBERS,
+    partners: PARTNER_LOGOS,
+    products: AGENCY_PRODUCTS,
+    settings: {
+      logo: null,
+      brandColor: '#10b981',
+      agencyName: 'DigiTaank Digital',
+      contactEmail: 'hello@digitaank.com',
+      contactPhone: '+91 98765 43210',
+      location: 'Indore, Madhya Pradesh, India',
+      whatsappNumber: '+919876543210'
+    }
   });
   const [isSyncing, setIsSyncing] = useState(false);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [envMissing, setEnvMissing] = useState(false);
+  const [connectionError, setConnectionError] = useState<string | null>(null);
   const [docType, setDocType] = useState<'quotation' | 'invoice'>('quotation');
 
   // Auth listener
@@ -137,6 +170,13 @@ export default function App() {
     };
   }, []);
 
+  // Keep agencySettings and landingContent.settings in sync
+  useEffect(() => {
+    if (JSON.stringify(agencySettings) !== JSON.stringify(landingContent.settings)) {
+      setLandingContent(prev => ({ ...prev, settings: agencySettings }));
+    }
+  }, [agencySettings]);
+
   // Load data from Supabase
   useEffect(() => {
     if (session) {
@@ -148,28 +188,52 @@ export default function App() {
   const fetchData = async () => {
     if (!session?.user?.id) return;
     setIsSyncing(true);
+    setConnectionError(null);
     try {
       // Fetch Profile
-      const { data: profile } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', session.user.id)
         .single();
       
+      if (profileError && profileError.code !== 'PGRST116') throw profileError;
+
       if (profile) {
-        setAgencySettings({
+        const settings = {
           logo: profile.logo_url,
           brandColor: profile.brand_color,
-          agencyName: profile.agency_name
-        });
+          agencyName: profile.agency_name,
+          contactEmail: profile.contact_email || 'hello@digitaank.com',
+          contactPhone: profile.contact_phone || '+91 98765 43210',
+          location: profile.location || 'Indore, Madhya Pradesh, India',
+          whatsappNumber: profile.whatsapp_number || '+919876543210'
+        };
+        setAgencySettings(settings);
+        setLandingContent(prev => ({ ...prev, settings }));
+      }
+
+      // Fetch Landing Content
+      const { data: landingData, error: landingError } = await supabase
+        .from('landing_content')
+        .select('*')
+        .eq('user_id', session.user.id)
+        .single();
+      
+      if (landingError && landingError.code !== 'PGRST116') throw landingError;
+
+      if (landingData) {
+        setLandingContent(landingData.content);
       }
 
       // Fetch Master Services
-      const { data: services } = await supabase
+      const { data: services, error: servicesError } = await supabase
         .from('master_services')
         .select('*')
         .eq('user_id', session.user.id);
       
+      if (servicesError) throw servicesError;
+
       if (services && services.length > 0) {
         setMasterServices(services.map(s => ({
           ...s,
@@ -178,12 +242,14 @@ export default function App() {
       }
 
       // Fetch Quotations
-      const { data: quotations } = await supabase
+      const { data: quotations, error: quotationsError } = await supabase
         .from('quotations')
         .select('*')
         .eq('user_id', session.user.id)
         .order('date', { ascending: false });
       
+      if (quotationsError) throw quotationsError;
+
       if (quotations) {
         setHistory(quotations.map(q => ({
           id: q.quotation_id,
@@ -193,32 +259,45 @@ export default function App() {
           totalPrice: q.total_price,
           discount: q.discount,
           finalPrice: q.final_price,
+          totalProfit: q.total_profit,
           timeline: q.timeline,
           maintenancePolicy: q.maintenance_policy,
           paymentTerms: q.payment_terms,
           status: q.status,
-          totalProfit: q.total_profit
         })));
       }
       setIsDataLoaded(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching data:', error);
+      setConnectionError(error.message || 'Failed to connect to the database. Please check your connection.');
     } finally {
       setIsSyncing(false);
     }
   };
 
-  // Save agency settings to Supabase
+  // Save agency settings and landing content to Supabase
   useEffect(() => {
     if (session?.user?.id && isDataLoaded) {
       const timeoutId = setTimeout(async () => {
         setIsSyncing(true);
         try {
+          // Sync settings to profile for backward compatibility and dashboard use
           await supabase.from('profiles').upsert({
             id: session.user.id,
             agency_name: agencySettings.agencyName,
             brand_color: agencySettings.brandColor,
             logo_url: agencySettings.logo,
+            contact_email: agencySettings.contactEmail,
+            contact_phone: agencySettings.contactPhone,
+            location: agencySettings.location,
+            whatsapp_number: agencySettings.whatsappNumber,
+            updated_at: new Date().toISOString()
+          });
+
+          // Sync full landing content
+          await supabase.from('landing_content').upsert({
+            user_id: session.user.id,
+            content: landingContent,
             updated_at: new Date().toISOString()
           });
         } catch (error) {
@@ -231,7 +310,7 @@ export default function App() {
     }
     document.documentElement.style.setProperty('--brand-color', agencySettings.brandColor);
     document.documentElement.style.setProperty('--brand-color-rgb', hexToRgb(agencySettings.brandColor));
-  }, [agencySettings, session, isDataLoaded]);
+  }, [agencySettings, landingContent, session, isDataLoaded]);
 
   // Auto-sync master services to Supabase
   useEffect(() => {
@@ -577,7 +656,60 @@ export default function App() {
     );
   }
 
-  if (!session) return <Auth onAuthSuccess={() => {}} />;
+  if (!session) {
+    if (showAuth) {
+      return (
+        <div className="relative">
+          <button 
+            onClick={() => setShowAuth(false)}
+            className="fixed top-8 left-8 z-50 p-3 bg-zinc-900 border border-zinc-800 text-white rounded-2xl hover:bg-zinc-800 transition-all flex items-center gap-2 text-xs font-bold uppercase tracking-widest"
+          >
+            <ArrowLeft size={16} /> Back to Home
+          </button>
+          <Auth onAuthSuccess={() => setShowAuth(false)} />
+        </div>
+      );
+    }
+
+    if (showFullPortfolio) {
+      return <FullPortfolioPage 
+        onBack={() => setShowFullPortfolio(false)} 
+        content={landingContent}
+      />;
+    }
+
+    if (showFullServices) {
+      return (
+        <FullServicesPage 
+          onBack={() => setShowFullServices(false)} 
+          content={landingContent}
+          onContact={(serviceName, packageName, price) => {
+            setSelectedPlanFromFullPage(`${serviceName} - ${packageName} (₹${price.toLocaleString()})`);
+            setShowFullServices(false);
+          }}
+        />
+      );
+    }
+
+    if (showFullAbout) {
+      return <FullAboutPage 
+        onBack={() => setShowFullAbout(false)} 
+        content={landingContent}
+      />;
+    }
+
+    return (
+      <LandingPage 
+        onGetStarted={() => setShowAuth(true)} 
+        onViewAllPortfolio={() => setShowFullPortfolio(true)}
+        onViewAllServices={() => setShowFullServices(true)}
+        onViewAllAbout={() => setShowFullAbout(true)}
+        initialSelectedPlan={selectedPlanFromFullPage}
+        onClearInitialPlan={() => setSelectedPlanFromFullPage(undefined)}
+        content={landingContent}
+      />
+    );
+  }
 
   const handleResetServices = () => {
     if (confirm("Are you sure you want to reset all services to defaults? This will delete your custom services.")) {
@@ -860,6 +992,18 @@ export default function App() {
           <Settings size={20} className="sm:w-6 sm:h-6" />
           <span className="text-[8px] sm:text-[10px] font-bold md:hidden">Settings</span>
         </button>
+        <button 
+          onClick={() => setActiveTab('cms')}
+          className={cn("p-2 sm:p-3 rounded-xl sm:rounded-2xl transition-all flex flex-col items-center gap-1 md:gap-0")}
+          style={{ 
+            backgroundColor: activeTab === 'cms' ? agencySettings.brandColor : 'transparent',
+            color: activeTab === 'cms' ? '#ffffff' : '#a1a1aa',
+            boxShadow: activeTab === 'cms' ? `0 10px 15px -3px rgba(${hexToRgb(agencySettings.brandColor)}, 0.2)` : 'none'
+          }}
+        >
+          <Layout size={20} className="sm:w-6 sm:h-6" />
+          <span className="text-[8px] sm:text-[10px] font-bold md:hidden">Landing</span>
+        </button>
         {currentQuotation && (
           <button 
             onClick={() => setActiveTab('preview')}
@@ -913,6 +1057,29 @@ export default function App() {
               </button>
             </div>
         </header>
+
+        {/* Connection Error Banner */}
+        <AnimatePresence>
+          {connectionError && (
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center justify-between gap-4"
+            >
+              <div className="flex items-center gap-3">
+                <AlertCircle className="text-red-500" size={20} />
+                <p className="text-sm font-medium text-red-200">{connectionError}</p>
+              </div>
+              <button 
+                onClick={() => fetchData()}
+                className="px-4 py-1.5 bg-red-500 text-white text-[10px] font-bold uppercase tracking-widest rounded-lg hover:bg-red-400 transition-all"
+              >
+                Retry
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <AnimatePresence mode="wait">
           {activeTab === 'dashboard' && (
@@ -1984,6 +2151,49 @@ export default function App() {
                         </div>
                       </div>
 
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-zinc-800">
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Contact Email</label>
+                          <input 
+                            type="email" 
+                            value={agencySettings.contactEmail}
+                            onChange={e => setAgencySettings({...agencySettings, contactEmail: e.target.value})}
+                            className="w-full bg-zinc-800/50 border border-zinc-700 rounded-2xl px-5 py-4 text-sm text-white focus:ring-2 transition-all"
+                            style={{ '--tw-ring-color': agencySettings.brandColor } as any}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Contact Phone</label>
+                          <input 
+                            type="text" 
+                            value={agencySettings.contactPhone}
+                            onChange={e => setAgencySettings({...agencySettings, contactPhone: e.target.value})}
+                            className="w-full bg-zinc-800/50 border border-zinc-700 rounded-2xl px-5 py-4 text-sm text-white focus:ring-2 transition-all"
+                            style={{ '--tw-ring-color': agencySettings.brandColor } as any}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">WhatsApp Number</label>
+                          <input 
+                            type="text" 
+                            value={agencySettings.whatsappNumber}
+                            onChange={e => setAgencySettings({...agencySettings, whatsappNumber: e.target.value})}
+                            className="w-full bg-zinc-800/50 border border-zinc-700 rounded-2xl px-5 py-4 text-sm text-white focus:ring-2 transition-all"
+                            style={{ '--tw-ring-color': agencySettings.brandColor } as any}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Location</label>
+                          <input 
+                            type="text" 
+                            value={agencySettings.location}
+                            onChange={e => setAgencySettings({...agencySettings, location: e.target.value})}
+                            className="w-full bg-zinc-800/50 border border-zinc-700 rounded-2xl px-5 py-4 text-sm text-white focus:ring-2 transition-all"
+                            style={{ '--tw-ring-color': agencySettings.brandColor } as any}
+                          />
+                        </div>
+                      </div>
+
                       <div className="pt-8 border-t border-zinc-800 space-y-4">
                         <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
                           <Cloud size={14} className="text-white" /> Data Management
@@ -2262,6 +2472,19 @@ export default function App() {
                   ))}
                 </section>
               </div>
+            </motion.div>
+          )}
+          {activeTab === 'cms' && (
+            <motion.div
+              key="cms"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+            >
+              <LandingPageCMS 
+                content={landingContent} 
+                onChange={setLandingContent} 
+              />
             </motion.div>
           )}
         </AnimatePresence>
