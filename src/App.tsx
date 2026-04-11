@@ -947,9 +947,9 @@ export default function App() {
         {/* Logo Section (Desktop) */}
         <div className="hidden md:flex items-center justify-center py-6 mb-4 border-b border-zinc-800/50 w-full">
           {agencySettings.logo ? (
-            <img src={agencySettings.logo} alt="Logo" className="w-10 h-10 object-contain rounded-xl" />
+            <img src={agencySettings.logo} alt="Logo" className="w-[100px] h-8 object-contain rounded-xl" />
           ) : (
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-xl" style={{ backgroundColor: agencySettings.brandColor }}>
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-xl" style={{ backgroundColor: agencySettings.brandColor }}>
               {agencySettings.agencyName.charAt(0)}
             </div>
           )}
@@ -1036,17 +1036,17 @@ export default function App() {
         <header className="mb-6 sm:mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 print:hidden">
           <div className="flex items-center gap-3 sm:gap-4">
             {agencySettings.logo ? (
-              <img src={agencySettings.logo} alt="Logo" className="h-10 w-auto object-contain" />
+              <img src={agencySettings.logo} alt="Logo" className="h-8 w-[100px] object-contain" />
             ) : (
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black text-xl" style={{ backgroundColor: agencySettings.brandColor }}>
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-xl" style={{ backgroundColor: agencySettings.brandColor }}>
                 {agencySettings.agencyName.charAt(0)}
               </div>
             )}
             <div>
-              <h1 className="text-3xl font-black tracking-tighter" style={{ color: agencySettings.brandColor }}>{agencySettings.agencyName}</h1>
+              <h1 className="text-2xl font-bold tracking-tight" style={{ color: agencySettings.brandColor }}>{agencySettings.agencyName}</h1>
               <div className="flex items-center gap-2">
                 <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Personal Sales Assistant</p>
-                <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-[8px] font-black text-emerald-500 uppercase tracking-tighter">
+                <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-[8px] font-bold text-emerald-500 uppercase tracking-tighter">
                   <Save size={8} /> Auto-Saved
                 </div>
               </div>
@@ -1055,7 +1055,7 @@ export default function App() {
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900 rounded-2xl border border-zinc-800" title={isSyncing ? 'Syncing...' : 'Supabase Connected'}>
                 <div className={`w-1.5 h-1.5 rounded-full ${isSyncing ? 'bg-red-500 animate-pulse' : 'bg-emerald-500'}`} />
-                <span className="text-[9px] font-black uppercase tracking-widest text-zinc-500">
+                <span className="text-[9px] font-bold uppercase tracking-widest text-zinc-500">
                   {isSyncing ? 'Syncing' : 'Synced'}
                 </span>
               </div>
@@ -1110,7 +1110,7 @@ export default function App() {
                     </div>
                     <div>
                       <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Total Revenue</p>
-                      <p className="text-2xl font-black text-white">₹{dashboardStats.totalRevenue.toLocaleString()}</p>
+                      <p className="text-xl font-bold text-white">₹{dashboardStats.totalRevenue.toLocaleString()}</p>
                     </div>
                   </div>
                   <div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
@@ -1125,7 +1125,7 @@ export default function App() {
                     </div>
                     <div>
                       <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Total Profit</p>
-                      <p className="text-2xl font-black text-emerald-500">₹{dashboardStats.totalProfit.toLocaleString()}</p>
+                      <p className="text-xl font-bold text-emerald-500">₹{dashboardStats.totalProfit.toLocaleString()}</p>
                     </div>
                   </div>
                   <div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
@@ -1140,7 +1140,7 @@ export default function App() {
                     </div>
                     <div>
                       <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Total Clients</p>
-                      <p className="text-2xl font-black text-white">{dashboardStats.totalClients}</p>
+                      <p className="text-xl font-bold text-white">{dashboardStats.totalClients}</p>
                     </div>
                   </div>
                   <div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
@@ -1155,7 +1155,7 @@ export default function App() {
                     </div>
                     <div>
                       <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Quotations</p>
-                      <p className="text-2xl font-black text-white">{dashboardStats.totalQuotes}</p>
+                      <p className="text-xl font-bold text-white">{dashboardStats.totalQuotes}</p>
                     </div>
                   </div>
                   <div className="h-1 bg-zinc-800 rounded-full overflow-hidden">
@@ -1170,7 +1170,7 @@ export default function App() {
                     </div>
                     <div>
                       <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Avg. Ticket</p>
-                      <p className="text-2xl font-black text-white">
+                      <p className="text-xl font-bold text-white">
                         ₹{dashboardStats.totalQuotes > 0 ? Math.round(dashboardStats.totalRevenue / dashboardStats.totalQuotes).toLocaleString() : 0}
                       </p>
                     </div>
@@ -1184,7 +1184,7 @@ export default function App() {
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Top Services */}
                 <div className="lg:col-span-1 bg-zinc-900/50 p-8 rounded-4xl border border-zinc-800">
-                  <h3 className="text-sm font-black text-zinc-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+                  <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-6 flex items-center gap-2">
                     <Briefcase size={18} className="text-white" /> Popular Services
                   </h3>
                   <div className="space-y-4">
@@ -1194,7 +1194,7 @@ export default function App() {
                           <p className="font-bold text-white text-sm">{s.name}</p>
                           <p className="text-[10px] text-zinc-500 uppercase font-bold tracking-wider">{s.count} Sales</p>
                         </div>
-                        <div className="w-8 h-8 rounded-full flex items-center justify-center bg-zinc-800 text-xs font-black text-zinc-400">
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center bg-zinc-800 text-xs font-bold text-zinc-400">
                           #{i + 1}
                         </div>
                       </div>
@@ -1207,7 +1207,7 @@ export default function App() {
 
                 {/* Client Management */}
                 <div className="lg:col-span-2 bg-zinc-900/50 p-8 rounded-4xl border border-zinc-800">
-                  <h3 className="text-sm font-black text-zinc-500 uppercase tracking-widest mb-6 flex items-center gap-2">
+                  <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-6 flex items-center gap-2">
                     <Users size={18} className="text-white" /> Client Management
                   </h3>
                   <div className="overflow-x-auto">
@@ -1228,9 +1228,9 @@ export default function App() {
                               <p className="text-xs text-zinc-500">{c.name}</p>
                             </td>
                             <td className="py-4 text-center">
-                              <span className="px-2 py-1 rounded-lg bg-zinc-800 text-[10px] font-black text-zinc-400">{c.count}</span>
+                              <span className="px-2 py-1 rounded-lg bg-zinc-800 text-[10px] font-bold text-zinc-400">{c.count}</span>
                             </td>
-                            <td className="py-4 text-right font-black text-sm text-emerald-500">
+                            <td className="py-4 text-right font-bold text-sm text-emerald-500">
                               ₹{c.totalSpent.toLocaleString()}
                             </td>
                             <td className="py-4 text-right text-xs text-zinc-500">
@@ -1261,7 +1261,7 @@ export default function App() {
             >
               {/* Client Details */}
               <section className="bg-zinc-900/50 backdrop-blur-sm p-8 rounded-4xl shadow-2xl border border-zinc-800">
-                <h3 className="text-sm font-black text-zinc-500 uppercase tracking-widest mb-8 flex items-center gap-2">
+                <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-8 flex items-center gap-2">
                   <LayoutDashboard size={18} className="text-white" /> Client Information
                 </h3>
                 <div className="space-y-6">
@@ -1333,7 +1333,7 @@ export default function App() {
               {/* Service Selection */}
               <section className="bg-zinc-900/50 backdrop-blur-sm p-8 rounded-4xl shadow-2xl border border-zinc-800 flex flex-col">
                 <div className="flex justify-between items-center mb-8">
-                  <h3 className="text-sm font-black text-zinc-500 uppercase tracking-widest flex items-center gap-2">
+                  <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest flex items-center gap-2">
                     <Receipt size={18} className="text-white" /> Service Selection
                   </h3>
                   <button 
@@ -1354,7 +1354,7 @@ export default function App() {
                     }, {} as Record<string, Service[]>)
                   ).map(([category, services]) => (
                     <div key={category}>
-                      <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-4 ml-1">{category}</h4>
+                      <h4 className="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.2em] mb-4 ml-1">{category}</h4>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {services.map(service => (
                           <button 
@@ -1430,7 +1430,7 @@ export default function App() {
                                     type="number"
                                     value={service.cost || 0}
                                     onChange={e => handleUpdateService(service.id, { cost: parseInt(e.target.value) || 0 })}
-                                    className="w-full bg-transparent font-black text-xs focus:outline-none text-white"
+                                    className="w-full bg-transparent font-bold text-xs focus:outline-none text-white"
                                   />
                                 </div>
                               </div>
@@ -1442,7 +1442,7 @@ export default function App() {
                                     type="number"
                                     value={service.profit || 0}
                                     onChange={e => handleUpdateService(service.id, { profit: parseInt(e.target.value) || 0 })}
-                                    className="w-full bg-transparent font-black text-xs focus:outline-none text-emerald-500"
+                                    className="w-full bg-transparent font-bold text-xs focus:outline-none text-emerald-500"
                                   />
                                 </div>
                               </div>
@@ -1450,7 +1450,7 @@ export default function App() {
                                 <label className="text-[8px] font-bold text-zinc-600 uppercase">Price</label>
                                 <div className="flex items-center gap-1">
                                   <span className="text-[10px] font-bold text-zinc-600">₹</span>
-                                  <div className="w-full bg-transparent font-black text-xs text-white">
+                                  <div className="w-full bg-transparent font-bold text-xs text-white">
                                     {service.price}
                                   </div>
                                 </div>
@@ -1462,7 +1462,7 @@ export default function App() {
                                   min="1"
                                   value={service.quantity || 1}
                                   onChange={e => handleUpdateService(service.id, { quantity: parseInt(e.target.value) || 1 })}
-                                  className="w-full bg-transparent font-black text-xs focus:outline-none text-white"
+                                  className="w-full bg-transparent font-bold text-xs focus:outline-none text-white"
                                 />
                               </div>
                               <div className="space-y-1">
@@ -1471,7 +1471,7 @@ export default function App() {
                                   type="text"
                                   value={service.duration}
                                   onChange={e => handleUpdateService(service.id, { duration: e.target.value })}
-                                  className="w-full bg-transparent font-black text-xs focus:outline-none text-white"
+                                  className="w-full bg-transparent font-bold text-xs focus:outline-none text-white"
                                 />
                               </div>
                             </div>
@@ -1484,7 +1484,7 @@ export default function App() {
                   <div className="space-y-6 pt-6 border-t border-zinc-800">
                     <div className="flex justify-between items-center">
                       <span className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">Subtotal</span>
-                      <span className="text-xl font-black text-white tracking-tight">₹{totalPrice}</span>
+                      <span className="text-lg font-bold text-white tracking-tight">₹{totalPrice}</span>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-6">
@@ -1515,7 +1515,7 @@ export default function App() {
                       </div>
                       <div className="space-y-3">
                         <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Final Price</label>
-                        <div className="w-full bg-white text-zinc-950 rounded-2xl px-4 py-3 text-sm font-black flex items-center justify-center shadow-2xl">₹{finalPrice}</div>
+                        <div className="w-full bg-white text-zinc-950 rounded-2xl px-4 py-3 text-sm font-bold flex items-center justify-center shadow-2xl">₹{finalPrice}</div>
                       </div>
                     </div>
 
@@ -1546,7 +1546,7 @@ export default function App() {
             >
               <div className="flex justify-between items-end">
                 <div>
-                  <h2 className="text-4xl font-black tracking-tighter mb-2 text-white">History</h2>
+                  <h2 className="text-3xl font-bold tracking-tight mb-2 text-white">History</h2>
                   <p className="text-xs font-bold text-zinc-500 uppercase tracking-[0.2em]">Manage your past quotations and invoices</p>
                 </div>
               </div>
@@ -1571,7 +1571,7 @@ export default function App() {
                       }}
                     >
                       <div className="flex justify-between items-start mb-8">
-                        <div className="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest" style={{ 
+                        <div className="px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest" style={{ 
                           backgroundColor: item.status === 'confirmed' ? 'rgba(16, 185, 129, 0.1)' : `${agencySettings.brandColor}1A`, 
                           color: item.status === 'confirmed' ? '#10b981' : agencySettings.brandColor 
                         }}>
@@ -1583,14 +1583,14 @@ export default function App() {
                       </div>
 
                       <div className="space-y-1 mb-8">
-                        <h3 className="text-xl font-black text-white tracking-tight leading-none">{item.client.businessName}</h3>
+                        <h3 className="text-lg font-bold text-white tracking-tight leading-none">{item.client.businessName}</h3>
                         <p className="text-xs font-bold text-zinc-500 uppercase tracking-widest">{item.client.name}</p>
                       </div>
 
                       <div className="flex justify-between items-end pt-8 border-t border-zinc-800">
                         <div>
                           <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Total Amount</p>
-                          <p className="text-2xl font-black text-white tracking-tighter">₹{item.finalPrice.toLocaleString()}</p>
+                          <p className="text-xl font-bold text-white tracking-tight">₹{item.finalPrice.toLocaleString()}</p>
                         </div>
                         <div className="flex gap-2">
                           {item.status !== 'confirmed' && (
@@ -1643,7 +1643,7 @@ export default function App() {
                   <div className="flex bg-zinc-900 p-1.5 rounded-2xl shadow-xl border border-zinc-800 w-fit">
                     <button 
                       onClick={() => setDocType('quotation')}
-                      className={cn("px-8 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all")}
+                      className={cn("px-8 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all")}
                       style={{ 
                         backgroundColor: docType === 'quotation' ? agencySettings.brandColor : 'transparent',
                         color: docType === 'quotation' ? '#ffffff' : '#52525b',
@@ -1654,7 +1654,7 @@ export default function App() {
                     </button>
                     <button 
                       onClick={() => setDocType('invoice')}
-                      className={cn("px-8 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all")}
+                      className={cn("px-8 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all")}
                       style={{ 
                         backgroundColor: docType === 'invoice' ? agencySettings.brandColor : 'transparent',
                         color: docType === 'invoice' ? '#ffffff' : '#52525b',
@@ -1668,7 +1668,7 @@ export default function App() {
                   <div className="flex bg-zinc-900 p-1.5 rounded-2xl shadow-xl border border-zinc-800 w-fit">
                     <button 
                       onClick={() => setPreviewMode('design')}
-                      className={cn("px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2")}
+                      className={cn("px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-2")}
                       style={{ 
                         backgroundColor: previewMode === 'design' ? agencySettings.brandColor : 'transparent',
                         color: previewMode === 'design' ? '#ffffff' : '#52525b'
@@ -1678,7 +1678,7 @@ export default function App() {
                     </button>
                     <button 
                       onClick={() => setPreviewMode('pdf')}
-                      className={cn("px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2")}
+                      className={cn("px-6 py-2.5 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-2")}
                       style={{ 
                         backgroundColor: previewMode === 'pdf' ? agencySettings.brandColor : 'transparent',
                         color: previewMode === 'pdf' ? '#ffffff' : '#52525b'
@@ -1700,7 +1700,7 @@ export default function App() {
                   >
                   {/* Watermark */}
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.08] rotate-[-30deg]">
-                    <span className="text-[120px] font-black uppercase tracking-[0.5em] whitespace-nowrap">{agencySettings.agencyName}</span>
+                    <span className="text-[80px] font-bold uppercase tracking-[0.5em] whitespace-nowrap">{agencySettings.agencyName}</span>
                   </div>
 
                   <div className="relative z-10">
@@ -1714,14 +1714,14 @@ export default function App() {
                               <BrainCircuit size={24} />
                             </div>
                           )}
-                          <span className="text-xl font-black tracking-tighter" style={{ color: agencySettings.brandColor }}>{agencySettings.agencyName}</span>
+                          <span className="text-xl font-bold tracking-tight" style={{ color: agencySettings.brandColor }}>{agencySettings.agencyName}</span>
                         </div>
-                        <h2 className="text-3xl sm:text-5xl font-black uppercase tracking-tighter mb-2 text-zinc-900">{docType}</h2>
+                        <h2 className="text-2xl sm:text-4xl font-bold uppercase tracking-tight mb-2 text-zinc-900">{docType}</h2>
                         <p className="text-zinc-400 font-mono text-xs sm:text-sm tracking-widest">#{docType === 'quotation' ? currentQuotation.id : currentQuotation.id.replace('QT', 'INV')}</p>
                       </div>
                       <div className="text-right">
                         <p className="text-[10px] font-bold text-zinc-400 uppercase mb-2 tracking-[0.2em]">Issued By</p>
-                        <h3 className="font-black text-lg sm:text-xl text-zinc-900">{agencySettings.agencyName}</h3>
+                        <h3 className="font-bold text-base sm:text-lg text-zinc-900">{agencySettings.agencyName}</h3>
                         <p className="text-xs sm:text-sm text-zinc-500">Premium Marketing Solutions</p>
                         <p className="text-xs sm:text-sm text-zinc-500">contact@digitaank.ai</p>
                       </div>
@@ -1730,13 +1730,13 @@ export default function App() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-12 mb-16 p-5 sm:p-8 bg-zinc-50 rounded-2xl sm:rounded-4xl border border-zinc-100 break-inside-avoid">
                       <div>
                         <p className="text-[10px] font-bold text-zinc-400 uppercase mb-3 tracking-[0.2em]">{docType === 'quotation' ? 'Prepared For' : 'Bill To'}</p>
-                        <p className="font-black text-lg sm:text-xl text-zinc-900 mb-1">{currentQuotation.client.name}</p>
+                        <p className="font-bold text-base sm:text-lg text-zinc-900 mb-1">{currentQuotation.client.name}</p>
                         <p className="text-sm sm:text-base font-bold text-zinc-600 mb-1">{currentQuotation.client.businessName}</p>
                         <p className="text-xs sm:text-sm text-zinc-400">{currentQuotation.client.phoneNumber}</p>
                       </div>
                       <div className="text-right">
                         <p className="text-[10px] font-bold text-zinc-400 uppercase mb-3 tracking-[0.2em]">Date & Timeline</p>
-                        <p className="font-black text-sm sm:text-base text-zinc-900 mb-1">{format(new Date(currentQuotation.date), 'dd MMMM yyyy')}</p>
+                        <p className="font-bold text-xs sm:text-sm text-zinc-900 mb-1">{format(new Date(currentQuotation.date), 'dd MMMM yyyy')}</p>
                         <p className="text-xs sm:text-sm text-zinc-400">Valid for 15 days</p>
                       </div>
                     </div>
@@ -1745,22 +1745,22 @@ export default function App() {
                       <table className="w-full min-w-full sm:min-w-[600px]">
                         <thead>
                           <tr className="border-b-4" style={{ borderColor: agencySettings.brandColor }}>
-                            <th className="text-left py-6 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-zinc-400">Service Details</th>
-                            <th className="text-center py-6 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-zinc-400">Duration</th>
-                            <th className="text-center py-6 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-zinc-400">Qty</th>
-                            <th className="text-right py-6 pr-4 text-[10px] sm:text-xs font-black uppercase tracking-[0.2em] text-zinc-400">Amount</th>
+                            <th className="text-left py-6 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">Service Details</th>
+                            <th className="text-center py-6 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">Duration</th>
+                            <th className="text-center py-6 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">Qty</th>
+                            <th className="text-right py-6 pr-4 text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-zinc-400">Amount</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-zinc-100">
                           {currentQuotation.services.map((s, i) => (
                             <tr key={i} className="break-inside-avoid">
                               <td className="py-8 pr-8">
-                                <p className="font-black text-sm sm:text-base text-zinc-900 mb-2">{s.name}</p>
+                                <p className="font-bold text-sm sm:text-base text-zinc-900 mb-2">{s.name}</p>
                                 <p className="text-[10px] sm:text-xs text-zinc-500 leading-relaxed max-w-xl">{s.description}</p>
                               </td>
                               <td className="py-8 text-center font-bold text-xs sm:text-sm text-zinc-600 whitespace-nowrap">{s.duration || 'N/A'}</td>
                               <td className="py-8 text-center font-bold text-xs sm:text-sm text-zinc-600 whitespace-nowrap">{s.quantity || 1}</td>
-                              <td className="py-8 pr-4 text-right font-black text-sm sm:text-base text-zinc-900 whitespace-nowrap">₹{(s.price * (s.quantity || 1)).toLocaleString()}</td>
+                              <td className="py-8 pr-4 text-right font-bold text-sm sm:text-base text-zinc-900 whitespace-nowrap">₹{(s.price * (s.quantity || 1)).toLocaleString()}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -1780,8 +1780,8 @@ export default function App() {
                           </div>
                         )}
                         <div className="flex justify-between items-center pt-4 border-t border-white/10">
-                          <span className="font-black uppercase text-xs sm:text-sm tracking-widest">Total Due</span>
-                          <span className="text-xl sm:text-2xl font-black tracking-tighter">₹{currentQuotation.finalPrice.toLocaleString()}</span>
+                          <span className="font-bold uppercase text-xs sm:text-sm tracking-widest">Total Due</span>
+                          <span className="text-xl sm:text-2xl font-bold tracking-tight">₹{currentQuotation.finalPrice.toLocaleString()}</span>
                         </div>
                       </div>
                     </div>
@@ -1842,7 +1842,7 @@ export default function App() {
                     animate={{ opacity: 1, y: 0 }}
                     className="bg-zinc-900/50 backdrop-blur-sm p-6 sm:p-8 md:p-12 rounded-3xl sm:rounded-5xl shadow-2xl border border-zinc-800"
                   >
-                    <h2 className="text-2xl font-black mb-8 flex items-center gap-3 tracking-tighter text-white">
+                    <h2 className="text-xl font-bold mb-8 flex items-center gap-3 tracking-tight text-white">
                       <BrainCircuit style={{ color: agencySettings.brandColor }} size={28} /> AI Generated Proposal
                     </h2>
                     <div className="prose prose-invert prose-zinc max-w-none">
@@ -1855,7 +1855,7 @@ export default function App() {
               {/* Actions Sidebar */}
               <div className="space-y-6 print:hidden">
                 <section className="bg-zinc-900/50 backdrop-blur-sm p-5 sm:p-8 rounded-2xl sm:rounded-4xl shadow-2xl border border-zinc-800">
-                  <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-6">PDF Page Setup</h3>
+                  <h3 className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-6">PDF Page Setup</h3>
                   <div className="space-y-6">
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">Orientation</span>
@@ -1904,7 +1904,7 @@ export default function App() {
                 </section>
 
                 <section className="bg-zinc-900/50 backdrop-blur-sm p-5 sm:p-8 rounded-2xl sm:rounded-4xl shadow-2xl border border-zinc-800">
-                  <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-6">Quick Actions</h3>
+                  <h3 className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-6">Quick Actions</h3>
                   <div className="space-y-4">
                     {currentQuotation.status !== 'confirmed' && (
                       <button 
@@ -1953,9 +1953,9 @@ export default function App() {
                 {/* Profit Calculator (Internal Only) */}
                 <section className="bg-zinc-900/50 backdrop-blur-sm p-5 sm:p-8 rounded-2xl sm:rounded-4xl shadow-2xl border border-zinc-800">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Profit Calculator</h3>
+                    <h3 className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">Profit Calculator</h3>
                     <div className="px-2 py-0.5 bg-emerald-500/10 rounded-full">
-                      <span className="text-[8px] font-black text-emerald-500 uppercase tracking-tighter">Internal Only</span>
+                      <span className="text-[8px] font-bold text-emerald-500 uppercase tracking-tight">Internal Only</span>
                     </div>
                   </div>
                   
@@ -1982,8 +1982,8 @@ export default function App() {
                         <span className="text-xs font-bold text-red-400">₹{(currentQuotation.finalPrice - (currentQuotation.totalProfit || 0)).toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between items-center pt-2">
-                        <span className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Net Profit</span>
-                        <span className="text-lg font-black text-emerald-500">₹{(currentQuotation.totalProfit || 0).toLocaleString()}</span>
+                        <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest">Net Profit</span>
+                        <span className="text-lg font-bold text-emerald-500">₹{(currentQuotation.totalProfit || 0).toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Profit Margin</span>
@@ -1999,7 +1999,7 @@ export default function App() {
 
                 {/* Negotiation AI */}
                 <section className="bg-zinc-900 text-white p-8 rounded-4xl shadow-2xl shadow-zinc-900/20">
-                  <h3 className="text-sm font-black uppercase tracking-widest mb-4 flex items-center gap-2">
+                  <h3 className="text-xs font-bold uppercase tracking-widest mb-4 flex items-center gap-2">
                     <BrainCircuit size={20} className="text-primary-400" /> Deal Strategy
                   </h3>
                   <p className="text-[10px] text-zinc-400 mb-8 leading-relaxed">Enter client budget to get an AI-optimized deal strategy.</p>
@@ -2033,7 +2033,7 @@ export default function App() {
                     >
                       <div className="bg-zinc-800 p-5 rounded-3xl border" style={{ borderColor: `${agencySettings.brandColor}4D` }}>
                         <p className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: agencySettings.brandColor }}>Suggested Price</p>
-                        <p className="text-2xl font-black tracking-tighter">₹{negotiation.revisedPrice}</p>
+                        <p className="text-xl font-bold tracking-tight">₹{negotiation.revisedPrice}</p>
                       </div>
                       <div className="space-y-2">
                         <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Reasoning</p>
@@ -2064,7 +2064,7 @@ export default function App() {
                 <section className="bg-white p-8 rounded-4xl shadow-sm border border-zinc-100">
                   <div className="flex items-center gap-3 text-emerald-500 mb-3">
                     <CheckCircle2 size={20} />
-                    <span className="text-xs font-black uppercase tracking-widest">Deal Closer Tip</span>
+                    <span className="text-xs font-bold uppercase tracking-widest">Deal Closer Tip</span>
                   </div>
                   <p className="text-xs text-zinc-500 leading-relaxed">Clients are 40% more likely to close if you follow up within 2 hours of sending the proposal.</p>
                 </section>
@@ -2081,7 +2081,7 @@ export default function App() {
             >
               <div className="flex justify-between items-end">
                 <div>
-                  <h2 className="text-4xl font-black tracking-tighter mb-2">Service Manager</h2>
+                  <h2 className="text-3xl font-bold tracking-tight mb-2">Service Manager</h2>
                   <p className="text-xs font-bold text-zinc-400 uppercase tracking-[0.2em]">Modify your master service list and charges</p>
                 </div>
                 <button 
@@ -2096,7 +2096,7 @@ export default function App() {
                 {/* Branding Settings */}
                 <section className="lg:col-span-1 space-y-8">
                   <div className="bg-zinc-900/50 backdrop-blur-sm p-8 rounded-4xl shadow-2xl border border-zinc-800">
-                    <h3 className="text-sm font-black text-zinc-500 uppercase tracking-widest mb-8 flex items-center justify-between">
+                    <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-8 flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Monitor size={18} className="text-white" /> Agency Branding
                       </div>
@@ -2206,7 +2206,7 @@ export default function App() {
                       </div>
 
                       <div className="pt-8 border-t border-zinc-800 space-y-4">
-                        <h4 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                        <h4 className="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
                           <Cloud size={14} className="text-white" /> Data Management
                         </h4>
                         <button 
@@ -2239,7 +2239,7 @@ export default function App() {
                   </div>
 
                   <div className="bg-zinc-900/50 backdrop-blur-sm p-8 rounded-4xl shadow-2xl border border-zinc-800">
-                    <h3 className="text-sm font-black text-zinc-500 uppercase tracking-widest mb-8 flex items-center gap-2">
+                    <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-8 flex items-center gap-2">
                       <Plus size={18} className="text-white" /> Add New Service
                     </h3>
                   <div className="space-y-6">
@@ -2320,7 +2320,7 @@ export default function App() {
                       </div>
                       <div className="space-y-2">
                         <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Final Price (₹)</label>
-                        <div className="w-full bg-zinc-800/20 border border-zinc-800 rounded-2xl px-5 py-4 text-sm font-black text-white flex items-center">
+                        <div className="w-full bg-zinc-800/20 border border-zinc-800 rounded-2xl px-5 py-4 text-sm font-bold text-white flex items-center">
                           ₹{(newMasterService.price || 0).toLocaleString()}
                         </div>
                       </div>
@@ -2371,7 +2371,7 @@ export default function App() {
                     }, {} as Record<string, Service[]>)
                   ).map(([category, services]) => (
                     <div key={category} className="bg-zinc-900/50 backdrop-blur-sm p-8 rounded-4xl shadow-2xl border border-zinc-800">
-                      <h3 className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-8 border-b border-zinc-800 pb-4">{category}</h3>
+                      <h3 className="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.2em] mb-8 border-b border-zinc-800 pb-4">{category}</h3>
                       <div className="space-y-6">
                         {services.map(service => (
                           <div key={service.id} className="group relative bg-zinc-800/50 p-6 rounded-3xl border border-zinc-700 hover:border-zinc-500 transition-all">
@@ -2419,7 +2419,7 @@ export default function App() {
                                       type="number"
                                       value={service.cost || 0}
                                       onChange={e => handleUpdateMasterService(service.id, { cost: parseInt(e.target.value) || 0 })}
-                                      className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-2 font-black text-xs text-white focus:ring-2 outline-none"
+                                      className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-2 font-bold text-xs text-white focus:ring-2 outline-none"
                                       style={{ '--tw-ring-color': agencySettings.brandColor } as any}
                                     />
                                   </div>
@@ -2429,7 +2429,7 @@ export default function App() {
                                       type="number"
                                       value={service.profit || 0}
                                       onChange={e => handleUpdateMasterService(service.id, { profit: parseInt(e.target.value) || 0 })}
-                                      className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-2 font-black text-xs text-white focus:ring-2 outline-none"
+                                      className="w-full bg-zinc-900 border border-zinc-700 rounded-xl px-4 py-2 font-bold text-xs text-white focus:ring-2 outline-none"
                                       style={{ '--tw-ring-color': agencySettings.brandColor } as any}
                                     />
                                   </div>
@@ -2439,7 +2439,7 @@ export default function App() {
                                       type="number"
                                       value={service.price}
                                       readOnly
-                                      className="w-full bg-zinc-900/50 border border-zinc-800 rounded-xl px-4 py-2 font-black text-xs text-zinc-500 outline-none cursor-not-allowed"
+                                      className="w-full bg-zinc-900/50 border border-zinc-800 rounded-xl px-4 py-2 font-bold text-xs text-zinc-500 outline-none cursor-not-allowed"
                                     />
                                   </div>
                                   <div className="space-y-1">
@@ -2466,7 +2466,7 @@ export default function App() {
                                 <p className="text-xs text-zinc-500 mb-4 line-clamp-2 leading-relaxed">{service.description}</p>
                                 <div className="flex justify-between items-center pt-4 border-t border-zinc-800">
                                   <div className="flex flex-col">
-                                    <span className="font-black text-lg text-white">₹{service.price.toLocaleString()}</span>
+                                    <span className="font-bold text-lg text-white">₹{service.price.toLocaleString()}</span>
                                     <div className="flex gap-3 mt-1">
                                       <span className="text-[8px] font-bold text-zinc-600 uppercase tracking-widest">Cost: ₹{service.cost?.toLocaleString() || 0}</span>
                                       <span className="text-[8px] font-bold text-emerald-500/70 uppercase tracking-widest">Profit: ₹{service.profit?.toLocaleString() || 0}</span>

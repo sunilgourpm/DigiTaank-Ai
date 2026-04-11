@@ -116,7 +116,7 @@ export const LandingPageCMS: React.FC<LandingPageCMSProps> = ({ content, onChang
       <div className="flex-1 bg-zinc-900/50 border border-zinc-800 rounded-[32px] sm:rounded-[40px] p-6 sm:p-10 overflow-y-auto custom-scrollbar min-h-[500px] lg:min-h-0">
         {activeSection === 'settings' && (
           <div className="space-y-8">
-            <h3 className="text-2xl font-black text-white uppercase tracking-tighter">General Settings</h3>
+            <h3 className="text-xl font-bold text-white uppercase tracking-tight">General Settings</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <CMSInput 
                 label="Agency Name" 
@@ -156,7 +156,7 @@ export const LandingPageCMS: React.FC<LandingPageCMSProps> = ({ content, onChang
         {activeSection === 'services' && (
           <div className="space-y-8">
             <div className="flex justify-between items-center">
-              <h3 className="text-2xl font-black text-white uppercase tracking-tighter">Services</h3>
+              <h3 className="text-xl font-bold text-white uppercase tracking-tight">Services</h3>
               <button 
                 onClick={() => addItem('services', {
                   id: Date.now().toString(),
@@ -286,7 +286,7 @@ export const LandingPageCMS: React.FC<LandingPageCMSProps> = ({ content, onChang
         {activeSection === 'portfolio' && (
           <div className="space-y-8">
             <div className="flex justify-between items-center">
-              <h3 className="text-2xl font-black text-white uppercase tracking-tighter">Portfolio</h3>
+              <h3 className="text-xl font-bold text-white uppercase tracking-tight">Portfolio</h3>
               <button 
                 onClick={() => addItem('portfolio', {
                   id: Date.now().toString(),
@@ -355,7 +355,7 @@ export const LandingPageCMS: React.FC<LandingPageCMSProps> = ({ content, onChang
         {activeSection === 'testimonials' && (
           <div className="space-y-8">
             <div className="flex justify-between items-center">
-              <h3 className="text-2xl font-black text-white uppercase tracking-tighter">Testimonials</h3>
+              <h3 className="text-xl font-bold text-white uppercase tracking-tight">Testimonials</h3>
               <button 
                 onClick={() => addItem('testimonials', {
                   id: Date.now().toString(),
@@ -410,7 +410,7 @@ export const LandingPageCMS: React.FC<LandingPageCMSProps> = ({ content, onChang
         {activeSection === 'team' && (
           <div className="space-y-8">
             <div className="flex justify-between items-center">
-              <h3 className="text-2xl font-black text-white uppercase tracking-tighter">Team</h3>
+              <h3 className="text-xl font-bold text-white uppercase tracking-tight">Team</h3>
               <button 
                 onClick={() => addItem('team', {
                   id: Date.now().toString(),
@@ -465,7 +465,7 @@ export const LandingPageCMS: React.FC<LandingPageCMSProps> = ({ content, onChang
         {activeSection === 'partners' && (
           <div className="space-y-8">
             <div className="flex justify-between items-center">
-              <h3 className="text-2xl font-black text-white uppercase tracking-tighter">Partners</h3>
+              <h3 className="text-xl font-bold text-white uppercase tracking-tight">Partners</h3>
               <button 
                 onClick={() => addItem('partners', 'https://picsum.photos/seed/p/200/100')}
                 className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-emerald-400 transition-all"
@@ -507,7 +507,7 @@ export const LandingPageCMS: React.FC<LandingPageCMSProps> = ({ content, onChang
         {activeSection === 'products' && (
           <div className="space-y-8">
             <div className="flex justify-between items-center">
-              <h3 className="text-2xl font-black text-white uppercase tracking-tighter">Products</h3>
+              <h3 className="text-xl font-bold text-white uppercase tracking-tight">Products</h3>
               <button 
                 onClick={() => addItem('products', {
                   name: 'New Product',

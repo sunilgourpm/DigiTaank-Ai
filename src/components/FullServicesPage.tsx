@@ -44,9 +44,9 @@ export const FullServicesPage: React.FC<FullServicesPageProps> = ({ onBack, onCo
           </button>
           <div className="flex items-center gap-3">
             {settings.logo ? (
-              <img src={settings.logo} alt={settings.agencyName} className="h-8 w-auto object-contain" />
+              <img src={settings.logo} alt={settings.agencyName} className="h-8 w-[100px] object-contain" />
             ) : (
-              <span className="text-xl font-black tracking-tighter text-white">{settings.agencyName}</span>
+              <span className="text-xl font-bold tracking-tight text-white">{settings.agencyName}</span>
             )}
           </div>
           <div className="w-24"></div>
@@ -56,10 +56,10 @@ export const FullServicesPage: React.FC<FullServicesPageProps> = ({ onBack, onCo
       <main className="pt-32 pb-20 px-6">
         <div className="max-w-7xl mx-auto">
           <header className="mb-16">
-            <h1 className="text-5xl sm:text-7xl font-black tracking-tighter text-white uppercase mb-6">
+            <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-white uppercase mb-6">
               Our <span className="text-emerald-500">Services</span>
             </h1>
-            <p className="text-zinc-400 text-lg max-w-2xl">
+            <p className="text-zinc-400 text-base sm:text-lg max-w-2xl">
               Explore our full range of digital marketing and development solutions designed to scale your brand.
             </p>
           </header>
@@ -95,7 +95,7 @@ export const FullServicesPage: React.FC<FullServicesPageProps> = ({ onBack, onCo
                   <div className="w-14 h-14 bg-zinc-800 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-emerald-500 group-hover:text-white transition-all">
                     {getServiceIcon(service.icon)}
                   </div>
-                  <h3 className="text-2xl font-black text-white mb-3 tracking-tight uppercase">{service.name}</h3>
+                  <h3 className="text-xl font-bold text-white mb-3 tracking-tight uppercase">{service.name}</h3>
                   <p className="text-zinc-500 text-sm leading-relaxed mb-8">
                     {service.description}
                   </p>
@@ -131,7 +131,7 @@ export const FullServicesPage: React.FC<FullServicesPageProps> = ({ onBack, onCo
                       {getServiceIcon(selectedService.icon)}
                     </div>
                     <div>
-                      <h3 className="text-xl sm:text-3xl font-black text-white uppercase tracking-tighter">{selectedService.name}</h3>
+                      <h3 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-tight">{selectedService.name}</h3>
                       <p className="text-zinc-500 text-[10px] sm:text-sm font-medium">Specialized Packages</p>
                     </div>
                   </div>
@@ -148,8 +148,8 @@ export const FullServicesPage: React.FC<FullServicesPageProps> = ({ onBack, onCo
                     <div key={pkg.id} className="bg-zinc-950 border border-zinc-800 p-8 rounded-3xl hover:border-emerald-500/50 transition-all flex flex-col">
                       <div className="mb-6">
                         <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-2">{pkg.duration}</p>
-                        <h4 className="text-xl font-black text-white uppercase tracking-tight mb-1">{pkg.name}</h4>
-                        <p className="text-2xl font-black text-emerald-500">₹{pkg.price.toLocaleString()}</p>
+                        <h4 className="text-xl font-bold text-white uppercase tracking-tight mb-1">{pkg.name}</h4>
+                        <p className="text-2xl font-bold text-emerald-500">₹{pkg.price.toLocaleString()}</p>
                       </div>
                       <ul className="space-y-3 mb-8 flex-grow">
                         {pkg.features.map((feature, i) => (

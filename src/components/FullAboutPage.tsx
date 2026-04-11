@@ -33,9 +33,9 @@ export const FullAboutPage: React.FC<FullAboutPageProps> = ({ onBack, content })
           </button>
           <div className="flex items-center gap-3">
             {settings.logo ? (
-              <img src={settings.logo} alt={settings.agencyName} className="h-8 w-auto object-contain" />
+              <img src={settings.logo} alt={settings.agencyName} className="h-8 w-[100px] object-contain" />
             ) : (
-              <span className="text-xl font-black tracking-tighter text-white">{settings.agencyName}</span>
+              <span className="text-xl font-bold tracking-tight text-white">{settings.agencyName}</span>
             )}
           </div>
           <div className="w-24"></div>
@@ -51,11 +51,11 @@ export const FullAboutPage: React.FC<FullAboutPageProps> = ({ onBack, content })
               animate={{ opacity: 1, y: 0 }}
               className="max-w-4xl"
             >
-              <h1 className="text-4xl sm:text-6xl lg:text-9xl font-black tracking-tighter text-white uppercase leading-[0.85] mb-12">
+              <h1 className="text-4xl sm:text-6xl lg:text-8xl font-bold tracking-tight text-white uppercase leading-[0.85] mb-12">
                 We Build <br />
                 <span className="text-emerald-500">Digital Legacies.</span>
               </h1>
-              <p className="text-lg sm:text-xl text-zinc-400 leading-relaxed max-w-2xl">
+              <p className="text-base sm:text-lg text-zinc-400 leading-relaxed max-w-2xl">
                 {settings.agencyName} is more than just a marketing agency. We are a team of innovators, creators, and strategists dedicated to pushing the boundaries of what's possible in the digital space.
               </p>
             </motion.div>
@@ -70,7 +70,7 @@ export const FullAboutPage: React.FC<FullAboutPageProps> = ({ onBack, content })
                 <div className="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-500">
                   <Target size={32} />
                 </div>
-                <h3 className="text-3xl font-black text-white uppercase tracking-tighter">Our Mission</h3>
+                <h3 className="text-2xl font-bold text-white uppercase tracking-tight">Our Mission</h3>
                 <p className="text-zinc-400 leading-relaxed">
                   To empower businesses with innovative digital tools and strategies that drive measurable impact and sustainable growth in an ever-evolving landscape.
                 </p>
@@ -79,7 +79,7 @@ export const FullAboutPage: React.FC<FullAboutPageProps> = ({ onBack, content })
                 <div className="w-16 h-16 bg-blue-500/10 rounded-2xl flex items-center justify-center text-blue-500">
                   <Eye size={32} />
                 </div>
-                <h3 className="text-3xl font-black text-white uppercase tracking-tighter">Our Vision</h3>
+                <h3 className="text-2xl font-bold text-white uppercase tracking-tight">Our Vision</h3>
                 <p className="text-zinc-400 leading-relaxed">
                   To be the global benchmark for intelligence-driven digital marketing and agency operations, setting new standards for creativity and performance.
                 </p>
@@ -93,13 +93,13 @@ export const FullAboutPage: React.FC<FullAboutPageProps> = ({ onBack, content })
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
               <div>
-                <h2 className="text-4xl sm:text-6xl font-black tracking-tighter text-white uppercase mb-4">
+                <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white uppercase mb-4">
                   The <span className="text-emerald-500">Team</span>
                 </h2>
-                <p className="text-zinc-400 text-lg">Meet the minds behind the magic. A diverse group of {team.length}+ experts.</p>
+                <p className="text-zinc-400 text-base sm:text-lg">Meet the minds behind the magic. A diverse group of {team.length}+ experts.</p>
               </div>
               <div className="px-8 py-4 bg-zinc-900 border border-zinc-800 rounded-2xl">
-                <p className="text-emerald-500 font-black text-2xl leading-none">{team.length}</p>
+                <p className="text-emerald-500 font-bold text-2xl leading-none">{team.length}</p>
                 <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Core Members</p>
               </div>
             </div>
@@ -123,7 +123,7 @@ export const FullAboutPage: React.FC<FullAboutPageProps> = ({ onBack, content })
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-60"></div>
                   </div>
-                  <h4 className="text-xl font-black text-white uppercase tracking-tight mb-1">{member.name}</h4>
+                  <h4 className="text-xl font-bold text-white uppercase tracking-tight mb-1">{member.name}</h4>
                   <p className="text-emerald-500 text-[10px] font-bold uppercase tracking-widest mb-2">{member.position}</p>
                   <p className="text-zinc-500 text-xs font-medium uppercase tracking-widest flex items-center gap-2">
                     <Award size={12} /> {member.experience} Experience
@@ -152,7 +152,7 @@ export const FullAboutPage: React.FC<FullAboutPageProps> = ({ onBack, content })
         <section className="px-6 mb-32">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-4xl sm:text-6xl font-black tracking-tighter text-white uppercase mb-4">
+              <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white uppercase mb-4">
                 Our <span className="text-emerald-500">Products</span>
               </h2>
               <p className="text-zinc-400 text-lg">Innovative solutions built in-house to solve real-world problems.</p>
@@ -174,7 +174,7 @@ export const FullAboutPage: React.FC<FullAboutPageProps> = ({ onBack, content })
                   <div className="w-20 h-20 bg-zinc-950 rounded-3xl flex items-center justify-center mb-8 overflow-hidden border border-zinc-800 group-hover:border-emerald-500/30 transition-all">
                     <img src={product.logo} alt={product.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                   </div>
-                  <h3 className="text-2xl font-black text-white uppercase tracking-tight mb-3 flex items-center justify-between">
+                  <h3 className="text-2xl font-bold text-white uppercase tracking-tight mb-3 flex items-center justify-between">
                     {product.name}
                     <ExternalLink size={20} className="text-zinc-600 group-hover:text-emerald-500 transition-colors" />
                   </h3>

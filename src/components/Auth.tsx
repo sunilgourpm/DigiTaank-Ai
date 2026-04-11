@@ -44,16 +44,16 @@ export const Auth: React.FC<AuthProps> = ({ onAuthSuccess }) => {
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-zinc-900 border border-zinc-800 mb-6 shadow-2xl">
             <div className="w-10 h-10 bg-emerald-500 rounded-xl rotate-12 flex items-center justify-center">
-              <span className="text-white font-black text-xl -rotate-12">D</span>
+              <span className="text-white font-bold text-xl -rotate-12">D</span>
             </div>
           </div>
-          <h1 className="text-4xl font-black text-white tracking-tight mb-2 uppercase">DigiTaank</h1>
+          <h1 className="text-3xl font-bold text-white tracking-tight mb-2 uppercase">DigiTaank</h1>
           <p className="text-zinc-500 font-medium uppercase tracking-widest text-[10px]">Agency Management Dashboard</p>
         </div>
 
         <div className="bg-zinc-900/50 backdrop-blur-xl border border-zinc-800 p-8 rounded-[40px] shadow-2xl">
           <div className="mb-8 text-center">
-            <h2 className="text-xl font-black text-white uppercase tracking-tight">Admin Login</h2>
+            <h2 className="text-xl font-bold text-white uppercase tracking-tight">Admin Login</h2>
             <p className="text-zinc-500 text-xs">Enter your credentials to access the dashboard</p>
           </div>
 

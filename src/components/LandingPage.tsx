@@ -116,9 +116,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
             {settings.logo ? (
-              <img src={settings.logo} alt={settings.agencyName} className="h-8 w-auto object-contain" />
+              <img src={settings.logo} alt={settings.agencyName} className="h-8 w-[100px] object-contain" />
             ) : (
-              <span className="text-2xl font-black tracking-tighter text-white">{settings.agencyName}</span>
+              <span className="text-xl font-bold tracking-tight text-white">{settings.agencyName}</span>
             )}
           </div>
           
@@ -202,7 +202,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   </span>
                   {settings.agencyName} Agency
                 </div>
-                <h1 className="text-4xl sm:text-6xl lg:text-9xl font-black tracking-tighter text-white leading-[0.85] mb-10 uppercase italic">
+                <h1 className="text-4xl sm:text-6xl lg:text-8xl font-bold tracking-tight text-white leading-[0.85] mb-10 uppercase italic">
                   Let's make <br />
                   your Brand <br />
                   <span className="text-emerald-500 not-italic relative">
@@ -210,13 +210,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     <span className="absolute -inset-2 bg-emerald-500/20 blur-2xl -z-10 rounded-full animate-pulse"></span>
                   </span>
                 </h1>
-                <p className="text-xl text-zinc-400 font-medium leading-relaxed mb-12 max-w-2xl">
+                <p className="text-lg sm:text-xl text-zinc-400 font-medium leading-relaxed mb-12 max-w-2xl">
                   We don't just manage accounts; we build legacies. Experience the fusion of AI-driven precision and creative brilliance.
                 </p>
                 <div className="flex flex-wrap gap-6 items-center">
                   <a 
                     href="#contact"
-                    className="px-12 py-6 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-2xl shadow-emerald-500/40 flex items-center gap-4 group text-lg"
+                    className="px-12 py-6 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-bold uppercase tracking-widest transition-all shadow-2xl shadow-emerald-500/40 flex items-center gap-4 group text-lg"
                   >
                     Get Started <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform" />
                   </a>
@@ -227,7 +227,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       </div>
                     ))}
                     <div className="ml-8">
-                      <p className="text-white font-black text-lg leading-none">500+</p>
+                      <p className="text-white font-bold text-lg leading-none">500+</p>
                       <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Global Clients</p>
                     </div>
                   </div>
@@ -250,7 +250,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     </div>
                     <div>
                       <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Growth Rate</p>
-                      <p className="text-xl font-black text-white">+142%</p>
+                      <p className="text-xl font-bold text-white">+142%</p>
                     </div>
                   </div>
                   <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
@@ -265,7 +265,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     </div>
                     <div>
                       <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Active Leads</p>
-                      <p className="text-xl font-black text-white">1,284</p>
+                      <p className="text-xl font-bold text-white">1,284</p>
                     </div>
                   </div>
                 </div>
@@ -296,10 +296,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
             <div className="max-w-2xl">
-              <h2 className="text-4xl sm:text-6xl font-black tracking-tighter text-white uppercase mb-6">
+              <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white uppercase mb-6">
                 Our <span className="text-emerald-500">Expertise</span>
               </h2>
-              <p className="text-zinc-400 font-medium text-lg leading-relaxed">
+              <p className="text-zinc-400 font-medium text-base sm:text-lg leading-relaxed">
                 Comprehensive digital solutions tailored to your business goals. Click on a service to view our specialized packages.
               </p>
             </div>
@@ -322,7 +322,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <div className="w-14 h-14 bg-zinc-800 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-emerald-500 group-hover:text-white transition-all">
                   {getServiceIcon(service.icon)}
                 </div>
-                <h3 className="text-2xl font-black text-white mb-3 tracking-tight uppercase">{service.name}</h3>
+                <h3 className="text-xl font-bold text-white mb-3 tracking-tight uppercase">{service.name}</h3>
                 <p className="text-zinc-500 text-sm leading-relaxed mb-8">
                   {service.description}
                 </p>
@@ -336,7 +336,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <div className="mt-16 text-center">
             <button 
               onClick={onViewAllServices}
-              className="px-12 py-5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-2xl font-black uppercase tracking-widest transition-all border border-zinc-800 flex items-center gap-3 mx-auto group"
+              className="px-12 py-5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-2xl font-bold uppercase tracking-widest transition-all border border-zinc-800 flex items-center gap-3 mx-auto group"
             >
               View All Services <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </button>
@@ -348,10 +348,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       <section id="portfolio" className="py-32">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-20">
-            <h2 className="text-4xl sm:text-6xl font-black tracking-tighter text-white uppercase mb-6">
+            <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white uppercase mb-6">
               Client <span className="text-emerald-500">Success</span>
             </h2>
-            <p className="text-zinc-400 font-medium max-w-2xl mx-auto text-lg leading-relaxed">
+            <p className="text-zinc-400 font-medium max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
               Explore how we've helped businesses across different industries achieve their digital potential.
             </p>
           </div>
@@ -375,7 +375,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent p-8 flex flex-col justify-end">
                   <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-[0.3em] mb-2">{project.businessType}</p>
-                  <h3 className="text-3xl font-black text-white uppercase tracking-tighter">{project.clientName}</h3>
+                  <h3 className="text-2xl font-bold text-white uppercase tracking-tight">{project.clientName}</h3>
                 </div>
               </motion.div>
             ))}
@@ -384,7 +384,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <div className="mt-16 text-center">
             <button 
               onClick={onViewAllPortfolio}
-              className="px-12 py-5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-2xl font-black uppercase tracking-widest transition-all border border-zinc-800 flex items-center gap-3 mx-auto group"
+              className="px-12 py-5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-2xl font-bold uppercase tracking-widest transition-all border border-zinc-800 flex items-center gap-3 mx-auto group"
             >
               View All Projects <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
             </button>
@@ -398,10 +398,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-20">
-            <h2 className="text-4xl sm:text-6xl font-black tracking-tighter text-white uppercase mb-6">
+            <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white uppercase mb-6">
               Client <span className="text-emerald-500">Voices</span>
             </h2>
-            <p className="text-zinc-500 font-medium max-w-2xl mx-auto text-lg">
+            <p className="text-zinc-500 font-medium max-w-2xl mx-auto text-base sm:text-lg">
               Don't just take our word for it. Here's what our partners have to say about working with DigiTaank.
             </p>
           </div>
@@ -438,7 +438,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                             />
                           </div>
                           <div>
-                            <h4 className="text-xl font-black text-white uppercase tracking-tight">
+                            <h4 className="text-xl font-bold text-white uppercase tracking-tight">
                               {testimonials[currentTestimonial].name}
                             </h4>
                             <p className="text-emerald-500 text-xs font-bold uppercase tracking-widest">
@@ -501,14 +501,14 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 />
               </div>
               <div className="absolute -bottom-10 -right-10 bg-emerald-500 p-10 rounded-[40px] shadow-2xl hidden sm:block">
-                <p className="text-white font-black text-4xl leading-none mb-2">10+</p>
+                <p className="text-white font-bold text-3xl leading-none mb-2">10+</p>
                 <p className="text-emerald-100 text-[10px] font-bold uppercase tracking-widest">Years Experience</p>
               </div>
             </div>
             
             <div className="space-y-8">
               <div>
-                <h2 className="text-4xl sm:text-6xl font-black tracking-tighter text-white uppercase mb-6">
+                <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white uppercase mb-6">
                   Behind <br />
                   <span className="text-emerald-500">DigiTaank</span>
                 </h2>
@@ -519,7 +519,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                 <div>
-                  <h4 className="text-white font-black uppercase tracking-tight mb-3 flex items-center gap-2">
+                  <h4 className="text-white font-bold uppercase tracking-tight mb-3 flex items-center gap-2">
                     <Rocket size={18} className="text-emerald-500" /> Our Mission
                   </h4>
                   <p className="text-zinc-500 text-sm leading-relaxed">
@@ -527,7 +527,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   </p>
                 </div>
                 <div>
-                  <h4 className="text-white font-black uppercase tracking-tight mb-3 flex items-center gap-2">
+                  <h4 className="text-white font-bold uppercase tracking-tight mb-3 flex items-center gap-2">
                     <BrainCircuit size={18} className="text-emerald-500" /> Our Vision
                   </h4>
                   <p className="text-zinc-500 text-sm leading-relaxed">
@@ -544,13 +544,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       <img src="https://picsum.photos/seed/sunil/100/100" alt="Sunil Gour" referrerPolicy="no-referrer" />
                     </div>
                     <div>
-                      <p className="text-white font-black uppercase tracking-widest text-xs">Sunil Gour</p>
+                      <p className="text-white font-bold uppercase tracking-widest text-xs">Sunil Gour</p>
                       <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">Founder & CEO</p>
                     </div>
                   </div>
                   <button 
                     onClick={onViewAllAbout}
-                    className="px-8 py-4 bg-zinc-900 hover:bg-zinc-800 text-white rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all border border-zinc-800 flex items-center gap-2 group"
+                    className="px-8 py-4 bg-zinc-900 hover:bg-zinc-800 text-white rounded-2xl font-bold uppercase tracking-widest text-[10px] transition-all border border-zinc-800 flex items-center gap-2 group"
                   >
                     Know More <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                   </button>
@@ -567,7 +567,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
             {/* Contact Form */}
             <div className="bg-zinc-900/50 border border-zinc-800 p-10 sm:p-16 rounded-[60px]">
-              <h2 className="text-4xl font-black tracking-tighter text-white uppercase mb-8">
+              <h2 className="text-3xl font-bold tracking-tight text-white uppercase mb-8">
                 Let's <span className="text-emerald-500">Connect</span>
               </h2>
               <form onSubmit={handleContactSubmit} className="space-y-6">
@@ -669,7 +669,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
                 <button 
                   type="submit"
-                  className="w-full py-5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-black uppercase tracking-widest transition-all shadow-2xl shadow-emerald-500/20 flex items-center justify-center gap-3 group"
+                  className="w-full py-5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-bold uppercase tracking-widest transition-all shadow-2xl shadow-emerald-500/20 flex items-center justify-center gap-3 group"
                 >
                   Send Message <Send size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                 </button>
@@ -679,7 +679,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             {/* Contact Details */}
             <div className="flex flex-col justify-center space-y-12">
               <div>
-                <h3 className="text-3xl font-black text-white uppercase tracking-tighter mb-6">Contact <span className="text-emerald-500">Details</span></h3>
+                <h3 className="text-2xl font-bold text-white uppercase tracking-tight mb-6">Contact <span className="text-emerald-500">Details</span></h3>
                 <div className="space-y-8">
                   <div className="flex items-start gap-6">
                     <div className="w-12 h-12 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center justify-center text-emerald-500 shrink-0">
@@ -687,7 +687,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     </div>
                     <div>
                       <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Call Us</p>
-                      <p className="text-xl font-black text-white">{settings.contactPhone}</p>
+                      <p className="text-lg font-bold text-white">{settings.contactPhone}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-6">
@@ -696,7 +696,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     </div>
                     <div>
                       <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Email Us</p>
-                      <p className="text-xl font-black text-white">{settings.contactEmail}</p>
+                      <p className="text-lg font-bold text-white">{settings.contactEmail}</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-6">
@@ -705,7 +705,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     </div>
                     <div>
                       <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Our Location</p>
-                      <p className="text-xl font-black text-white">{settings.location}</p>
+                      <p className="text-lg font-bold text-white">{settings.location}</p>
                     </div>
                   </div>
                 </div>
@@ -726,7 +726,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 href={`https://wa.me/${settings.whatsappNumber.replace(/\D/g, '')}`} 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-4 px-8 py-5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 rounded-3xl font-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all w-fit"
+                className="inline-flex items-center gap-4 px-8 py-5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 rounded-3xl font-bold uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all w-fit"
               >
                 <MessageSquare size={24} /> Chat on WhatsApp
               </a>
@@ -745,9 +745,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               ) : (
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-emerald-500 rounded-lg rotate-12 flex items-center justify-center">
-                    <span className="text-white font-black text-sm -rotate-12">{settings.agencyName.charAt(0)}</span>
+                    <span className="text-white font-bold text-sm -rotate-12">{settings.agencyName.charAt(0)}</span>
                   </div>
-                  <span className="text-xl font-black tracking-tighter text-white">{settings.agencyName}</span>
+                  <span className="text-xl font-bold tracking-tight text-white">{settings.agencyName}</span>
                 </div>
               )}
             </div>
@@ -785,7 +785,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       {getServiceIcon(selectedService.icon)}
                     </div>
                     <div>
-                      <h3 className="text-xl sm:text-3xl font-black text-white uppercase tracking-tighter">{selectedService.name}</h3>
+                      <h3 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-tight">{selectedService.name}</h3>
                       <p className="text-zinc-500 text-[10px] sm:text-sm font-medium">Specialized Packages</p>
                     </div>
                   </div>
@@ -802,8 +802,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     <div key={pkg.id} className="bg-zinc-950 border border-zinc-800 p-8 rounded-3xl hover:border-emerald-500/50 transition-all flex flex-col">
                       <div className="mb-6">
                         <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-2">{pkg.duration}</p>
-                        <h4 className="text-xl font-black text-white uppercase tracking-tight mb-1">{pkg.name}</h4>
-                        <p className="text-2xl font-black text-emerald-500">₹{pkg.price.toLocaleString()}</p>
+                        <h4 className="text-xl font-bold text-white uppercase tracking-tight mb-1">{pkg.name}</h4>
+                        <p className="text-2xl font-bold text-emerald-500">₹{pkg.price.toLocaleString()}</p>
                       </div>
                       <ul className="space-y-3 mb-8 flex-grow">
                         {pkg.features.map((feature, i) => (
@@ -875,7 +875,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 
                 <div className="mb-8 sm:mb-10">
                   <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-[0.3em] mb-2 sm:mb-3">{selectedProject.businessType}</p>
-                  <h3 className="text-3xl sm:text-5xl font-black text-white uppercase tracking-tighter mb-4 sm:mb-6">{selectedProject.clientName}</h3>
+                  <h3 className="text-2xl font-bold text-white uppercase tracking-tight mb-4 sm:mb-6">{selectedProject.clientName}</h3>
                   <div className="flex flex-wrap gap-2">
                     {selectedProject.servicesUsed.map((s, i) => (
                       <span key={i} className="px-3 py-1 bg-zinc-800 text-[10px] font-bold text-zinc-400 rounded-lg uppercase tracking-widest">{s}</span>
@@ -885,7 +885,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
                 <div className="space-y-6 sm:space-y-8 mb-10 sm:mb-12">
                   <div>
-                    <h4 className="text-white font-black uppercase tracking-tight mb-2 sm:mb-3 flex items-center gap-2">
+                    <h4 className="text-white font-bold uppercase tracking-tight mb-2 sm:mb-3 flex items-center gap-2">
                       <BarChart3 size={18} className="text-emerald-500" /> Results Achieved
                     </h4>
                     <p className="text-zinc-400 text-base sm:text-lg leading-relaxed italic">
@@ -900,7 +900,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       href={selectedProject.websiteUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-6 sm:px-8 py-3 sm:py-4 bg-emerald-500 text-white rounded-xl sm:rounded-2xl font-black uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-2 hover:bg-emerald-400 transition-all"
+                      className="px-6 sm:px-8 py-3 sm:py-4 bg-emerald-500 text-white rounded-xl sm:rounded-2xl font-bold uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-2 hover:bg-emerald-400 transition-all"
                     >
                       Visit Website <ExternalLink size={16} />
                     </a>
@@ -910,7 +910,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       href={selectedProject.appUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-6 sm:px-8 py-3 sm:py-4 bg-zinc-800 text-white rounded-xl sm:rounded-2xl font-black uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-2 hover:bg-zinc-700 transition-all"
+                      className="px-6 sm:px-8 py-3 sm:py-4 bg-zinc-800 text-white rounded-xl sm:rounded-2xl font-bold uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-2 hover:bg-zinc-700 transition-all"
                     >
                       Open App <ExternalLink size={16} />
                     </a>

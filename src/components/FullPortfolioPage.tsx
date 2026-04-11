@@ -43,9 +43,9 @@ export const FullPortfolioPage: React.FC<FullPortfolioPageProps> = ({ onBack, co
           </button>
           <div className="flex items-center gap-3">
             {settings.logo ? (
-              <img src={settings.logo} alt={settings.agencyName} className="h-8 w-auto object-contain" />
+              <img src={settings.logo} alt={settings.agencyName} className="h-8 w-[100px] object-contain" />
             ) : (
-              <span className="text-xl font-black tracking-tighter text-white">{settings.agencyName}</span>
+              <span className="text-xl font-bold tracking-tight text-white">{settings.agencyName}</span>
             )}
           </div>
           <div className="w-24"></div> {/* Spacer */}
@@ -55,10 +55,10 @@ export const FullPortfolioPage: React.FC<FullPortfolioPageProps> = ({ onBack, co
       <main className="pt-32 pb-20 px-6">
         <div className="max-w-7xl mx-auto">
           <header className="mb-16">
-            <h1 className="text-5xl sm:text-7xl font-black tracking-tighter text-white uppercase mb-6">
+            <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-white uppercase mb-6">
               Full <span className="text-emerald-500">Portfolio</span>
             </h1>
-            <p className="text-zinc-400 text-lg max-w-2xl">
+            <p className="text-zinc-400 text-base sm:text-lg max-w-2xl">
               A comprehensive showcase of our digital excellence and client success stories.
             </p>
           </header>
@@ -114,7 +114,7 @@ export const FullPortfolioPage: React.FC<FullPortfolioPageProps> = ({ onBack, co
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent p-8 flex flex-col justify-end">
                     <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-[0.3em] mb-2">{project.businessType}</p>
-                    <h3 className="text-3xl font-black text-white uppercase tracking-tighter">{project.clientName}</h3>
+                    <h3 className="text-xl font-bold text-white uppercase tracking-tight">{project.clientName}</h3>
                   </div>
                 </motion.div>
               ))}
@@ -168,7 +168,7 @@ export const FullPortfolioPage: React.FC<FullPortfolioPageProps> = ({ onBack, co
                 
                 <div className="mb-8 sm:mb-10">
                   <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-[0.3em] mb-2 sm:mb-3">{selectedProject.businessType}</p>
-                  <h3 className="text-3xl sm:text-5xl font-black text-white uppercase tracking-tighter mb-4 sm:mb-6">{selectedProject.clientName}</h3>
+                  <h3 className="text-2xl font-bold text-white uppercase tracking-tight mb-4 sm:mb-6">{selectedProject.clientName}</h3>
                   <div className="flex flex-wrap gap-2">
                     {selectedProject.servicesUsed.map((s, i) => (
                       <span key={i} className="px-3 py-1 bg-zinc-800 text-[10px] font-bold text-zinc-400 rounded-lg uppercase tracking-widest">{s}</span>
@@ -178,7 +178,7 @@ export const FullPortfolioPage: React.FC<FullPortfolioPageProps> = ({ onBack, co
 
                 <div className="space-y-6 sm:space-y-8 mb-10 sm:mb-12">
                   <div>
-                    <h4 className="text-white font-black uppercase tracking-tight mb-2 sm:mb-3 flex items-center gap-2">
+                    <h4 className="text-white font-bold uppercase tracking-tight mb-2 sm:mb-3 flex items-center gap-2">
                       <BarChart3 size={18} className="text-emerald-500" /> Results Achieved
                     </h4>
                     <p className="text-zinc-400 text-base sm:text-lg leading-relaxed italic">
@@ -193,7 +193,7 @@ export const FullPortfolioPage: React.FC<FullPortfolioPageProps> = ({ onBack, co
                       href={selectedProject.websiteUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-6 sm:px-8 py-3 sm:py-4 bg-emerald-500 text-white rounded-xl sm:rounded-2xl font-black uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-2 hover:bg-emerald-400 transition-all"
+                      className="px-6 sm:px-8 py-3 sm:py-4 bg-emerald-500 text-white rounded-xl sm:rounded-2xl font-bold uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-2 hover:bg-emerald-400 transition-all"
                     >
                       Visit Website <ExternalLink size={16} />
                     </a>
@@ -203,7 +203,7 @@ export const FullPortfolioPage: React.FC<FullPortfolioPageProps> = ({ onBack, co
                       href={selectedProject.appUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-6 sm:px-8 py-3 sm:py-4 bg-zinc-800 text-white rounded-xl sm:rounded-2xl font-black uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-2 hover:bg-zinc-700 transition-all"
+                      className="px-6 sm:px-8 py-3 sm:py-4 bg-zinc-800 text-white rounded-xl sm:rounded-2xl font-bold uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-2 hover:bg-zinc-700 transition-all"
                     >
                       Open App <ExternalLink size={16} />
                     </a>
