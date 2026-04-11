@@ -1021,9 +1021,9 @@ export default function App() {
       </nav>
 
       {/* Main Content */}
-      <main className="pb-24 sm:pb-32 pt-4 sm:pt-6 px-3 sm:px-4 md:pl-28 md:pr-8 max-w-7xl mx-auto print:p-0 print:m-0">
-        <header className="mb-8 flex justify-between items-center print:hidden">
-          <div className="flex items-center gap-4">
+      <main className="pb-24 sm:pb-32 pt-4 sm:pt-6 px-3 sm:px-6 md:pl-28 md:pr-8 max-w-7xl mx-auto print:p-0 print:m-0">
+        <header className="mb-6 sm:mb-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 print:hidden">
+          <div className="flex items-center gap-3 sm:gap-4">
             {agencySettings.logo ? (
               <img src={agencySettings.logo} alt="Logo" className="h-10 w-auto object-contain" />
             ) : (
@@ -1088,10 +1088,10 @@ export default function App() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="space-y-8"
+              className="space-y-6 sm:space-y-10"
             >
               {/* Stats Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-6">
                 <div className="bg-zinc-900/50 p-6 rounded-3xl border border-zinc-800">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-500">
@@ -1246,7 +1246,7 @@ export default function App() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 sm:gap-10"
             >
               {/* Client Details */}
               <section className="bg-zinc-900/50 backdrop-blur-sm p-8 rounded-4xl shadow-2xl border border-zinc-800">

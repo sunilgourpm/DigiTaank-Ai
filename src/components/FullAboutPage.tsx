@@ -56,11 +56,11 @@ export const FullAboutPage: React.FC<FullAboutPageProps> = ({ onBack, content })
               animate={{ opacity: 1, y: 0 }}
               className="max-w-4xl"
             >
-              <h1 className="text-5xl sm:text-7xl lg:text-9xl font-black tracking-tighter text-white uppercase leading-[0.85] mb-12">
+              <h1 className="text-4xl sm:text-6xl lg:text-9xl font-black tracking-tighter text-white uppercase leading-[0.85] mb-12">
                 We Build <br />
                 <span className="text-emerald-500">Digital Legacies.</span>
               </h1>
-              <p className="text-xl text-zinc-400 leading-relaxed max-w-2xl">
+              <p className="text-lg sm:text-xl text-zinc-400 leading-relaxed max-w-2xl">
                 {settings.agencyName} is more than just a marketing agency. We are a team of innovators, creators, and strategists dedicated to pushing the boundaries of what's possible in the digital space.
               </p>
             </motion.div>
@@ -68,10 +68,10 @@ export const FullAboutPage: React.FC<FullAboutPageProps> = ({ onBack, content })
         </section>
 
         {/* Mission & Vision */}
-        <section className="px-6 mb-32 py-24 bg-zinc-900/30">
+        <section className="px-6 mb-32 py-16 sm:py-24 bg-zinc-900/30">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-              <div className="p-12 bg-zinc-900/50 border border-zinc-800 rounded-[40px] space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12">
+              <div className="p-8 sm:p-12 bg-zinc-900/50 border border-zinc-800 rounded-[32px] sm:rounded-[40px] space-y-6">
                 <div className="w-16 h-16 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-500">
                   <Target size={32} />
                 </div>

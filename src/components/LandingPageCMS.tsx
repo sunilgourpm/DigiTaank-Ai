@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { 
   Layout, 
   Image as ImageIcon, 
@@ -17,9 +17,12 @@ import {
   Mail,
   ChevronRight,
   ChevronDown,
-  X
+  X,
+  Upload,
+  Loader2
 } from 'lucide-react';
 import { LandingContent, ServiceCategory, PortfolioProject, Testimonial, TeamMember, AgencyProduct } from '../types';
+import { supabase } from '../lib/supabase';
 
 interface LandingPageCMSProps {
   content: LandingContent;
@@ -62,9 +65,9 @@ export const LandingPageCMS: React.FC<LandingPageCMSProps> = ({ content, onChang
   };
 
   return (
-    <div className="flex flex-col lg:flex-row gap-8 h-[calc(100vh-12rem)]">
+    <div className="flex flex-col lg:flex-row gap-6 sm:gap-8 h-full lg:h-[calc(100vh-12rem)]">
       {/* Sidebar Navigation */}
-      <div className="w-full lg:w-64 space-y-2">
+      <div className="w-full lg:w-64 flex lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible pb-4 lg:pb-0 scrollbar-hide">
         <CMSNavButton 
           active={activeSection === 'settings'} 
           onClick={() => setActiveSection('settings')} 
@@ -110,7 +113,7 @@ export const LandingPageCMS: React.FC<LandingPageCMSProps> = ({ content, onChang
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 bg-zinc-900/50 border border-zinc-800 rounded-3xl p-8 overflow-y-auto custom-scrollbar">
+      <div className="flex-1 bg-zinc-900/50 border border-zinc-800 rounded-[32px] sm:rounded-[40px] p-6 sm:p-10 overflow-y-auto custom-scrollbar min-h-[500px] lg:min-h-0">
         {activeSection === 'settings' && (
           <div className="space-y-8">
             <h3 className="text-2xl font-black text-white uppercase tracking-tighter">General Settings</h3>
@@ -120,11 +123,10 @@ export const LandingPageCMS: React.FC<LandingPageCMSProps> = ({ content, onChang
                 value={content.settings.agencyName} 
                 onChange={v => updateSettings({ agencyName: v })} 
               />
-              <CMSInput 
-                label="Logo URL" 
+              <CMSImageUpload 
+                label="Agency Logo" 
                 value={content.settings.logo || ''} 
                 onChange={v => updateSettings({ logo: v })} 
-                placeholder="https://..."
               />
               <CMSInput 
                 label="Contact Email" 
@@ -322,8 +324,8 @@ export const LandingPageCMS: React.FC<LandingPageCMSProps> = ({ content, onChang
                     value={project.businessType} 
                     onChange={v => updateItem('portfolio', project.id, { businessType: v })} 
                   />
-                  <CMSInput 
-                    label="Thumbnail URL" 
+                  <CMSImageUpload 
+                    label="Thumbnail Image" 
                     value={project.thumbnail} 
                     onChange={v => updateItem('portfolio', project.id, { thumbnail: v })} 
                   />
@@ -389,8 +391,8 @@ export const LandingPageCMS: React.FC<LandingPageCMSProps> = ({ content, onChang
                     value={t.role} 
                     onChange={v => updateItem('testimonials', t.id, { role: v })} 
                   />
-                  <CMSInput 
-                    label="Avatar URL" 
+                  <CMSImageUpload 
+                    label="Avatar Image" 
                     value={t.avatar} 
                     onChange={v => updateItem('testimonials', t.id, { avatar: v })} 
                   />
@@ -449,8 +451,8 @@ export const LandingPageCMS: React.FC<LandingPageCMSProps> = ({ content, onChang
                     value={m.experience} 
                     onChange={v => updateItem('team', m.id, { experience: v })} 
                   />
-                  <CMSInput 
-                    label="Photo URL" 
+                  <CMSImageUpload 
+                    label="Photo Image" 
                     value={m.photo} 
                     onChange={v => updateItem('team', m.id, { photo: v })} 
                   />
@@ -484,8 +486,8 @@ export const LandingPageCMS: React.FC<LandingPageCMSProps> = ({ content, onChang
                       <Trash2 size={16} />
                     </button>
                   </div>
-                  <CMSInput 
-                    label="Logo URL" 
+                  <CMSImageUpload 
+                    label="Logo Image" 
                     value={logo} 
                     onChange={v => {
                       const newPartners = [...content.partners];
@@ -540,8 +542,8 @@ export const LandingPageCMS: React.FC<LandingPageCMSProps> = ({ content, onChang
                     value={product.url} 
                     onChange={v => updateItem('products', idx, { url: v })} 
                   />
-                  <CMSInput 
-                    label="Logo URL" 
+                  <CMSImageUpload 
+                    label="Logo Image" 
                     value={product.logo} 
                     onChange={v => updateItem('products', idx, { logo: v })} 
                   />
@@ -563,14 +565,14 @@ export const LandingPageCMS: React.FC<LandingPageCMSProps> = ({ content, onChang
 const CMSNavButton: React.FC<{ active: boolean; onClick: () => void; icon: React.ReactNode; label: string }> = ({ active, onClick, icon, label }) => (
   <button 
     onClick={onClick}
-    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${
+    className={`flex-shrink-0 lg:w-full flex items-center gap-3 px-4 py-3 rounded-xl text-[10px] sm:text-xs font-bold uppercase tracking-widest transition-all ${
       active 
         ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' 
         : 'text-zinc-500 hover:bg-zinc-900 hover:text-zinc-300'
     }`}
   >
     {icon}
-    {label}
+    <span className="whitespace-nowrap">{label}</span>
   </button>
 );
 
@@ -599,3 +601,75 @@ const CMSTextarea: React.FC<{ label: string; value: string; onChange: (v: string
     />
   </div>
 );
+
+const CMSImageUpload: React.FC<{ label: string; value: string; onChange: (v: string) => void }> = ({ label, value, onChange }) => {
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `agency-assets/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('assets')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('assets')
+        .getPublicUrl(filePath);
+
+      onChange(publicUrl);
+    } catch (error: any) {
+      console.error('Upload error:', error);
+      alert('Error uploading image: ' + error.message + '\n\nMake sure you have created a public bucket named "assets" in your Supabase Storage.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">{label}</label>
+      <div className="flex gap-3">
+        <div className="flex-1 relative">
+          <input 
+            type="text"
+            value={value}
+            onChange={e => onChange(e.target.value)}
+            placeholder="https://..."
+            className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white focus:border-emerald-500 outline-none transition-all pr-10"
+          />
+          {value && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-lg overflow-hidden border border-zinc-800">
+              <img src={value} alt="Preview" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+            </div>
+          )}
+        </div>
+        <input 
+          type="file"
+          ref={fileInputRef}
+          onChange={handleUpload}
+          accept="image/*"
+          className="hidden"
+        />
+        <button 
+          type="button"
+          disabled={isUploading}
+          onClick={() => fileInputRef.current?.click()}
+          className="px-4 py-3 bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-400 hover:text-white hover:border-zinc-700 transition-all flex items-center gap-2 disabled:opacity-50"
+        >
+          {isUploading ? <Loader2 size={18} className="animate-spin" /> : <Upload size={18} />}
+          <span className="text-[10px] font-bold uppercase tracking-widest hidden sm:inline">Upload</span>
+        </button>
+      </div>
+    </div>
+  );
+};

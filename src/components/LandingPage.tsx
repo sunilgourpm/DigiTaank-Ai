@@ -205,7 +205,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   </span>
                   {settings.agencyName} Agency
                 </div>
-                <h1 className="text-5xl sm:text-7xl lg:text-9xl font-black tracking-tighter text-white leading-[0.85] mb-10 uppercase italic">
+                <h1 className="text-4xl sm:text-6xl lg:text-9xl font-black tracking-tighter text-white leading-[0.85] mb-10 uppercase italic">
                   Let's make <br />
                   your Brand <br />
                   <span className="text-emerald-500 not-italic relative">
