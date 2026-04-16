@@ -50,6 +50,9 @@ import { LandingPage } from './components/LandingPage';
 import { FullPortfolioPage } from './components/FullPortfolioPage';
 import { FullServicesPage } from './components/FullServicesPage';
 import { FullAboutPage } from './components/FullAboutPage';
+import { RefundPolicyPage } from './components/RefundPolicyPage';
+import { TermsConditionsPage } from './components/TermsConditionsPage';
+import { ContactUsPage } from './components/ContactUsPage';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -62,6 +65,9 @@ export default function App() {
   const [showFullPortfolio, setShowFullPortfolio] = useState(false);
   const [showFullServices, setShowFullServices] = useState(false);
   const [showFullAbout, setShowFullAbout] = useState(false);
+  const [showRefundPolicy, setShowRefundPolicy] = useState(false);
+  const [showTermsConditions, setShowTermsConditions] = useState(false);
+  const [showContactUs, setShowContactUs] = useState(false);
   const [selectedPlanFromFullPage, setSelectedPlanFromFullPage] = useState<string | undefined>(undefined);
   const [activeTab, setActiveTab] = useState<'create' | 'history' | 'preview' | 'settings' | 'dashboard' | 'cms'>('dashboard');
   const [client, setClient] = useState<ClientDetails>({
@@ -108,7 +114,7 @@ export default function App() {
   const [agencySettings, setAgencySettings] = useState<AgencySettings>({
     logo: null,
     brandColor: '#10b981', // Default emerald-500
-    agencyName: 'DigitAI',
+    agencyName: 'DigiTaank',
     contactEmail: 'hello@digitaank.com',
     contactPhone: '+91 98765 43210',
     location: 'Indore, Madhya Pradesh, India',
@@ -124,7 +130,7 @@ export default function App() {
     settings: {
       logo: null,
       brandColor: '#10b981',
-      agencyName: 'DigiTaank Digital',
+      agencyName: 'DigiTaank',
       contactEmail: 'hello@digitaank.com',
       contactPhone: '+91 98765 43210',
       location: 'Indore, Madhya Pradesh, India',
@@ -671,9 +677,28 @@ export default function App() {
       );
     }
 
+    const handleNavigate = (page: 'refund' | 'terms' | 'contact' | 'portfolio' | 'services' | 'about' | 'home') => {
+      // Reset all full page states
+      setShowFullPortfolio(false);
+      setShowFullServices(false);
+      setShowFullAbout(false);
+      setShowRefundPolicy(false);
+      setShowTermsConditions(false);
+      setShowContactUs(false);
+
+      if (page === 'refund') setShowRefundPolicy(true);
+      if (page === 'terms') setShowTermsConditions(true);
+      if (page === 'contact') setShowContactUs(true);
+      if (page === 'portfolio') setShowFullPortfolio(true);
+      if (page === 'services') setShowFullServices(true);
+      if (page === 'about') setShowFullAbout(true);
+      if (page === 'home') window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     if (showFullPortfolio) {
       return <FullPortfolioPage 
         onBack={() => setShowFullPortfolio(false)} 
+        onNavigate={handleNavigate}
         content={landingContent}
       />;
     }
@@ -682,6 +707,7 @@ export default function App() {
       return (
         <FullServicesPage 
           onBack={() => setShowFullServices(false)} 
+          onNavigate={handleNavigate}
           content={landingContent}
           onContact={(serviceName, packageName, price) => {
             setSelectedPlanFromFullPage(`${serviceName} - ${packageName} (₹${price.toLocaleString()})`);
@@ -694,6 +720,31 @@ export default function App() {
     if (showFullAbout) {
       return <FullAboutPage 
         onBack={() => setShowFullAbout(false)} 
+        onNavigate={handleNavigate}
+        content={landingContent}
+      />;
+    }
+
+    if (showRefundPolicy) {
+      return <RefundPolicyPage 
+        onBack={() => setShowRefundPolicy(false)} 
+        onNavigate={handleNavigate}
+        content={landingContent}
+      />;
+    }
+
+    if (showTermsConditions) {
+      return <TermsConditionsPage 
+        onBack={() => setShowTermsConditions(false)} 
+        onNavigate={handleNavigate}
+        content={landingContent}
+      />;
+    }
+
+    if (showContactUs) {
+      return <ContactUsPage 
+        onBack={() => setShowContactUs(false)} 
+        onNavigate={handleNavigate}
         content={landingContent}
       />;
     }
@@ -704,6 +755,7 @@ export default function App() {
         onViewAllPortfolio={() => setShowFullPortfolio(true)}
         onViewAllServices={() => setShowFullServices(true)}
         onViewAllAbout={() => setShowFullAbout(true)}
+        onNavigateFooter={handleNavigate}
         initialSelectedPlan={selectedPlanFromFullPage}
         onClearInitialPlan={() => setSelectedPlanFromFullPage(undefined)}
         content={landingContent}
@@ -1043,7 +1095,7 @@ export default function App() {
               </div>
             )}
             <div>
-              <h1 className="text-2xl font-bold tracking-tight" style={{ color: agencySettings.brandColor }}>{agencySettings.agencyName}</h1>
+              <h1 className="text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600">{agencySettings.agencyName}</h1>
               <div className="flex items-center gap-2">
                 <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Personal Sales Assistant</p>
                 <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-500/10 text-[8px] font-bold text-emerald-500 uppercase tracking-tighter">
@@ -1700,7 +1752,7 @@ export default function App() {
                   >
                   {/* Watermark */}
                   <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.08] rotate-[-30deg]">
-                    <span className="text-[80px] font-bold uppercase tracking-[0.5em] whitespace-nowrap">{agencySettings.agencyName}</span>
+                    <span className="text-[80px] font-bold uppercase tracking-[0.5em] whitespace-nowrap bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600">{agencySettings.agencyName}</span>
                   </div>
 
                   <div className="relative z-10">
@@ -1714,7 +1766,7 @@ export default function App() {
                               <BrainCircuit size={24} />
                             </div>
                           )}
-                          <span className="text-xl font-bold tracking-tight" style={{ color: agencySettings.brandColor }}>{agencySettings.agencyName}</span>
+                          <span className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600">{agencySettings.agencyName}</span>
                         </div>
                         <h2 className="text-2xl sm:text-4xl font-bold uppercase tracking-tight mb-2 text-zinc-900">{docType}</h2>
                         <p className="text-zinc-400 font-mono text-xs sm:text-sm tracking-widest">#{docType === 'quotation' ? currentQuotation.id : currentQuotation.id.replace('QT', 'INV')}</p>

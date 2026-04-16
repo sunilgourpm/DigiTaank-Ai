@@ -9,13 +9,15 @@ import {
   Filter
 } from 'lucide-react';
 import { PortfolioProject, LandingContent } from '../types';
+import { Footer } from './Footer';
 
 interface FullPortfolioPageProps {
   onBack: () => void;
+  onNavigate?: (page: 'refund' | 'terms' | 'contact' | 'portfolio' | 'services' | 'about' | 'home') => void;
   content: LandingContent;
 }
 
-export const FullPortfolioPage: React.FC<FullPortfolioPageProps> = ({ onBack, content }) => {
+export const FullPortfolioPage: React.FC<FullPortfolioPageProps> = ({ onBack, onNavigate, content }) => {
   const { portfolio, settings } = content;
   const [selectedProject, setSelectedProject] = useState<PortfolioProject | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -45,7 +47,7 @@ export const FullPortfolioPage: React.FC<FullPortfolioPageProps> = ({ onBack, co
             {settings.logo ? (
               <img src={settings.logo} alt={settings.agencyName} className="h-6 w-auto object-contain" />
             ) : (
-              <span className="text-lg font-bold tracking-tight text-slate-900">{settings.agencyName}</span>
+              <span className="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600 underline decoration-primary-500/30 decoration-2 underline-offset-4 tracking-tighter">{settings.agencyName}</span>
             )}
           </div>
           <div className="w-24"></div> {/* Spacer */}
@@ -214,6 +216,11 @@ export const FullPortfolioPage: React.FC<FullPortfolioPageProps> = ({ onBack, co
           </motion.div>
         )}
       </AnimatePresence>
+      {/* Footer */}
+      <Footer 
+        content={content} 
+        onNavigate={onNavigate} 
+      />
     </div>
   );
 };

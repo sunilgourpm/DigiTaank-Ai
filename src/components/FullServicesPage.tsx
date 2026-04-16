@@ -14,14 +14,16 @@ import {
   Search
 } from 'lucide-react';
 import { ServiceCategory, LandingContent } from '../types';
+import { Footer } from './Footer';
 
 interface FullServicesPageProps {
   onBack: () => void;
   onContact: (serviceName: string, packageName: string, price: number) => void;
+  onNavigate?: (page: 'refund' | 'terms' | 'contact' | 'portfolio' | 'services' | 'about' | 'home') => void;
   content: LandingContent;
 }
 
-export const FullServicesPage: React.FC<FullServicesPageProps> = ({ onBack, onContact, content }) => {
+export const FullServicesPage: React.FC<FullServicesPageProps> = ({ onBack, onContact, onNavigate, content }) => {
   const { services, settings } = content;
   const [selectedService, setSelectedService] = useState<ServiceCategory | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -46,7 +48,7 @@ export const FullServicesPage: React.FC<FullServicesPageProps> = ({ onBack, onCo
             {settings.logo ? (
               <img src={settings.logo} alt={settings.agencyName} className="h-6 w-auto object-contain" />
             ) : (
-              <span className="text-lg font-bold tracking-tight text-slate-900">{settings.agencyName}</span>
+              <span className="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600 underline decoration-primary-500/30 decoration-2 underline-offset-4 tracking-tighter">{settings.agencyName}</span>
             )}
           </div>
           <div className="w-24"></div>
@@ -176,6 +178,11 @@ export const FullServicesPage: React.FC<FullServicesPageProps> = ({ onBack, onCo
           </motion.div>
         )}
       </AnimatePresence>
+      {/* Footer */}
+      <Footer 
+        content={content} 
+        onNavigate={onNavigate} 
+      />
     </div>
   );
 };

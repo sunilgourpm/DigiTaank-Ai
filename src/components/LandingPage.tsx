@@ -27,15 +27,19 @@ import {
   Send,
   Menu,
   Quote,
-  ChevronLeft
+  ChevronLeft,
+  Target,
+  Eye
 } from 'lucide-react';
 import { ServiceCategory, PortfolioProject, LandingContent } from '../types';
+import { Footer } from './Footer';
 
 interface LandingPageProps {
   onGetStarted: () => void;
   onViewAllPortfolio: () => void;
   onViewAllServices: () => void;
   onViewAllAbout: () => void;
+  onNavigateFooter?: (page: 'refund' | 'terms' | 'contact' | 'portfolio' | 'services' | 'about' | 'home') => void;
   initialSelectedPlan?: string;
   onClearInitialPlan?: () => void;
   content: LandingContent;
@@ -46,6 +50,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   onViewAllPortfolio, 
   onViewAllServices,
   onViewAllAbout,
+  onNavigateFooter,
   initialSelectedPlan,
   onClearInitialPlan,
   content
@@ -129,7 +134,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             {settings.logo ? (
               <img src={settings.logo} alt={settings.agencyName} className="h-6 w-[80px] object-contain" />
             ) : (
-              <span className="text-lg font-bold tracking-tight text-slate-900">{settings.agencyName}</span>
+              <span className="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600 underline decoration-primary-500/30 decoration-2 underline-offset-4">{settings.agencyName}</span>
             )}
           </div>
           
@@ -564,7 +569,22 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+                {[
+                  { icon: Target, label: 'Our Mission', value: 'Driving measurable growth through innovation.', color: 'text-primary-600', bg: 'bg-primary-50' },
+                  { icon: Eye, label: 'Our Vision', value: 'Setting new standards for digital excellence.', color: 'text-accent-600', bg: 'bg-accent-50' }
+                ].map((item, idx) => (
+                  <div key={idx} className="p-5 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md transition-all group">
+                    <div className={`w-10 h-10 ${item.bg} rounded-lg flex items-center justify-center ${item.color} mb-3 group-hover:scale-110 transition-transform`}>
+                      <item.icon size={20} />
+                    </div>
+                    <h4 className="text-[10px] font-bold text-slate-900 uppercase tracking-widest mb-1">{item.label}</h4>
+                    <p className="text-[10px] text-slate-500 leading-relaxed font-medium">{item.value}</p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 pt-4">
                 <button 
                   onClick={onViewAllAbout}
                   className="px-10 py-5 bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-700 hover:to-accent-700 text-white rounded-2xl font-bold uppercase tracking-widest text-[11px] transition-all shadow-lg shadow-primary-500/20 flex items-center gap-3 group"
@@ -592,7 +612,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
-            <div className="group bg-gradient-to-br from-slate-50 to-white border-2 border-slate-100 p-8 sm:p-12 rounded-[48px] shadow-sm hover:shadow-2xl hover:shadow-primary-500/5 transition-all duration-500 hover:border-primary-400/40 relative overflow-hidden">
+            <div className="group bg-gradient-to-br from-slate-100 via-white to-slate-50 border-2 border-slate-200 p-8 sm:p-12 rounded-[48px] shadow-sm hover:shadow-2xl hover:shadow-primary-500/10 transition-all duration-500 hover:border-primary-400/40 relative overflow-hidden">
               {/* Background Accent */}
               <div className="absolute -right-20 -top-20 w-64 h-64 bg-primary-500/5 rounded-full blur-3xl group-hover:bg-primary-500/10 transition-colors" />
               
@@ -603,24 +623,24 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 <form onSubmit={handleContactSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Your Name</label>
+                    <label className="text-[9px] font-bold text-slate-600 uppercase tracking-widest ml-1">Your Name</label>
                     <input 
                       type="text" 
                       required
                       value={contactForm.name}
                       onChange={e => setContactForm({...contactForm, name: e.target.value})}
-                      className="w-full bg-white border border-slate-200 rounded-2xl px-6 py-4 text-slate-900 text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/5 outline-none transition-all shadow-sm"
+                      className="w-full bg-white border border-slate-200 rounded-2xl px-6 py-4 text-black text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/5 outline-none transition-all shadow-sm"
                       placeholder="John Doe"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Business Name</label>
+                    <label className="text-[9px] font-bold text-slate-600 uppercase tracking-widest ml-1">Business Name</label>
                     <input 
                       type="text" 
                       required
                       value={contactForm.businessName}
                       onChange={e => setContactForm({...contactForm, businessName: e.target.value})}
-                      className="w-full bg-white border border-slate-200 rounded-2xl px-6 py-4 text-slate-900 text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/5 outline-none transition-all shadow-sm"
+                      className="w-full bg-white border border-slate-200 rounded-2xl px-6 py-4 text-black text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/5 outline-none transition-all shadow-sm"
                       placeholder="Acme Corp"
                     />
                   </div>
@@ -628,13 +648,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">WhatsApp Number</label>
+                    <label className="text-[9px] font-bold text-slate-600 uppercase tracking-widest ml-1">WhatsApp Number</label>
                     <input 
                       type="tel" 
                       required
                       value={contactForm.whatsapp}
                       onChange={e => setContactForm({...contactForm, whatsapp: e.target.value})}
-                      className="w-full bg-white border border-slate-200 rounded-2xl px-6 py-4 text-slate-900 text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/5 outline-none transition-all shadow-sm"
+                      className="w-full bg-white border border-slate-200 rounded-2xl px-6 py-4 text-black text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/5 outline-none transition-all shadow-sm"
                       placeholder="+91 98765 43210"
                     />
                   </div>
@@ -652,11 +672,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
-                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Your Budget</label>
+                    <label className="text-[9px] font-bold text-slate-600 uppercase tracking-widest ml-1">Your Budget</label>
                     <select 
                       value={contactForm.budget}
                       onChange={e => setContactForm({...contactForm, budget: e.target.value})}
-                      className="w-full bg-white border border-slate-200 rounded-2xl px-6 py-4 text-slate-900 text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/5 outline-none transition-all appearance-none shadow-sm"
+                      className="w-full bg-white border border-slate-200 rounded-2xl px-6 py-4 text-black text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/5 outline-none transition-all appearance-none shadow-sm"
                     >
                       <option value="">Select Budget Range</option>
                       <option value="10k-50k">₹10,000 - ₹50,000</option>
@@ -667,7 +687,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Services Required</label>
+                  <label className="text-[9px] font-bold text-slate-600 uppercase tracking-widest ml-1">Services Required</label>
                   <div className="flex flex-wrap gap-2">
                     {services.map(s => (
                       <button
@@ -687,12 +707,12 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Message</label>
+                  <label className="text-[9px] font-bold text-slate-600 uppercase tracking-widest ml-1">Message</label>
                   <textarea 
                     rows={4}
                     value={contactForm.message}
                     onChange={e => setContactForm({...contactForm, message: e.target.value})}
-                    className="w-full bg-white border border-slate-200 rounded-2xl px-6 py-4 text-slate-900 text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/5 outline-none transition-all resize-none shadow-sm"
+                    className="w-full bg-white border border-slate-200 rounded-2xl px-6 py-4 text-black text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/5 outline-none transition-all resize-none shadow-sm"
                     placeholder="Tell us about your project..."
                   />
                 </div>
@@ -708,91 +728,69 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </div>
 
             {/* Contact Details */}
-            <div className="flex flex-col justify-center space-y-10">
-              <div>
-                <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tight mb-4">Contact <span className="text-primary-600">Details</span></h3>
-                <div className="space-y-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-primary-600 shrink-0 shadow-sm">
-                      <Phone size={20} />
+            <div className="flex flex-col justify-center space-y-8">
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tight mb-6">Contact <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600">Details</span></h3>
+                
+                {[
+                  { icon: Mail, label: 'Email Us', value: settings.contactEmail, color: 'text-blue-600', bg: 'bg-blue-50' },
+                  { icon: Phone, label: 'Call Us', value: settings.contactPhone, color: 'text-emerald-600', bg: 'bg-emerald-50' },
+                  { icon: MapPin, label: 'Visit Us', value: settings.location, color: 'text-rose-600', bg: 'bg-rose-50' }
+                ].map((item, idx) => (
+                  <motion.div 
+                    key={idx}
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: idx * 0.1 }}
+                    className="group flex items-center gap-5 p-6 bg-slate-50 border border-slate-100 rounded-[28px] shadow-sm hover:shadow-xl hover:border-primary-500/30 transition-all duration-500 relative overflow-hidden"
+                  >
+                    <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-white rounded-full group-hover:scale-150 transition-transform duration-700 opacity-50" />
+                    
+                    <div className={`w-12 h-12 ${item.bg} rounded-xl flex items-center justify-center ${item.color} shadow-sm group-hover:scale-110 transition-transform duration-500 relative z-10 shrink-0`}>
+                      <item.icon size={22} />
                     </div>
-                    <div>
-                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Call Us</p>
-                      <p className="text-base font-bold text-slate-900">{settings.contactPhone}</p>
+                    
+                    <div className="relative z-10">
+                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">{item.label}</p>
+                      <p className="text-sm font-bold text-slate-900 leading-tight">{item.value}</p>
                     </div>
-                  </div>
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-primary-600 shrink-0 shadow-sm">
-                      <Mail size={20} />
-                    </div>
-                    <div>
-                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Email Us</p>
-                      <p className="text-base font-bold text-slate-900">{settings.contactEmail}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-primary-600 shrink-0 shadow-sm">
-                      <MapPin size={20} />
-                    </div>
-                    <div>
-                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Our Location</p>
-                      <p className="text-base font-bold text-slate-900">{settings.location}</p>
-                    </div>
-                  </div>
-                </div>
+                  </motion.div>
+                ))}
               </div>
 
-              <div className="pt-10 border-t border-slate-100">
-                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-4">Follow Our Journey</p>
-                <div className="flex gap-3">
-                  {[Instagram, Twitter, Linkedin, Facebook].map((Icon, i) => (
-                    <a key={i} href="#" className="w-10 h-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-slate-500 hover:text-primary-600 hover:border-primary-500/50 transition-all shadow-sm">
-                      <Icon size={18} />
-                    </a>
-                  ))}
+              <div className="pt-8 border-t border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
+                <div>
+                  <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-4">Follow Our Journey</p>
+                  <div className="flex gap-3">
+                    {[Instagram, Twitter, Linkedin, Facebook].map((Icon, i) => (
+                      <a key={i} href="#" className="w-10 h-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-slate-500 hover:text-primary-600 hover:border-primary-500/50 transition-all shadow-sm">
+                        <Icon size={18} />
+                      </a>
+                    ))}
+                  </div>
                 </div>
-              </div>
 
-              <a 
-                href={`https://wa.me/${settings.whatsappNumber.replace(/\D/g, '')}`} 
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-3 px-6 py-4 bg-primary-500/5 border border-primary-500/10 text-primary-600 rounded-2xl font-bold uppercase tracking-widest hover:bg-primary-600 hover:text-white transition-all w-fit text-[10px]"
-              >
-                <MessageSquare size={20} /> Chat on WhatsApp
-              </a>
+                <a 
+                  href={`https://wa.me/${settings.whatsappNumber.replace(/\D/g, '')}`} 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-3 px-6 py-4 bg-[#25D366] text-white rounded-2xl font-bold uppercase tracking-widest hover:bg-[#128C7E] transition-all text-[10px] shadow-lg shadow-green-500/20 group"
+                >
+                  <MessageSquare size={18} className="group-hover:rotate-12 transition-transform" /> Chat on WhatsApp
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-16 border-t border-slate-200 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-10">
-            <div className="flex items-center gap-3">
-              {settings.logo ? (
-                <img src={settings.logo} alt={settings.agencyName} className="h-6 w-auto object-contain" />
-              ) : (
-                <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-primary-600 rounded-lg rotate-12 flex items-center justify-center">
-                    <span className="text-white font-bold text-[10px] -rotate-12">{settings.agencyName.charAt(0)}</span>
-                  </div>
-                  <span className="text-lg font-bold tracking-tight text-slate-900">{settings.agencyName}</span>
-                </div>
-              )}
-            </div>
-            <div className="flex gap-6 text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em]">
-              <a href="#" className="hover:text-primary-600 transition-colors">Privacy</a>
-              <a href="#" className="hover:text-primary-600 transition-colors">Terms</a>
-              <button onClick={onGetStarted} className="hover:text-primary-600 transition-colors uppercase">Admin</button>
-            </div>
-            <p className="text-slate-400 text-[9px] font-bold uppercase tracking-widest">
-              © 2026 {settings.agencyName}. All Rights Reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      <Footer 
+        content={content} 
+        onAdmin={onGetStarted} 
+        onNavigate={onNavigateFooter} 
+      />
 
       {/* Service Detail Modal */}
       <AnimatePresence>

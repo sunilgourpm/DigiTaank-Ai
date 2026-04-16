@@ -12,13 +12,15 @@ import {
   Award
 } from 'lucide-react';
 import { LandingContent } from '../types';
+import { Footer } from './Footer';
 
 interface FullAboutPageProps {
   onBack: () => void;
+  onNavigate?: (page: 'refund' | 'terms' | 'contact' | 'portfolio' | 'services' | 'about' | 'home') => void;
   content: LandingContent;
 }
 
-export const FullAboutPage: React.FC<FullAboutPageProps> = ({ onBack, content }) => {
+export const FullAboutPage: React.FC<FullAboutPageProps> = ({ onBack, onNavigate, content }) => {
   const { team, partners, products, settings } = content;
   return (
     <div className="min-h-screen bg-white text-slate-900 selection:bg-primary-500/30 selection:text-primary-900">
@@ -35,7 +37,7 @@ export const FullAboutPage: React.FC<FullAboutPageProps> = ({ onBack, content })
             {settings.logo ? (
               <img src={settings.logo} alt={settings.agencyName} className="h-6 w-auto object-contain" />
             ) : (
-              <span className="text-lg font-bold tracking-tight text-slate-900">{settings.agencyName}</span>
+              <span className="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600 underline decoration-primary-500/30 decoration-2 underline-offset-4 tracking-tighter">{settings.agencyName}</span>
             )}
           </div>
           <div className="w-24"></div>
@@ -192,13 +194,10 @@ export const FullAboutPage: React.FC<FullAboutPageProps> = ({ onBack, content })
       </main>
 
       {/* Footer */}
-      <footer className="py-16 border-t border-slate-100">
-        <div className="max-w-7xl mx-auto px-6 text-center">
-          <p className="text-slate-400 text-[9px] font-bold uppercase tracking-widest">
-            © 2026 {settings.agencyName}. All Rights Reserved.
-          </p>
-        </div>
-      </footer>
+      <Footer 
+        content={content} 
+        onNavigate={onNavigate} 
+      />
 
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes scroll {
