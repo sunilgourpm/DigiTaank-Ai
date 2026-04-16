@@ -534,66 +534,52 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-24 bg-slate-50">
+      <section id="about" className="py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="relative max-w-sm mx-auto w-full lg:mx-0">
-              <div className="aspect-[4/5] rounded-[48px] overflow-hidden border border-slate-200 bg-white shadow-xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="relative group max-w-md mx-auto lg:mx-0">
+              <div className="absolute -inset-4 bg-gradient-to-br from-primary-600/20 to-accent-600/20 rounded-[56px] blur-2xl group-hover:from-primary-600/30 group-hover:to-accent-600/30 transition-all duration-700"></div>
+              <div className="relative aspect-square rounded-[40px] overflow-hidden border border-slate-200 bg-white shadow-xl">
                 <img 
-                  src="https://picsum.photos/seed/founder/800/1000" 
+                  src="https://picsum.photos/seed/founder/800/800" 
                   alt="Sunil Gour" 
                   className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
                   referrerPolicy="no-referrer"
                 />
               </div>
-              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-white border border-slate-100 px-8 py-4 rounded-2xl shadow-xl min-w-[240px] text-center">
-                <p className="text-slate-900 font-bold uppercase tracking-widest text-xs mb-0.5">Sunil Gour</p>
-                <div className="h-0.5 w-8 bg-primary-600 mx-auto mb-1"></div>
-                <p className="text-primary-600 text-[9px] font-bold uppercase tracking-[0.2em]">Founder & CEO</p>
+              <div className="absolute -bottom-4 -right-4 bg-gradient-to-br from-primary-600 to-accent-600 p-6 rounded-[24px] shadow-2xl hidden sm:block">
+                <p className="text-white font-bold text-xl leading-none mb-1 text-center">10+</p>
+                <p className="text-white/80 text-[8px] font-bold uppercase tracking-widest">Years Exp.</p>
               </div>
             </div>
             
-            <div className="space-y-8">
+            <div className="space-y-6">
               <div>
-                <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 uppercase mb-6">
-                  Behind <br />
-                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600">DigiTaank</span>
+                <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 uppercase mb-4 leading-tight">
+                  Driving <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600">Growth</span> <br />
+                  through Intelligence
                 </h2>
                 <p className="text-slate-600 text-base leading-relaxed">
                   Founded by Sunil Gour, DigiTaank is a creative-led digital agency that believes in the power of smart marketing. We don't just run ads; we build ecosystems for growth.
                 </p>
               </div>
 
-              <div className="bg-white border border-slate-100 p-8 rounded-[40px] shadow-sm relative overflow-hidden group">
-                <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-                  <Rocket size={80} className="text-primary-600" />
-                </div>
-                <h4 className="text-slate-900 font-bold uppercase tracking-tight mb-4 flex items-center gap-2 text-base">
-                  <Rocket size={20} className="text-primary-600" /> Our Mission
-                </h4>
-                <p className="text-slate-600 text-sm sm:text-base leading-relaxed relative z-10">
-                  We are primarily focused on supporting new startups that often lack specialized marketing and development teams. We don't just provide services; we stand with you as your dedicated growth partners, ensuring your vision has the technical and strategic backbone it needs to succeed.
-                </p>
-              </div>
-
-              <div className="pt-6 border-t border-slate-200">
-                <p className="text-slate-700 font-bold mb-6 italic text-sm">"Innovation is not just about technology, it's about how we solve human problems with it."</p>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-slate-200 overflow-hidden">
-                      <img src="https://picsum.photos/seed/sunil/100/100" alt="Sunil Gour" referrerPolicy="no-referrer" />
-                    </div>
-                    <div>
-                      <p className="text-slate-900 font-bold uppercase tracking-widest text-[10px]">Sunil Gour</p>
-                      <p className="text-slate-400 text-[8px] font-bold uppercase tracking-widest">Founder & CEO</p>
-                    </div>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+                <button 
+                  onClick={onViewAllAbout}
+                  className="px-10 py-5 bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-700 hover:to-accent-700 text-white rounded-2xl font-bold uppercase tracking-widest text-[11px] transition-all shadow-lg shadow-primary-500/20 flex items-center gap-3 group"
+                >
+                  Know More About Us <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                </button>
+                
+                <div className="flex items-center gap-3 pl-2">
+                  <div className="w-10 h-10 rounded-full bg-slate-200 overflow-hidden border-2 border-white shadow-sm">
+                    <img src="https://picsum.photos/seed/sunil/100/100" alt="Sunil Gour" referrerPolicy="no-referrer" />
                   </div>
-                  <button 
-                    onClick={onViewAllAbout}
-                    className="px-6 py-3 bg-white hover:bg-slate-50 text-slate-900 rounded-xl font-bold uppercase tracking-widest text-[9px] transition-all border border-slate-200 flex items-center gap-2 group"
-                  >
-                    Know More <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                  </button>
+                  <div>
+                    <p className="text-slate-900 font-bold uppercase tracking-widest text-[9px]">Sunil Gour</p>
+                    <p className="text-slate-400 text-[7px] font-bold uppercase tracking-widest">Founder & CEO</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -606,11 +592,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
-            <div className="bg-slate-50 border border-slate-100 p-8 sm:p-12 rounded-[48px] shadow-sm">
-              <h2 className="text-2xl font-bold tracking-tight text-slate-900 uppercase mb-6">
-                Let's <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600">Connect</span>
-              </h2>
-              <form onSubmit={handleContactSubmit} className="space-y-4">
+            <div className="group bg-gradient-to-br from-slate-50 to-white border-2 border-slate-100 p-8 sm:p-12 rounded-[48px] shadow-sm hover:shadow-2xl hover:shadow-primary-500/5 transition-all duration-500 hover:border-primary-400/40 relative overflow-hidden">
+              {/* Background Accent */}
+              <div className="absolute -right-20 -top-20 w-64 h-64 bg-primary-500/5 rounded-full blur-3xl group-hover:bg-primary-500/10 transition-colors" />
+              
+              <div className="relative z-10">
+                <h2 className="text-2xl font-bold tracking-tight text-slate-900 uppercase mb-6">
+                  Let's <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600">Connect</span>
+                </h2>
+                <form onSubmit={handleContactSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Your Name</label>
@@ -619,7 +609,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       required
                       value={contactForm.name}
                       onChange={e => setContactForm({...contactForm, name: e.target.value})}
-                      className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-slate-900 text-sm focus:border-primary-500 outline-none transition-all"
+                      className="w-full bg-white border border-slate-200 rounded-2xl px-6 py-4 text-slate-900 text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/5 outline-none transition-all shadow-sm"
                       placeholder="John Doe"
                     />
                   </div>
@@ -630,7 +620,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       required
                       value={contactForm.businessName}
                       onChange={e => setContactForm({...contactForm, businessName: e.target.value})}
-                      className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-slate-900 text-sm focus:border-primary-500 outline-none transition-all"
+                      className="w-full bg-white border border-slate-200 rounded-2xl px-6 py-4 text-slate-900 text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/5 outline-none transition-all shadow-sm"
                       placeholder="Acme Corp"
                     />
                   </div>
@@ -644,7 +634,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       required
                       value={contactForm.whatsapp}
                       onChange={e => setContactForm({...contactForm, whatsapp: e.target.value})}
-                      className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-slate-900 text-sm focus:border-primary-500 outline-none transition-all"
+                      className="w-full bg-white border border-slate-200 rounded-2xl px-6 py-4 text-slate-900 text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/5 outline-none transition-all shadow-sm"
                       placeholder="+91 98765 43210"
                     />
                   </div>
@@ -654,7 +644,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       type="text" 
                       readOnly
                       value={contactForm.selectedPlan}
-                      className="w-full bg-slate-100 border border-slate-200 rounded-xl px-5 py-3 text-primary-600 font-bold text-xs outline-none cursor-default"
+                      className="w-full bg-slate-100 border border-slate-200 rounded-2xl px-6 py-4 text-primary-600 font-bold text-xs outline-none cursor-default"
                       placeholder="Select a package above"
                     />
                   </div>
@@ -666,7 +656,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     <select 
                       value={contactForm.budget}
                       onChange={e => setContactForm({...contactForm, budget: e.target.value})}
-                      className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-slate-900 text-sm focus:border-primary-500 outline-none transition-all appearance-none"
+                      className="w-full bg-white border border-slate-200 rounded-2xl px-6 py-4 text-slate-900 text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/5 outline-none transition-all appearance-none shadow-sm"
                     >
                       <option value="">Select Budget Range</option>
                       <option value="10k-50k">₹10,000 - ₹50,000</option>
@@ -702,18 +692,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     rows={4}
                     value={contactForm.message}
                     onChange={e => setContactForm({...contactForm, message: e.target.value})}
-                    className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-slate-900 text-sm focus:border-primary-500 outline-none transition-all resize-none"
+                    className="w-full bg-white border border-slate-200 rounded-2xl px-6 py-4 text-slate-900 text-sm focus:border-primary-500 focus:ring-4 focus:ring-primary-500/5 outline-none transition-all resize-none shadow-sm"
                     placeholder="Tell us about your project..."
                   />
                 </div>
 
                 <button 
                   type="submit"
-                  className="w-full py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold uppercase tracking-widest transition-all shadow-lg shadow-primary-500/20 flex items-center justify-center gap-2 group text-xs"
+                  className="w-full py-5 bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-700 hover:to-accent-700 text-white rounded-2xl font-bold uppercase tracking-[0.2em] transition-all shadow-xl shadow-primary-500/25 flex items-center justify-center gap-3 group text-[11px]"
                 >
-                  Send Message <Send size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  Confirm & Send Message <Send size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                 </button>
               </form>
+              </div>
             </div>
 
             {/* Contact Details */}
