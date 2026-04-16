@@ -56,6 +56,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
     containScroll: 'trimSnaps',
     dragFree: true
   });
+  const [portfolioRef, portfolioApi] = useEmblaCarousel({ 
+    align: 'start',
+    containScroll: 'trimSnaps',
+    dragFree: true
+  });
   const [selectedService, setSelectedService] = useState<ServiceCategory | null>(null);
   const [selectedProject, setSelectedProject] = useState<PortfolioProject | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -296,7 +301,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.1 }}
                     onClick={() => setSelectedService(service)}
-                    className="group h-full bg-gradient-to-br from-white to-slate-50/50 border border-slate-200/60 p-10 rounded-[40px] hover:border-primary-400/50 transition-all cursor-pointer relative overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-primary-500/10 flex flex-col"
+                    className={`group h-full bg-gradient-to-br from-white to-slate-50/50 border-2 p-10 rounded-[40px] transition-all cursor-pointer relative overflow-hidden shadow-sm hover:shadow-2xl flex flex-col ${
+                      index % 2 === 0 ? 'border-primary-100 hover:border-primary-400/50 hover:shadow-primary-500/10' : 'border-accent-100 hover:border-accent-400/50 hover:shadow-accent-500/10'
+                    }`}
                   >
                     {/* Background Accent */}
                     <div className="absolute -right-12 -top-12 w-40 h-40 bg-primary-500/5 rounded-full blur-3xl group-hover:bg-primary-500/10 transition-colors" />
@@ -306,7 +313,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       <Maximize2 size={18} className="text-primary-600" />
                     </div>
                     
-                    <div className="w-20 h-20 bg-white border border-slate-100 rounded-3xl flex items-center justify-center mb-10 group-hover:bg-gradient-to-br group-hover:from-primary-600 group-hover:to-accent-600 group-hover:text-white transition-all duration-500 shadow-sm group-hover:shadow-xl group-hover:shadow-primary-500/20">
+                    <div className="w-20 h-20 bg-white border border-slate-100 rounded-3xl flex items-center justify-center mb-10 shadow-sm transition-all duration-500">
                       {getServiceIcon(service.icon, index)}
                     </div>
                     
@@ -344,48 +351,88 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       {/* Portfolio Section */}
-      <section id="portfolio" className="py-24 bg-slate-50">
+      <section id="portfolio" className="py-24 bg-slate-50 overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 uppercase mb-4">
-              Client <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600">Success</span>
-            </h2>
-            <p className="text-slate-500 font-medium max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
-              Explore how we've helped businesses across different industries achieve their digital potential.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {portfolio.slice(0, 6).map((project, index) => (
-              <motion.div
-                key={project.id}
-                initial={{ opacity: 0, scale: 0.98 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                onClick={() => setSelectedProject(project)}
-                className="group relative aspect-[4/3] rounded-[32px] overflow-hidden cursor-pointer bg-white shadow-sm"
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
+            <div className="max-w-2xl">
+              <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 uppercase mb-4">
+                Client <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600">Success</span>
+              </h2>
+              <p className="text-slate-500 font-medium text-sm sm:text-base leading-relaxed">
+                Explore how we've helped businesses achieve their potential. Slides to see more projects.
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => portfolioApi?.scrollPrev()}
+                className="w-12 h-12 rounded-full border border-slate-200 bg-white flex items-center justify-center text-slate-400 hover:text-primary-600 hover:border-primary-600 transition-all shadow-sm"
+                aria-label="Previous project"
               >
-                <img 
-                  src={project.thumbnail} 
-                  alt={project.clientName}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
-                  referrerPolicy="no-referrer"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-6 flex flex-col justify-end">
-                  <p className="text-[9px] font-bold text-accent-400 uppercase tracking-[0.3em] mb-1">{project.businessType}</p>
-                  <h3 className="text-lg font-bold text-white uppercase tracking-tight group-hover:text-primary-400 transition-colors">{project.clientName}</h3>
-                </div>
-              </motion.div>
-            ))}
+                <ChevronLeft size={20} />
+              </button>
+              <button 
+                onClick={() => portfolioApi?.scrollNext()}
+                className="w-12 h-12 rounded-full border border-slate-200 bg-white flex items-center justify-center text-slate-400 hover:text-primary-600 hover:border-primary-600 transition-all shadow-sm"
+                aria-label="Next project"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </div>
           </div>
 
-          <div className="mt-12 text-center">
+          <div className="embla" ref={portfolioRef}>
+            <div className="embla__container flex gap-6">
+              {portfolio.map((project, index) => (
+                <div key={project.id} className="embla__slide flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] min-w-0">
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    onClick={() => setSelectedProject(project)}
+                    className={`group h-full bg-gradient-to-br from-white to-slate-50/50 border-2 rounded-[40px] transition-all cursor-pointer relative overflow-hidden shadow-sm hover:shadow-2xl flex flex-col ${
+                      index % 2 === 0 ? 'border-primary-100 hover:border-primary-400/50 hover:shadow-primary-500/10' : 'border-accent-100 hover:border-accent-400/50 hover:shadow-accent-500/10'
+                    }`}
+                  >
+                    <div className="relative aspect-[4/3] overflow-hidden m-2 rounded-[32px]">
+                      <img 
+                        src={project.thumbnail} 
+                        alt={project.clientName}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+                      <div className="absolute bottom-6 left-6 right-6">
+                        <p className="text-[10px] font-bold text-white/80 uppercase tracking-[0.3em] mb-1">{project.businessType}</p>
+                        <h3 className="text-xl font-bold text-white uppercase tracking-tight">{project.clientName}</h3>
+                      </div>
+                    </div>
+                    
+                    <div className="p-8 pt-4 flex flex-col justify-between flex-grow">
+                      <p className="text-slate-500 text-sm leading-relaxed mb-6 line-clamp-2">
+                        Strategic growth and digital transformation for {project.clientName}.
+                      </p>
+                      <div className="flex items-center justify-between pt-6 border-t border-slate-100">
+                        <div className="flex items-center gap-2 text-primary-600 group-hover:text-accent-600 text-xs font-bold uppercase tracking-widest transition-colors">
+                          View Project <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                        </div>
+                        <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-primary-50 group-hover:text-primary-600 transition-all">
+                          <Maximize2 size={16} />
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-16 text-center">
             <button 
               onClick={onViewAllPortfolio}
-              className="px-8 py-4 bg-white hover:bg-slate-50 text-slate-900 rounded-xl font-bold uppercase tracking-widest transition-all border border-slate-200 flex items-center gap-2 mx-auto group text-[10px]"
+              className="px-10 py-5 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-bold uppercase tracking-widest transition-all shadow-xl shadow-slate-900/10 flex items-center gap-3 mx-auto group text-[11px]"
             >
-              View All Projects <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+              Explore All Projects <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
         </div>
@@ -490,24 +537,25 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       <section id="about" className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="relative">
-              <div className="aspect-square rounded-[48px] overflow-hidden border border-slate-200 bg-white">
+            <div className="relative max-w-sm mx-auto w-full lg:mx-0">
+              <div className="aspect-[4/5] rounded-[48px] overflow-hidden border border-slate-200 bg-white shadow-xl">
                 <img 
-                  src="https://picsum.photos/seed/founder/800/800" 
+                  src="https://picsum.photos/seed/founder/800/1000" 
                   alt="Sunil Gour" 
                   className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
                   referrerPolicy="no-referrer"
                 />
               </div>
-              <div className="absolute -bottom-6 -right-6 bg-gradient-to-br from-primary-600 to-accent-600 p-8 rounded-[32px] shadow-2xl hidden sm:block">
-                <p className="text-white font-bold text-2xl leading-none mb-1">10+</p>
-                <p className="text-white/80 text-[9px] font-bold uppercase tracking-widest">Years Experience</p>
+              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-white border border-slate-100 px-8 py-4 rounded-2xl shadow-xl min-w-[240px] text-center">
+                <p className="text-slate-900 font-bold uppercase tracking-widest text-xs mb-0.5">Sunil Gour</p>
+                <div className="h-0.5 w-8 bg-primary-600 mx-auto mb-1"></div>
+                <p className="text-primary-600 text-[9px] font-bold uppercase tracking-[0.2em]">Founder & CEO</p>
               </div>
             </div>
             
-            <div className="space-y-6">
+            <div className="space-y-8">
               <div>
-                <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 uppercase mb-4">
+                <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 uppercase mb-6">
                   Behind <br />
                   <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600">DigiTaank</span>
                 </h2>
@@ -516,23 +564,16 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div>
-                  <h4 className="text-slate-900 font-bold uppercase tracking-tight mb-2 flex items-center gap-2 text-sm">
-                    <Rocket size={16} className="text-primary-600" /> Our Mission
-                  </h4>
-                  <p className="text-slate-500 text-xs leading-relaxed">
-                    To empower businesses with innovative digital tools and strategies that drive measurable impact.
-                  </p>
+              <div className="bg-white border border-slate-100 p-8 rounded-[40px] shadow-sm relative overflow-hidden group">
+                <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                  <Rocket size={80} className="text-primary-600" />
                 </div>
-                <div>
-                  <h4 className="text-slate-900 font-bold uppercase tracking-tight mb-2 flex items-center gap-2 text-sm">
-                    <BrainCircuit size={16} className="text-primary-600" /> Our Vision
-                  </h4>
-                  <p className="text-slate-500 text-xs leading-relaxed">
-                    To be the global benchmark for intelligence-driven digital marketing and agency operations.
-                  </p>
-                </div>
+                <h4 className="text-slate-900 font-bold uppercase tracking-tight mb-4 flex items-center gap-2 text-base">
+                  <Rocket size={20} className="text-primary-600" /> Our Mission
+                </h4>
+                <p className="text-slate-600 text-sm sm:text-base leading-relaxed relative z-10">
+                  We are primarily focused on supporting new startups that often lack specialized marketing and development teams. We don't just provide services; we stand with you as your dedicated growth partners, ensuring your vision has the technical and strategic backbone it needs to succeed.
+                </p>
               </div>
 
               <div className="pt-6 border-t border-slate-200">
