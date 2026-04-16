@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import useEmblaCarousel from 'embla-carousel-react';
 import { 
   BrainCircuit, 
   ArrowRight, 
@@ -50,6 +51,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   content
 }) => {
   const { services, portfolio, testimonials, settings } = content;
+  const [emblaRef, emblaApi] = useEmblaCarousel({ 
+    align: 'start',
+    containScroll: 'trimSnaps',
+    dragFree: true
+  });
   const [selectedService, setSelectedService] = useState<ServiceCategory | null>(null);
   const [selectedProject, setSelectedProject] = useState<PortfolioProject | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -110,42 +116,42 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-emerald-500/30 selection:text-emerald-200 scroll-smooth">
+    <div className="min-h-screen bg-slate-50 text-slate-900 selection:bg-primary-500/10 selection:text-primary-700 scroll-smooth">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-zinc-950/80 backdrop-blur-xl border-b border-zinc-900">
-        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <nav className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             {settings.logo ? (
-              <img src={settings.logo} alt={settings.agencyName} className="h-8 w-[100px] object-contain" />
+              <img src={settings.logo} alt={settings.agencyName} className="h-6 w-[80px] object-contain" />
             ) : (
-              <span className="text-xl font-bold tracking-tight text-white">{settings.agencyName}</span>
+              <span className="text-lg font-bold tracking-tight text-slate-900">{settings.agencyName}</span>
             )}
           </div>
           
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-6">
             {['Home', 'Services', 'Portfolio', 'About'].map((item) => (
               <a 
                 key={item}
                 href={`#${item.toLowerCase()}`} 
-                className="text-[10px] font-bold text-zinc-400 hover:text-white transition-colors uppercase tracking-[0.2em]"
+                className="text-[9px] font-bold text-slate-500 hover:text-primary-600 transition-colors uppercase tracking-[0.2em]"
               >
                 {item}
               </a>
             ))}
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             <a 
               href="#contact"
-              className="hidden sm:flex px-6 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all shadow-lg shadow-emerald-500/20"
+              className="hidden sm:flex px-5 py-2 bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-700 hover:to-accent-700 text-white rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all shadow-md shadow-primary-500/10"
             >
               Contact Us
             </a>
             <button 
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 text-zinc-400 hover:text-white transition-colors"
+              className="lg:hidden p-2 text-slate-500 hover:text-slate-900 transition-colors"
             >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
@@ -177,102 +183,61 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </nav>
 
       {/* Hero Section */}
-      <header id="home" className="relative pt-40 pb-32 overflow-hidden min-h-[90vh] flex items-center">
+      <header id="home" className="relative pt-32 pb-24 overflow-hidden min-h-[85vh] flex items-center">
         {/* Background Grid */}
-        <div className="absolute inset-0 z-0 opacity-20" 
-             style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, #27272a 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
+        <div className="absolute inset-0 z-0 opacity-40" 
+             style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #e2e8f0 1px, transparent 0)', backgroundSize: '32px 32px' }}></div>
         
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-emerald-500/20 blur-[140px] rounded-full animate-pulse" />
-          <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-blue-500/20 blur-[140px] rounded-full animate-pulse delay-700" />
+          <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary-500/15 blur-[120px] rounded-full animate-pulse" />
+          <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-accent-500/15 blur-[120px] rounded-full animate-pulse delay-700" />
         </div>
 
         <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
-            <div className="lg:col-span-8">
+          <div className="flex flex-col items-center text-center">
+            <div className="max-w-4xl">
               <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className="flex flex-col items-center"
               >
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-10">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-primary-500/10 to-accent-500/10 border border-primary-500/20 text-primary-700 text-[9px] font-bold uppercase tracking-[0.2em] mb-8">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent-500"></span>
                   </span>
                   {settings.agencyName} Agency
                 </div>
-                <h1 className="text-4xl sm:text-6xl lg:text-8xl font-bold tracking-tight text-white leading-[0.85] mb-10 uppercase italic">
+                <h1 className="text-4xl sm:text-6xl lg:text-8xl font-bold tracking-tight text-slate-900 leading-[0.9] mb-8 uppercase italic">
                   Let's make <br />
                   your Brand <br />
-                  <span className="text-emerald-500 not-italic relative">
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600 not-italic relative">
                     famous.
-                    <span className="absolute -inset-2 bg-emerald-500/20 blur-2xl -z-10 rounded-full animate-pulse"></span>
+                    <span className="absolute -inset-2 bg-accent-500/10 blur-2xl -z-10 rounded-full animate-pulse"></span>
                   </span>
                 </h1>
-                <p className="text-lg sm:text-xl text-zinc-400 font-medium leading-relaxed mb-12 max-w-2xl">
+                <p className="text-base sm:text-lg text-slate-600 font-medium leading-relaxed mb-10 max-w-2xl mx-auto">
                   We don't just manage accounts; we build legacies. Experience the fusion of AI-driven precision and creative brilliance.
                 </p>
-                <div className="flex flex-wrap gap-6 items-center">
+                <div className="flex flex-col sm:flex-row gap-8 items-center justify-center">
                   <a 
                     href="#contact"
-                    className="px-12 py-6 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-bold uppercase tracking-widest transition-all shadow-2xl shadow-emerald-500/40 flex items-center gap-4 group text-lg"
+                    className="px-10 py-5 bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-700 hover:to-accent-700 text-white rounded-2xl font-bold uppercase tracking-widest transition-all shadow-2xl shadow-primary-500/25 flex items-center gap-3 group text-base"
                   >
-                    Get Started <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform" />
+                    Get Started <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                   </a>
-                  <div className="flex -space-x-4 items-center">
+                  <div className="flex -space-x-3 items-center">
                     {[1, 2, 3, 4, 5].map(i => (
-                      <div key={i} className="w-12 h-12 rounded-full border-4 border-zinc-950 bg-zinc-800 flex items-center justify-center overflow-hidden">
+                      <div key={i} className="w-12 h-12 rounded-full border-4 border-white bg-slate-100 flex items-center justify-center overflow-hidden shadow-sm">
                         <img src={`https://picsum.photos/seed/agency${i}/100/100`} alt="Client" referrerPolicy="no-referrer" />
                       </div>
                     ))}
-                    <div className="ml-8">
-                      <p className="text-white font-bold text-lg leading-none">500+</p>
-                      <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Global Clients</p>
+                    <div className="ml-6 text-left">
+                      <p className="text-slate-900 font-bold text-lg leading-none">500+</p>
+                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Global Clients</p>
                     </div>
                   </div>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Floating Elements Column */}
-            <div className="hidden lg:block lg:col-span-4 relative h-[500px]">
-              <motion.div 
-                initial={{ opacity: 0, x: 50 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.5, duration: 1 }}
-                className="absolute top-0 right-0 w-full h-full"
-              >
-                <div className="absolute top-10 right-0 bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 p-6 rounded-3xl shadow-2xl rotate-6 hover:rotate-0 transition-all duration-500 group cursor-default">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center text-white">
-                      <Zap size={20} />
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Growth Rate</p>
-                      <p className="text-xl font-bold text-white">+142%</p>
-                    </div>
-                  </div>
-                  <div className="h-1.5 w-full bg-zinc-800 rounded-full overflow-hidden">
-                    <div className="h-full bg-emerald-500 w-[85%] animate-pulse"></div>
-                  </div>
-                </div>
-
-                <div className="absolute bottom-20 left-0 bg-zinc-900/80 backdrop-blur-xl border border-zinc-800 p-6 rounded-3xl shadow-2xl -rotate-12 hover:rotate-0 transition-all duration-500 group cursor-default">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center text-white">
-                      <Users size={20} />
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Active Leads</p>
-                      <p className="text-xl font-bold text-white">1,284</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                  <BrainCircuit size={120} className="text-zinc-800 animate-spin-slow opacity-50" />
                 </div>
               </motion.div>
             </div>
@@ -283,125 +248,159 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          transition={{ delay: 1.2 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
         >
-          <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.3em]">Scroll</span>
-          <div className="w-px h-12 bg-gradient-to-b from-emerald-500 to-transparent"></div>
+          <span className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.3em]">Scroll</span>
+          <div className="w-px h-10 bg-gradient-to-b from-primary-500 to-transparent"></div>
         </motion.div>
       </header>
 
       {/* Services Section */}
-      <section id="services" className="py-32 bg-zinc-900/30">
+      <section id="services" className="py-24 bg-white overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
             <div className="max-w-2xl">
-              <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white uppercase mb-6">
-                Our <span className="text-emerald-500">Expertise</span>
+              <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 uppercase mb-4">
+                Our <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600">Expertise</span>
               </h2>
-              <p className="text-zinc-400 font-medium text-base sm:text-lg leading-relaxed">
-                Comprehensive digital solutions tailored to your business goals. Click on a service to view our specialized packages.
+              <p className="text-slate-500 font-medium text-sm sm:text-base leading-relaxed">
+                Comprehensive digital solutions tailored to your business goals. Explore our specialized packages.
               </p>
+            </div>
+            <div className="flex gap-2">
+              <button 
+                onClick={() => emblaApi?.scrollPrev()}
+                className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-primary-600 hover:border-primary-600 transition-all"
+                aria-label="Previous slide"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button 
+                onClick={() => emblaApi?.scrollNext()}
+                className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-primary-600 hover:border-primary-600 transition-all"
+                aria-label="Next slide"
+              >
+                <ChevronRight size={20} />
+              </button>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {services.slice(0, 6).map((service, index) => (
-              <motion.div
-                key={service.id}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                onClick={() => setSelectedService(service)}
-                className="group bg-zinc-900/50 backdrop-blur-sm border border-zinc-800 p-8 rounded-[32px] hover:border-emerald-500/50 transition-all cursor-pointer relative overflow-hidden"
-              >
-                <div className="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Maximize2 size={20} className="text-emerald-500" />
+          <div className="embla" ref={emblaRef}>
+            <div className="embla__container flex gap-6">
+              {services.map((service, index) => (
+                <div key={service.id} className="embla__slide flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] min-w-0">
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.1 }}
+                    onClick={() => setSelectedService(service)}
+                    className="group h-full bg-gradient-to-br from-white to-slate-50/50 border border-slate-200/60 p-10 rounded-[40px] hover:border-primary-400/50 transition-all cursor-pointer relative overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-primary-500/10 flex flex-col"
+                  >
+                    {/* Background Accent */}
+                    <div className="absolute -right-12 -top-12 w-40 h-40 bg-primary-500/5 rounded-full blur-3xl group-hover:bg-primary-500/10 transition-colors" />
+                    <div className="absolute -left-12 -bottom-12 w-40 h-40 bg-accent-500/5 rounded-full blur-3xl group-hover:bg-accent-500/10 transition-colors" />
+
+                    <div className="absolute top-0 right-0 p-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Maximize2 size={18} className="text-primary-600" />
+                    </div>
+                    
+                    <div className="w-20 h-20 bg-white border border-slate-100 rounded-3xl flex items-center justify-center mb-10 group-hover:bg-gradient-to-br group-hover:from-primary-600 group-hover:to-accent-600 group-hover:text-white transition-all duration-500 shadow-sm group-hover:shadow-xl group-hover:shadow-primary-500/20">
+                      {getServiceIcon(service.icon, index)}
+                    </div>
+                    
+                    <h3 className="text-2xl font-bold text-slate-900 mb-4 tracking-tight uppercase group-hover:text-primary-600 transition-colors">
+                      {service.name}
+                    </h3>
+                    
+                    <p className="text-slate-500 text-sm sm:text-base leading-relaxed mb-10 flex-grow">
+                      {service.description}
+                    </p>
+                    
+                    <div className="pt-8 border-t border-slate-100 flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-primary-600 group-hover:text-accent-600 text-xs font-bold uppercase tracking-widest transition-colors">
+                        View Packages <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                      </div>
+                      <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-primary-50 group-hover:text-primary-600 transition-all">
+                        <Rocket size={18} />
+                      </div>
+                    </div>
+                  </motion.div>
                 </div>
-                <div className="w-14 h-14 bg-zinc-800 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-emerald-500 group-hover:text-white transition-all">
-                  {getServiceIcon(service.icon)}
-                </div>
-                <h3 className="text-xl font-bold text-white mb-3 tracking-tight uppercase">{service.name}</h3>
-                <p className="text-zinc-500 text-sm leading-relaxed mb-8">
-                  {service.description}
-                </p>
-                <div className="flex items-center gap-2 text-emerald-500 text-[10px] font-bold uppercase tracking-widest">
-                  View Packages <ChevronRight size={14} />
-                </div>
-              </motion.div>
-            ))}
+              ))}
+            </div>
           </div>
 
           <div className="mt-16 text-center">
             <button 
               onClick={onViewAllServices}
-              className="px-12 py-5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-2xl font-bold uppercase tracking-widest transition-all border border-zinc-800 flex items-center gap-3 mx-auto group"
+              className="px-10 py-5 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-bold uppercase tracking-widest transition-all shadow-xl shadow-slate-900/10 flex items-center gap-3 mx-auto group text-[11px]"
             >
-              View All Services <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+              Explore All Solutions <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
         </div>
       </section>
 
       {/* Portfolio Section */}
-      <section id="portfolio" className="py-32">
+      <section id="portfolio" className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-20">
-            <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white uppercase mb-6">
-              Client <span className="text-emerald-500">Success</span>
+          <div className="text-center mb-16">
+            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 uppercase mb-4">
+              Client <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600">Success</span>
             </h2>
-            <p className="text-zinc-400 font-medium max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
+            <p className="text-slate-500 font-medium max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
               Explore how we've helped businesses across different industries achieve their digital potential.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {portfolio.slice(0, 6).map((project, index) => (
               <motion.div
                 key={project.id}
-                initial={{ opacity: 0, scale: 0.95 }}
+                initial={{ opacity: 0, scale: 0.98 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 onClick={() => setSelectedProject(project)}
-                className="group relative aspect-[4/3] rounded-[40px] overflow-hidden cursor-pointer bg-zinc-900"
+                className="group relative aspect-[4/3] rounded-[32px] overflow-hidden cursor-pointer bg-white shadow-sm"
               >
                 <img 
                   src={project.thumbnail} 
                   alt={project.clientName}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-60 group-hover:opacity-100"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
                   referrerPolicy="no-referrer"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent p-8 flex flex-col justify-end">
-                  <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-[0.3em] mb-2">{project.businessType}</p>
-                  <h3 className="text-2xl font-bold text-white uppercase tracking-tight">{project.clientName}</h3>
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent p-6 flex flex-col justify-end">
+                  <p className="text-[9px] font-bold text-accent-400 uppercase tracking-[0.3em] mb-1">{project.businessType}</p>
+                  <h3 className="text-lg font-bold text-white uppercase tracking-tight group-hover:text-primary-400 transition-colors">{project.clientName}</h3>
                 </div>
               </motion.div>
             ))}
           </div>
 
-          <div className="mt-16 text-center">
+          <div className="mt-12 text-center">
             <button 
               onClick={onViewAllPortfolio}
-              className="px-12 py-5 bg-zinc-900 hover:bg-zinc-800 text-white rounded-2xl font-bold uppercase tracking-widest transition-all border border-zinc-800 flex items-center gap-3 mx-auto group"
+              className="px-8 py-4 bg-white hover:bg-slate-50 text-slate-900 rounded-xl font-bold uppercase tracking-widest transition-all border border-slate-200 flex items-center gap-2 mx-auto group text-[10px]"
             >
-              View All Projects <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+              View All Projects <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
         </div>
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-32 bg-zinc-950 relative overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-zinc-800 to-transparent"></div>
+      <section className="py-24 bg-white relative overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
         
         <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-20">
-            <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white uppercase mb-6">
-              Client <span className="text-emerald-500">Voices</span>
+          <div className="text-center mb-16">
+            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 uppercase mb-4">
+              Client <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600">Voices</span>
             </h2>
-            <p className="text-zinc-500 font-medium max-w-2xl mx-auto text-base sm:text-lg">
+            <p className="text-slate-500 font-medium max-w-2xl mx-auto text-sm sm:text-base">
               Don't just take our word for it. Here's what our partners have to say about working with DigiTaank.
             </p>
           </div>
@@ -409,27 +408,27 @@ export const LandingPage: React.FC<LandingPageProps> = ({
           <div className="relative max-w-4xl mx-auto">
             {testimonials.length > 0 ? (
               <>
-                <div className="absolute -top-12 -left-12 text-emerald-500/20">
-                  <Quote size={120} />
+                <div className="absolute -top-8 -left-8 text-accent-500/10">
+                  <Quote size={100} />
                 </div>
 
                 <div className="relative z-10 overflow-hidden">
                   <AnimatePresence mode="wait">
                     <motion.div
                       key={currentTestimonial}
-                      initial={{ opacity: 0, x: 50 }}
+                      initial={{ opacity: 0, x: 40 }}
                       animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -50 }}
-                      transition={{ type: 'spring', damping: 20, stiffness: 100 }}
-                      className="bg-zinc-900/50 border border-zinc-800 p-10 sm:p-16 rounded-[40px] sm:rounded-[60px] backdrop-blur-xl"
+                      exit={{ opacity: 0, x: -40 }}
+                      transition={{ type: 'spring', damping: 25, stiffness: 120 }}
+                      className="bg-slate-50 border border-slate-100 p-8 sm:p-12 rounded-[40px] shadow-sm"
                     >
-                      <p className="text-xl sm:text-3xl font-medium text-white leading-relaxed mb-12 italic">
+                      <p className="text-lg sm:text-2xl font-medium text-slate-900 leading-relaxed mb-10 italic">
                         "{testimonials[currentTestimonial].content}"
                       </p>
                       
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
-                        <div className="flex items-center gap-6">
-                          <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-emerald-500/20">
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-xl overflow-hidden border-2 border-primary-500/10">
                             <img 
                               src={testimonials[currentTestimonial].avatar} 
                               alt={testimonials[currentTestimonial].name}
@@ -438,27 +437,27 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                             />
                           </div>
                           <div>
-                            <h4 className="text-xl font-bold text-white uppercase tracking-tight">
+                            <h4 className="text-lg font-bold text-slate-900 uppercase tracking-tight">
                               {testimonials[currentTestimonial].name}
                             </h4>
-                            <p className="text-emerald-500 text-xs font-bold uppercase tracking-widest">
+                            <p className="text-primary-600 text-[10px] font-bold uppercase tracking-widest">
                               {testimonials[currentTestimonial].role}
                             </p>
                           </div>
                         </div>
 
-                        <div className="flex gap-4">
+                        <div className="flex gap-3">
                           <button 
                             onClick={prevTestimonial}
-                            className="w-14 h-14 bg-zinc-800 hover:bg-zinc-700 text-white rounded-2xl flex items-center justify-center transition-all border border-zinc-700/50"
+                            className="w-12 h-12 bg-white hover:bg-slate-50 text-slate-900 rounded-xl flex items-center justify-center transition-all border border-slate-200"
                           >
-                            <ChevronLeft size={24} />
+                            <ChevronLeft size={20} />
                           </button>
                           <button 
                             onClick={nextTestimonial}
-                            className="w-14 h-14 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl flex items-center justify-center transition-all shadow-lg shadow-emerald-500/20"
+                            className="w-12 h-12 bg-gradient-to-r from-primary-600 to-accent-600 hover:from-primary-700 hover:to-accent-700 text-white rounded-xl flex items-center justify-center transition-all shadow-lg shadow-primary-500/20"
                           >
-                            <ChevronRight size={24} />
+                            <ChevronRight size={20} />
                           </button>
                         </div>
                       </div>
@@ -466,21 +465,21 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   </AnimatePresence>
                 </div>
 
-                <div className="flex justify-center gap-2 mt-12">
+                <div className="flex justify-center gap-2 mt-10">
                   {testimonials.map((_, i) => (
                     <button
                       key={i}
                       onClick={() => setCurrentTestimonial(i)}
-                      className={`h-1.5 rounded-full transition-all duration-500 ${
-                        i === currentTestimonial ? 'w-12 bg-emerald-500' : 'w-3 bg-zinc-800 hover:bg-zinc-700'
+                      className={`h-1 rounded-full transition-all duration-500 ${
+                        i === currentTestimonial ? 'w-8 bg-primary-600' : 'w-2 bg-slate-200 hover:bg-slate-300'
                       }`}
                     />
                   ))}
                 </div>
               </>
             ) : (
-              <div className="text-center py-20 bg-zinc-900/30 rounded-[40px] border border-zinc-800">
-                <p className="text-zinc-500 font-bold uppercase tracking-widest">No testimonials yet.</p>
+              <div className="text-center py-16 bg-slate-50 rounded-[32px] border border-slate-100">
+                <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">No testimonials yet.</p>
               </div>
             )}
           </div>
@@ -488,11 +487,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-32 bg-zinc-900/30">
+      <section id="about" className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div className="relative">
-              <div className="aspect-square rounded-[60px] overflow-hidden border border-zinc-800">
+              <div className="aspect-square rounded-[48px] overflow-hidden border border-slate-200 bg-white">
                 <img 
                   src="https://picsum.photos/seed/founder/800/800" 
                   alt="Sunil Gour" 
@@ -500,59 +499,59 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   referrerPolicy="no-referrer"
                 />
               </div>
-              <div className="absolute -bottom-10 -right-10 bg-emerald-500 p-10 rounded-[40px] shadow-2xl hidden sm:block">
-                <p className="text-white font-bold text-3xl leading-none mb-2">10+</p>
-                <p className="text-emerald-100 text-[10px] font-bold uppercase tracking-widest">Years Experience</p>
+              <div className="absolute -bottom-6 -right-6 bg-gradient-to-br from-primary-600 to-accent-600 p-8 rounded-[32px] shadow-2xl hidden sm:block">
+                <p className="text-white font-bold text-2xl leading-none mb-1">10+</p>
+                <p className="text-white/80 text-[9px] font-bold uppercase tracking-widest">Years Experience</p>
               </div>
             </div>
             
-            <div className="space-y-8">
+            <div className="space-y-6">
               <div>
-                <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-white uppercase mb-6">
+                <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-900 uppercase mb-4">
                   Behind <br />
-                  <span className="text-emerald-500">DigiTaank</span>
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600">DigiTaank</span>
                 </h2>
-                <p className="text-zinc-400 text-lg leading-relaxed">
+                <p className="text-slate-600 text-base leading-relaxed">
                   Founded by Sunil Gour, DigiTaank is a creative-led digital agency that believes in the power of smart marketing. We don't just run ads; we build ecosystems for growth.
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div>
-                  <h4 className="text-white font-bold uppercase tracking-tight mb-3 flex items-center gap-2">
-                    <Rocket size={18} className="text-emerald-500" /> Our Mission
+                  <h4 className="text-slate-900 font-bold uppercase tracking-tight mb-2 flex items-center gap-2 text-sm">
+                    <Rocket size={16} className="text-primary-600" /> Our Mission
                   </h4>
-                  <p className="text-zinc-500 text-sm leading-relaxed">
+                  <p className="text-slate-500 text-xs leading-relaxed">
                     To empower businesses with innovative digital tools and strategies that drive measurable impact.
                   </p>
                 </div>
                 <div>
-                  <h4 className="text-white font-bold uppercase tracking-tight mb-3 flex items-center gap-2">
-                    <BrainCircuit size={18} className="text-emerald-500" /> Our Vision
+                  <h4 className="text-slate-900 font-bold uppercase tracking-tight mb-2 flex items-center gap-2 text-sm">
+                    <BrainCircuit size={16} className="text-primary-600" /> Our Vision
                   </h4>
-                  <p className="text-zinc-500 text-sm leading-relaxed">
+                  <p className="text-slate-500 text-xs leading-relaxed">
                     To be the global benchmark for intelligence-driven digital marketing and agency operations.
                   </p>
                 </div>
               </div>
 
-              <div className="pt-8 border-t border-zinc-800">
-                <p className="text-zinc-300 font-bold mb-6 italic">"Innovation is not just about technology, it's about how we solve human problems with it."</p>
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-zinc-800 overflow-hidden">
+              <div className="pt-6 border-t border-slate-200">
+                <p className="text-slate-700 font-bold mb-6 italic text-sm">"Innovation is not just about technology, it's about how we solve human problems with it."</p>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-slate-200 overflow-hidden">
                       <img src="https://picsum.photos/seed/sunil/100/100" alt="Sunil Gour" referrerPolicy="no-referrer" />
                     </div>
                     <div>
-                      <p className="text-white font-bold uppercase tracking-widest text-xs">Sunil Gour</p>
-                      <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">Founder & CEO</p>
+                      <p className="text-slate-900 font-bold uppercase tracking-widest text-[10px]">Sunil Gour</p>
+                      <p className="text-slate-400 text-[8px] font-bold uppercase tracking-widest">Founder & CEO</p>
                     </div>
                   </div>
                   <button 
                     onClick={onViewAllAbout}
-                    className="px-8 py-4 bg-zinc-900 hover:bg-zinc-800 text-white rounded-2xl font-bold uppercase tracking-widest text-[10px] transition-all border border-zinc-800 flex items-center gap-2 group"
+                    className="px-6 py-3 bg-white hover:bg-slate-50 text-slate-900 rounded-xl font-bold uppercase tracking-widest text-[9px] transition-all border border-slate-200 flex items-center gap-2 group"
                   >
-                    Know More <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                    Know More <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </div>
@@ -562,71 +561,71 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-32">
+      <section id="contact" className="py-24 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Contact Form */}
-            <div className="bg-zinc-900/50 border border-zinc-800 p-10 sm:p-16 rounded-[60px]">
-              <h2 className="text-3xl font-bold tracking-tight text-white uppercase mb-8">
-                Let's <span className="text-emerald-500">Connect</span>
+            <div className="bg-slate-50 border border-slate-100 p-8 sm:p-12 rounded-[48px] shadow-sm">
+              <h2 className="text-2xl font-bold tracking-tight text-slate-900 uppercase mb-6">
+                Let's <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600">Connect</span>
               </h2>
-              <form onSubmit={handleContactSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Your Name</label>
+              <form onSubmit={handleContactSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Your Name</label>
                     <input 
                       type="text" 
                       required
                       value={contactForm.name}
                       onChange={e => setContactForm({...contactForm, name: e.target.value})}
-                      className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-6 py-4 text-white focus:border-emerald-500 outline-none transition-all"
+                      className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-slate-900 text-sm focus:border-primary-500 outline-none transition-all"
                       placeholder="John Doe"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Business Name</label>
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Business Name</label>
                     <input 
                       type="text" 
                       required
                       value={contactForm.businessName}
                       onChange={e => setContactForm({...contactForm, businessName: e.target.value})}
-                      className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-6 py-4 text-white focus:border-emerald-500 outline-none transition-all"
+                      className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-slate-900 text-sm focus:border-primary-500 outline-none transition-all"
                       placeholder="Acme Corp"
                     />
                   </div>
                 </div>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">WhatsApp Number</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">WhatsApp Number</label>
                     <input 
                       type="tel" 
                       required
                       value={contactForm.whatsapp}
                       onChange={e => setContactForm({...contactForm, whatsapp: e.target.value})}
-                      className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-6 py-4 text-white focus:border-emerald-500 outline-none transition-all"
+                      className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-slate-900 text-sm focus:border-primary-500 outline-none transition-all"
                       placeholder="+91 98765 43210"
                     />
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Selected Plan</label>
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Selected Plan</label>
                     <input 
                       type="text" 
                       readOnly
                       value={contactForm.selectedPlan}
-                      className="w-full bg-zinc-900/50 border border-zinc-800 rounded-2xl px-6 py-4 text-emerald-500 font-bold text-sm outline-none cursor-default"
+                      className="w-full bg-slate-100 border border-slate-200 rounded-xl px-5 py-3 text-primary-600 font-bold text-xs outline-none cursor-default"
                       placeholder="Select a package above"
                     />
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Your Budget</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Your Budget</label>
                     <select 
                       value={contactForm.budget}
                       onChange={e => setContactForm({...contactForm, budget: e.target.value})}
-                      className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-6 py-4 text-white focus:border-emerald-500 outline-none transition-all appearance-none"
+                      className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-slate-900 text-sm focus:border-primary-500 outline-none transition-all appearance-none"
                     >
                       <option value="">Select Budget Range</option>
                       <option value="10k-50k">₹10,000 - ₹50,000</option>
@@ -637,17 +636,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Services Required</label>
-                  <div className="flex flex-wrap gap-3">
+                  <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Services Required</label>
+                  <div className="flex flex-wrap gap-2">
                     {services.map(s => (
                       <button
                         key={s.id}
                         type="button"
                         onClick={() => toggleServiceSelection(s.name)}
-                        className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest border transition-all ${
+                        className={`px-4 py-2 rounded-lg text-[9px] font-bold uppercase tracking-widest border transition-all ${
                           contactForm.services.includes(s.name)
-                            ? 'bg-emerald-500 border-emerald-500 text-white'
-                            : 'bg-zinc-950 border-zinc-800 text-zinc-500 hover:border-zinc-700'
+                            ? 'bg-primary-600 border-primary-600 text-white'
+                            : 'bg-white border-slate-200 text-slate-500 hover:border-primary-500/50'
                         }`}
                       >
                         {s.name}
@@ -656,67 +655,67 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Message</label>
+                <div className="space-y-1.5">
+                  <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest ml-1">Message</label>
                   <textarea 
                     rows={4}
                     value={contactForm.message}
                     onChange={e => setContactForm({...contactForm, message: e.target.value})}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl px-6 py-4 text-white focus:border-emerald-500 outline-none transition-all resize-none"
+                    className="w-full bg-white border border-slate-200 rounded-xl px-5 py-3 text-slate-900 text-sm focus:border-primary-500 outline-none transition-all resize-none"
                     placeholder="Tell us about your project..."
                   />
                 </div>
 
                 <button 
                   type="submit"
-                  className="w-full py-5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-bold uppercase tracking-widest transition-all shadow-2xl shadow-emerald-500/20 flex items-center justify-center gap-3 group"
+                  className="w-full py-4 bg-primary-600 hover:bg-primary-700 text-white rounded-xl font-bold uppercase tracking-widest transition-all shadow-lg shadow-primary-500/20 flex items-center justify-center gap-2 group text-xs"
                 >
-                  Send Message <Send size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  Send Message <Send size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                 </button>
               </form>
             </div>
 
             {/* Contact Details */}
-            <div className="flex flex-col justify-center space-y-12">
+            <div className="flex flex-col justify-center space-y-10">
               <div>
-                <h3 className="text-2xl font-bold text-white uppercase tracking-tight mb-6">Contact <span className="text-emerald-500">Details</span></h3>
-                <div className="space-y-8">
-                  <div className="flex items-start gap-6">
-                    <div className="w-12 h-12 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center justify-center text-emerald-500 shrink-0">
-                      <Phone size={24} />
+                <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tight mb-4">Contact <span className="text-primary-600">Details</span></h3>
+                <div className="space-y-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-primary-600 shrink-0 shadow-sm">
+                      <Phone size={20} />
                     </div>
                     <div>
-                      <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Call Us</p>
-                      <p className="text-lg font-bold text-white">{settings.contactPhone}</p>
+                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Call Us</p>
+                      <p className="text-base font-bold text-slate-900">{settings.contactPhone}</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-6">
-                    <div className="w-12 h-12 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center justify-center text-emerald-500 shrink-0">
-                      <Mail size={24} />
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-primary-600 shrink-0 shadow-sm">
+                      <Mail size={20} />
                     </div>
                     <div>
-                      <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Email Us</p>
-                      <p className="text-lg font-bold text-white">{settings.contactEmail}</p>
+                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Email Us</p>
+                      <p className="text-base font-bold text-slate-900">{settings.contactEmail}</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-6">
-                    <div className="w-12 h-12 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center justify-center text-emerald-500 shrink-0">
-                      <MapPin size={24} />
+                  <div className="flex items-start gap-4">
+                    <div className="w-10 h-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-primary-600 shrink-0 shadow-sm">
+                      <MapPin size={20} />
                     </div>
                     <div>
-                      <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">Our Location</p>
-                      <p className="text-lg font-bold text-white">{settings.location}</p>
+                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">Our Location</p>
+                      <p className="text-base font-bold text-slate-900">{settings.location}</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-12 border-t border-zinc-900">
-                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-6">Follow Our Journey</p>
-                <div className="flex gap-4">
+              <div className="pt-10 border-t border-slate-100">
+                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-4">Follow Our Journey</p>
+                <div className="flex gap-3">
                   {[Instagram, Twitter, Linkedin, Facebook].map((Icon, i) => (
-                    <a key={i} href="#" className="w-12 h-12 bg-zinc-900 border border-zinc-800 rounded-2xl flex items-center justify-center text-zinc-400 hover:text-emerald-500 hover:border-emerald-500/50 transition-all">
-                      <Icon size={20} />
+                    <a key={i} href="#" className="w-10 h-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-slate-500 hover:text-primary-600 hover:border-primary-500/50 transition-all shadow-sm">
+                      <Icon size={18} />
                     </a>
                   ))}
                 </div>
@@ -726,9 +725,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                 href={`https://wa.me/${settings.whatsappNumber.replace(/\D/g, '')}`} 
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-4 px-8 py-5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 rounded-3xl font-bold uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all w-fit"
+                className="inline-flex items-center gap-3 px-6 py-4 bg-primary-500/5 border border-primary-500/10 text-primary-600 rounded-2xl font-bold uppercase tracking-widest hover:bg-primary-600 hover:text-white transition-all w-fit text-[10px]"
               >
-                <MessageSquare size={24} /> Chat on WhatsApp
+                <MessageSquare size={20} /> Chat on WhatsApp
               </a>
             </div>
           </div>
@@ -736,27 +735,27 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       </section>
 
       {/* Footer */}
-      <footer className="py-20 border-t border-zinc-900">
+      <footer className="py-16 border-t border-slate-200 bg-white">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-12">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-10">
             <div className="flex items-center gap-3">
               {settings.logo ? (
-                <img src={settings.logo} alt={settings.agencyName} className="h-8 w-auto object-contain" />
+                <img src={settings.logo} alt={settings.agencyName} className="h-6 w-auto object-contain" />
               ) : (
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-emerald-500 rounded-lg rotate-12 flex items-center justify-center">
-                    <span className="text-white font-bold text-sm -rotate-12">{settings.agencyName.charAt(0)}</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 bg-primary-600 rounded-lg rotate-12 flex items-center justify-center">
+                    <span className="text-white font-bold text-[10px] -rotate-12">{settings.agencyName.charAt(0)}</span>
                   </div>
-                  <span className="text-xl font-bold tracking-tight text-white">{settings.agencyName}</span>
+                  <span className="text-lg font-bold tracking-tight text-slate-900">{settings.agencyName}</span>
                 </div>
               )}
             </div>
-            <div className="flex gap-8 text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">
-              <a href="#" className="hover:text-emerald-500 transition-colors">Privacy</a>
-              <a href="#" className="hover:text-emerald-500 transition-colors">Terms</a>
-              <button onClick={onGetStarted} className="hover:text-emerald-500 transition-colors uppercase">Admin</button>
+            <div className="flex gap-6 text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em]">
+              <a href="#" className="hover:text-primary-600 transition-colors">Privacy</a>
+              <a href="#" className="hover:text-primary-600 transition-colors">Terms</a>
+              <button onClick={onGetStarted} className="hover:text-primary-600 transition-colors uppercase">Admin</button>
             </div>
-            <p className="text-zinc-600 text-[10px] font-bold uppercase tracking-widest">
+            <p className="text-slate-400 text-[9px] font-bold uppercase tracking-widest">
               © 2026 {settings.agencyName}. All Rights Reserved.
             </p>
           </div>
@@ -770,45 +769,45 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-zinc-950/90 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-950/40 backdrop-blur-sm"
           >
             <motion.div 
-              initial={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.95, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-zinc-900 border border-zinc-800 w-full max-w-4xl rounded-[32px] sm:rounded-[40px] overflow-hidden shadow-2xl max-h-[90vh] overflow-y-auto"
+              exit={{ scale: 0.95, y: 10 }}
+              className="bg-white border border-slate-200 w-full max-w-4xl rounded-[32px] overflow-hidden shadow-2xl max-h-[90vh] overflow-y-auto"
             >
-              <div className="p-6 sm:p-12">
-                <div className="flex items-center justify-between mb-8 sm:mb-12">
-                  <div className="flex items-center gap-4 sm:gap-6">
-                    <div className="w-12 h-12 sm:w-16 h-16 bg-emerald-500 rounded-xl sm:rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+              <div className="p-6 sm:p-10">
+                <div className="flex items-center justify-between mb-8">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary-500/20">
                       {getServiceIcon(selectedService.icon)}
                     </div>
                     <div>
-                      <h3 className="text-xl sm:text-2xl font-bold text-white uppercase tracking-tight">{selectedService.name}</h3>
-                      <p className="text-zinc-500 text-[10px] sm:text-sm font-medium">Specialized Packages</p>
+                      <h3 className="text-xl font-bold text-slate-900 uppercase tracking-tight">{selectedService.name}</h3>
+                      <p className="text-slate-500 text-[10px] font-medium uppercase tracking-widest">Specialized Packages</p>
                     </div>
                   </div>
                   <button 
                     onClick={() => setSelectedService(null)}
-                    className="w-10 h-10 sm:w-12 h-12 bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl sm:rounded-2xl flex items-center justify-center transition-all"
+                    className="w-10 h-10 bg-slate-50 hover:bg-slate-100 text-slate-500 rounded-xl flex items-center justify-center transition-all border border-slate-200"
                   >
-                    <X size={20} />
+                    <X size={18} />
                   </button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {selectedService.packages.map((pkg) => (
-                    <div key={pkg.id} className="bg-zinc-950 border border-zinc-800 p-8 rounded-3xl hover:border-emerald-500/50 transition-all flex flex-col">
-                      <div className="mb-6">
-                        <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-2">{pkg.duration}</p>
-                        <h4 className="text-xl font-bold text-white uppercase tracking-tight mb-1">{pkg.name}</h4>
-                        <p className="text-2xl font-bold text-emerald-500">₹{pkg.price.toLocaleString()}</p>
+                    <div key={pkg.id} className="bg-slate-50 border border-slate-100 p-6 rounded-2xl hover:border-primary-500/30 transition-all flex flex-col shadow-sm">
+                      <div className="mb-4">
+                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-1">{pkg.duration}</p>
+                        <h4 className="text-lg font-bold text-slate-900 uppercase tracking-tight mb-1">{pkg.name}</h4>
+                        <p className="text-xl font-bold text-primary-600">₹{pkg.price.toLocaleString()}</p>
                       </div>
-                      <ul className="space-y-3 mb-8 flex-grow">
+                      <ul className="space-y-2 mb-6 flex-grow">
                         {pkg.features.map((feature, i) => (
-                          <li key={i} className="flex items-start gap-2 text-xs text-zinc-400">
-                            <CheckCircle2 size={14} className="text-emerald-500 mt-0.5 shrink-0" />
+                          <li key={i} className="flex items-start gap-2 text-[10px] text-slate-500">
+                            <CheckCircle2 size={12} className="text-primary-600 mt-0.5 shrink-0" />
                             {feature}
                           </li>
                         ))}
@@ -823,7 +822,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                             selectedPlan: `${selectedService.name} - ${pkg.name} (₹${pkg.price.toLocaleString()})`
                           }));
                         }}
-                        className="w-full py-3 bg-zinc-800 hover:bg-emerald-500 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all"
+                        className="w-full py-2.5 bg-white hover:bg-primary-600 hover:text-white text-primary-600 border border-primary-600/20 rounded-lg text-[9px] font-bold uppercase tracking-widest transition-all"
                       >
                         Select Package
                       </button>
@@ -843,66 +842,66 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-zinc-950/90 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-950/40 backdrop-blur-sm"
           >
             <motion.div 
-              initial={{ scale: 0.9, y: 20 }}
+              initial={{ scale: 0.95, y: 10 }}
               animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.9, y: 20 }}
-              className="bg-zinc-900 border border-zinc-800 w-full max-w-5xl rounded-[32px] sm:rounded-[60px] overflow-hidden shadow-2xl flex flex-col md:flex-row max-h-[90vh] overflow-y-auto"
+              exit={{ scale: 0.95, y: 10 }}
+              className="bg-white border border-slate-200 w-full max-w-5xl rounded-[32px] overflow-hidden shadow-2xl flex flex-col md:flex-row max-h-[90vh] overflow-y-auto"
             >
-              <div className="md:w-1/2 relative bg-zinc-950 aspect-video md:aspect-auto">
+              <div className="md:w-1/2 relative bg-slate-50 aspect-video md:aspect-auto">
                 <img 
                   src={selectedProject.thumbnail} 
                   alt={selectedProject.clientName}
-                  className="w-full h-full object-cover opacity-80"
+                  className="w-full h-full object-cover"
                   referrerPolicy="no-referrer"
                 />
                 <button 
                   onClick={() => setSelectedProject(null)}
-                  className="absolute top-6 left-6 w-10 h-10 bg-zinc-950/50 backdrop-blur-md text-white rounded-xl flex items-center justify-center md:hidden"
+                  className="absolute top-6 left-6 w-10 h-10 bg-white/80 backdrop-blur-md text-slate-900 rounded-xl flex items-center justify-center md:hidden shadow-lg"
                 >
                   <X size={20} />
                 </button>
               </div>
-              <div className="md:w-1/2 p-8 sm:p-16 relative">
+              <div className="md:w-1/2 p-8 sm:p-12 relative">
                 <button 
                   onClick={() => setSelectedProject(null)}
-                  className="absolute top-12 right-12 w-12 h-12 bg-zinc-800 hover:bg-zinc-700 text-white rounded-2xl hidden md:flex items-center justify-center transition-all"
+                  className="absolute top-8 right-8 w-10 h-10 bg-slate-50 hover:bg-slate-100 text-slate-500 rounded-xl hidden md:flex items-center justify-center transition-all border border-slate-200"
                 >
-                  <X size={24} />
+                  <X size={20} />
                 </button>
                 
-                <div className="mb-8 sm:mb-10">
-                  <p className="text-[10px] font-bold text-emerald-500 uppercase tracking-[0.3em] mb-2 sm:mb-3">{selectedProject.businessType}</p>
-                  <h3 className="text-2xl font-bold text-white uppercase tracking-tight mb-4 sm:mb-6">{selectedProject.clientName}</h3>
+                <div className="mb-8">
+                  <p className="text-[9px] font-bold text-primary-600 uppercase tracking-[0.3em] mb-2">{selectedProject.businessType}</p>
+                  <h3 className="text-2xl font-bold text-slate-900 uppercase tracking-tight mb-4">{selectedProject.clientName}</h3>
                   <div className="flex flex-wrap gap-2">
                     {selectedProject.servicesUsed.map((s, i) => (
-                      <span key={i} className="px-3 py-1 bg-zinc-800 text-[10px] font-bold text-zinc-400 rounded-lg uppercase tracking-widest">{s}</span>
+                      <span key={i} className="px-3 py-1 bg-slate-50 border border-slate-100 text-[9px] font-bold text-slate-500 rounded-lg uppercase tracking-widest">{s}</span>
                     ))}
                   </div>
                 </div>
 
-                <div className="space-y-6 sm:space-y-8 mb-10 sm:mb-12">
+                <div className="space-y-6 mb-10">
                   <div>
-                    <h4 className="text-white font-bold uppercase tracking-tight mb-2 sm:mb-3 flex items-center gap-2">
-                      <BarChart3 size={18} className="text-emerald-500" /> Results Achieved
+                    <h4 className="text-slate-900 font-bold uppercase tracking-tight mb-2 flex items-center gap-2 text-sm">
+                      <BarChart3 size={16} className="text-primary-600" /> Results Achieved
                     </h4>
-                    <p className="text-zinc-400 text-base sm:text-lg leading-relaxed italic">
+                    <p className="text-slate-500 text-sm leading-relaxed italic">
                       "{selectedProject.results}"
                     </p>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap gap-3 sm:gap-4">
+                <div className="flex flex-wrap gap-3">
                   {selectedProject.websiteUrl && (
                     <a 
                       href={selectedProject.websiteUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-6 sm:px-8 py-3 sm:py-4 bg-emerald-500 text-white rounded-xl sm:rounded-2xl font-bold uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-2 hover:bg-emerald-400 transition-all"
+                      className="px-6 py-3 bg-primary-600 text-white rounded-xl font-bold uppercase tracking-widest text-[9px] flex items-center gap-2 hover:bg-primary-700 transition-all shadow-lg shadow-primary-500/20"
                     >
-                      Visit Website <ExternalLink size={16} />
+                      Visit Website <ExternalLink size={14} />
                     </a>
                   )}
                   {selectedProject.appUrl && (
@@ -910,9 +909,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                       href={selectedProject.appUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-6 sm:px-8 py-3 sm:py-4 bg-zinc-800 text-white rounded-xl sm:rounded-2xl font-bold uppercase tracking-widest text-[10px] sm:text-xs flex items-center gap-2 hover:bg-zinc-700 transition-all"
+                      className="px-6 py-3 bg-slate-900 text-white rounded-xl font-bold uppercase tracking-widest text-[9px] flex items-center gap-2 hover:bg-slate-800 transition-all"
                     >
-                      Open App <ExternalLink size={16} />
+                      Open App <ExternalLink size={14} />
                     </a>
                   )}
                 </div>
@@ -925,14 +924,17 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   );
 };
 
-function getServiceIcon(iconName: string) {
+function getServiceIcon(iconName: string, index: number = 0) {
+  const colors = ['text-primary-600', 'text-accent-500', 'text-indigo-600', 'text-blue-600', 'text-red-500'];
+  const colorClass = colors[index % colors.length];
+  
   switch (iconName) {
-    case 'MessageSquare': return <MessageSquare size={28} />;
-    case 'Globe': return <Globe size={28} />;
-    case 'Layout': return <Layout size={28} />;
-    case 'Zap': return <Zap size={28} />;
-    case 'Shield': return <Shield size={28} />;
-    default: return <BrainCircuit size={28} />;
+    case 'MessageSquare': return <MessageSquare size={32} className={colorClass} />;
+    case 'Globe': return <Globe size={32} className={colorClass} />;
+    case 'Layout': return <Layout size={32} className={colorClass} />;
+    case 'Zap': return <Zap size={32} className={colorClass} />;
+    case 'Shield': return <Shield size={32} className={colorClass} />;
+    default: return <BrainCircuit size={32} className={colorClass} />;
   }
 }
 
