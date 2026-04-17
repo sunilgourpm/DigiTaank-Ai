@@ -22,7 +22,7 @@ export const Footer: React.FC<FooterProps> = ({ content, onAdmin, onNavigate }) 
                 <div className="w-6 h-6 bg-primary-600 rounded-lg rotate-12 flex items-center justify-center">
                   <span className="text-white font-bold text-[10px] -rotate-12">{settings.agencyName.charAt(0)}</span>
                 </div>
-                <span className="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600 underline decoration-primary-500/30 decoration-2 underline-offset-4">{settings.agencyName}</span>
+                <span className="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600">{settings.agencyName}</span>
               </div>
             )}
           </div>

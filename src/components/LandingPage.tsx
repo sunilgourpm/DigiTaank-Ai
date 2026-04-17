@@ -134,7 +134,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             {settings.logo ? (
               <img src={settings.logo} alt={settings.agencyName} className="h-6 w-[80px] object-contain" />
             ) : (
-              <span className="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600 underline decoration-primary-500/30 decoration-2 underline-offset-4">{settings.agencyName}</span>
+              <span className="text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-accent-600">{settings.agencyName}</span>
             )}
           </div>
           
@@ -173,7 +173,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden bg-zinc-900 border-b border-zinc-800 overflow-hidden"
+              className="lg:hidden bg-white/95 backdrop-blur-2xl border-b border-slate-100 overflow-hidden"
             >
               <div className="px-6 py-8 flex flex-col gap-6">
                 {['Home', 'Services', 'Portfolio', 'About', 'Contact'].map((item) => (
@@ -181,7 +181,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
                     key={item}
                     href={`#${item.toLowerCase()}`} 
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="text-xs font-bold text-zinc-400 hover:text-white transition-colors uppercase tracking-[0.2em]"
+                    className="text-[10px] font-bold text-slate-500 hover:text-primary-600 transition-colors uppercase tracking-[0.2em]"
                   >
                     {item}
                   </a>
